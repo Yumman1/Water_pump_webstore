@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { services } from "@/data/services";
 import { siteConfig } from "@/config/site";
 import { ButtonLink } from "@/components/ui/button";
@@ -22,22 +23,26 @@ export default function ServicesPage() {
       <section className="container py-10">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
-            <div key={s.slug} className="flex flex-col rounded-xl border bg-white p-6 transition-shadow hover:shadow-md">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-brand-50 text-3xl">
-                {s.emoji}
+            <Link
+              key={s.slug}
+              href={`/services/${s.slug}`}
+              className="group flex flex-col overflow-hidden rounded-xl border bg-white transition-shadow hover:shadow-md"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                <Image src={s.image} alt={s.title} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition-transform duration-300 group-hover:scale-105" />
               </div>
-              <h2 className="mt-4 text-lg font-bold text-gray-900">{s.title}</h2>
-              <p className="mt-1 flex-1 text-sm text-gray-600">{s.short}</p>
-              {s.priceFrom && (
-                <p className="mt-3 text-sm">
-                  <span className="text-gray-400">From </span>
-                  <span className="font-semibold text-brand-700">{s.priceFrom}</span>
-                </p>
-              )}
-              <Link href={`/services/${s.slug}`} className="mt-4 text-sm font-semibold text-brand-600 hover:text-brand-700">
-                Learn more &amp; request →
-              </Link>
-            </div>
+              <div className="flex flex-1 flex-col p-5">
+                <h2 className="text-lg font-bold text-gray-900 group-hover:text-brand-700">{s.title}</h2>
+                <p className="mt-1 flex-1 text-sm text-gray-600">{s.short}</p>
+                {s.priceFrom && (
+                  <p className="mt-3 text-sm">
+                    <span className="text-gray-400">From </span>
+                    <span className="font-semibold text-brand-700">{s.priceFrom}</span>
+                  </p>
+                )}
+                <span className="mt-3 text-sm font-semibold text-brand-600">Learn more &amp; request →</span>
+              </div>
+            </Link>
           ))}
         </div>
       </section>

@@ -127,6 +127,7 @@ export async function getProducts(
     sort = "newest",
     featured,
     condition,
+    brand,
     onSale,
     minPrice,
     maxPrice,
@@ -141,6 +142,7 @@ export async function getProducts(
       if (categorySlug) where.category = { slug: categorySlug };
       if (featured !== undefined) where.featured = featured;
       if (condition) where.condition = condition;
+      if (brand) where.brand = { equals: brand, mode: "insensitive" };
       if (onSale) where.compareAtPrice = { not: null };
       if (search) {
         where.OR = [
@@ -186,6 +188,7 @@ export async function getProducts(
   if (categorySlug) list = list.filter((p) => p.category?.slug === categorySlug);
   if (featured !== undefined) list = list.filter((p) => p.featured === featured);
   if (condition) list = list.filter((p) => p.condition === condition);
+  if (brand) list = list.filter((p) => (p.brand ?? "").toLowerCase() === brand.toLowerCase());
   if (onSale) list = list.filter((p) => p.compareAtPrice != null && p.compareAtPrice > p.price);
   if (search) {
     const q = search.toLowerCase();

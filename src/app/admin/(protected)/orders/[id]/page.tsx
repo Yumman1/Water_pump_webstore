@@ -2,10 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAdminOrder } from "@/lib/admin-data";
 import { isDbConfigured } from "@/lib/prisma";
-import { updateOrder } from "@/app/admin/actions";
+import { updateOrder, dispatchOrder } from "@/app/admin/actions";
 import { formatCurrency, formatDateTime } from "@/lib/format";
 import { PageHeader, StatusBadge } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/ui/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,8 @@ export default async function OrderDetailPage({ params }: { params: { id: string
   if (!order) notFound();
 
   const action = updateOrder.bind(null, order.id);
+  const dispatch = dispatchOrder.bind(null, order.id);
+  const canDispatch = !["SHIPPED", "DELIVERED", "CANCELLED"].includes(order.status);
 
   return (
     <div>
@@ -69,6 +72,25 @@ export default async function OrderDetailPage({ params }: { params: { id: string
               <div className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-600">
                 <span className="font-medium text-gray-700">Notes: </span>{order.notes}
               </div>
+            )}
+          </div>
+
+          {/* Dispatch */}
+          <div className="rounded-xl border bg-white p-5">
+            <h2 className="font-semibold text-gray-900">Dispatch</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Marks the order as shipped and sends the customer a dispatch confirmation by email &amp; WhatsApp.
+            </p>
+            {order.status === "SHIPPED" || order.status === "DELIVERED" ? (
+              <p className="mt-3 flex items-center gap-2 text-sm font-medium text-green-700">
+                <Icons.check className="h-4 w-4" /> Order dispatched
+              </p>
+            ) : (
+              <form action={dispatch} className="mt-3">
+                <Button type="submit" variant="accent" className="w-full" disabled={!isDbConfigured || !canDispatch}>
+                  <Icons.truck className="h-4 w-4" /> Mark as Dispatched &amp; Notify Customer
+                </Button>
+              </form>
             )}
           </div>
 

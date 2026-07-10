@@ -3,6 +3,8 @@ import { z } from "zod";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 import { generateOrderNumber } from "@/lib/utils";
+import { notifyNewOrder } from "@/lib/notify";
+import { products as seedProducts } from "@/data/seed-data";
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
@@ -34,8 +36,26 @@ export async function POST(req: Request) {
 
   // --- Demo mode: no database configured -----------------------------------
   if (!isDbConfigured) {
+    const orderNumber = generateOrderNumber();
+    const demoItems = data.items.map((i) => {
+      const p = seedProducts.find((sp) => `prod-${sp.slug}` === i.productId);
+      return { name: p?.name ?? "Item", quantity: i.quantity, price: p?.price ?? 0 };
+    });
+    const subtotal = demoItems.reduce((s, i) => s + i.price * i.quantity, 0);
+    const shipping = subtotal >= siteConfig.shipping.freeShippingThreshold ? 0 : siteConfig.shipping.flatRate;
+    await notifyNewOrder({
+      orderNumber,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone,
+      address: data.address,
+      city: data.city,
+      total: subtotal + shipping,
+      paymentMethod: data.paymentMethod,
+      items: demoItems,
+    });
     return NextResponse.json({
-      orderNumber: generateOrderNumber(),
+      orderNumber,
       demo: true,
       message:
         "Order received (demo mode). Connect a database to persist orders and manage inventory.",
@@ -145,6 +165,23 @@ export async function POST(req: Request) {
 
       return created;
     });
+
+    // Notify owner + customer (email + WhatsApp). Best-effort; never blocks success.
+    try {
+      await notifyNewOrder({
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        customerPhone: order.customerPhone,
+        address: order.address,
+        city: order.city,
+        total: order.total,
+        paymentMethod: order.paymentMethod,
+        items: lineItems.map((l) => ({ name: l.product.name, quantity: l.quantity, price: l.product.price })),
+      });
+    } catch (e) {
+      console.warn("[orders] notification failed:", (e as Error).message);
+    }
 
     return NextResponse.json({ orderNumber: order.orderNumber, id: order.id });
   } catch (e) {

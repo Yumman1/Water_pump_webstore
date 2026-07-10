@@ -52,7 +52,12 @@ export default async function AdminProductsPage() {
                     </td>
                     <td className="px-4 py-3 text-gray-500">{p.sku}</td>
                     <td className="px-4 py-3 text-gray-500">{p.category?.name ?? "—"}</td>
-                    <td className="px-4 py-3 font-medium">{formatCurrency(p.price)}</td>
+                    <td className="px-4 py-3">
+                      <span className="font-medium">{formatCurrency(p.price)}</span>
+                      {p.compareAtPrice && p.compareAtPrice > p.price && (
+                        <span className="ml-2 inline-flex rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-red-700">Sale</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={cn("font-medium", p.stock <= 0 ? "text-red-600" : low ? "text-orange-600" : "text-gray-700")}>
                         {p.stock}

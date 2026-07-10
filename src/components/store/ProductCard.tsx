@@ -22,11 +22,16 @@ export function ProductCard({ product }: { product: Product }) {
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute left-2 top-2 flex flex-col gap-1">
+        <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
           {discount > 0 && (
-            <span className="rounded-md bg-accent px-2 py-0.5 text-xs font-bold text-white">-{discount}%</span>
+            <span className="rounded-md bg-red-600 px-2 py-0.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm">
+              Sale −{discount}%
+            </span>
           )}
-          {product.featured && (
+          {product.condition === "USED" && (
+            <span className="rounded-md bg-amber-500 px-2 py-0.5 text-xs font-semibold text-white">Used</span>
+          )}
+          {product.featured && discount === 0 && (
             <span className="rounded-md bg-brand-600 px-2 py-0.5 text-xs font-semibold text-white">Featured</span>
           )}
         </div>

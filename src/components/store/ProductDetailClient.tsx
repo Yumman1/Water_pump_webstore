@@ -52,8 +52,15 @@ export function ProductDetailClient({ product }: { product: Product }) {
         <h1 className="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">{product.name}</h1>
         <p className="mt-1 text-sm text-gray-500">SKU: {product.sku}</p>
 
+        {discount > 0 && (
+          <div className="mt-4 flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
+            <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-extrabold uppercase text-white">Sale!</span>
+            Save {formatCurrency(product.compareAtPrice! - product.price)} ({discount}% off) — limited time
+          </div>
+        )}
+
         <div className="mt-4 flex items-baseline gap-3">
-          <span className="text-3xl font-bold text-gray-900">{formatCurrency(product.price)}</span>
+          <span className={cn("text-3xl font-bold", discount > 0 ? "text-red-600" : "text-gray-900")}>{formatCurrency(product.price)}</span>
           {product.compareAtPrice && product.compareAtPrice > product.price && (
             <span className="text-lg text-gray-400 line-through">{formatCurrency(product.compareAtPrice)}</span>
           )}

@@ -71,7 +71,7 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {categories.map((c) => (
+          {categories.slice(0, 12).map((c) => (
             <Link
               key={c.id}
               href={`/category/${c.slug}`}
@@ -120,10 +120,12 @@ export default async function HomePage() {
               <Link
                 key={s.slug}
                 href={`/services/${s.slug}`}
-                className="group flex flex-col items-center gap-2 rounded-xl border bg-white p-4 text-center transition-shadow hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-xl border bg-white transition-shadow hover:shadow-md"
               >
-                <span className="text-3xl">{s.emoji}</span>
-                <span className="text-sm font-semibold text-gray-800 group-hover:text-brand-700">{s.title}</span>
+                <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                  <Image src={s.image} alt={s.title} fill sizes="(max-width:640px) 50vw, 20vw" className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                </div>
+                <span className="p-3 text-center text-sm font-semibold text-gray-800 group-hover:text-brand-700">{s.title}</span>
               </Link>
             ))}
           </div>

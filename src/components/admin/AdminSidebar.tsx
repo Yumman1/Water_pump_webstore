@@ -15,6 +15,7 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/admin/orders", label: "Orders", icon: "clipboard" },
   { href: "/admin/customers", label: "Customers", icon: "users" },
   { href: "/admin/categories", label: "Categories", icon: "tag" },
+  { href: "/admin/settings", label: "Settings", icon: "shield" },
 ];
 
 export function AdminSidebar({ user }: { user: { name?: string | null; email?: string | null } }) {

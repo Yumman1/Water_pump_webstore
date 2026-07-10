@@ -1,0 +1,262 @@
+/**
+ * Order notifications — email + WhatsApp, for the shop owner and the customer.
+ *
+ * Providers are configured via environment variables and used only if present;
+ * otherwise messages are logged to the server console (demo mode) so nothing
+ * crashes. See .env.example / README for setup.
+ *
+ *   Email:     RESEND_API_KEY (+ EMAIL_FROM)   — https://resend.com  (recommended)
+ *          or  SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS  (any SMTP, e.g. Gmail)
+ *   WhatsApp:  WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID  — Meta WhatsApp Cloud API
+ */
+import { prisma, isDbConfigured } from "@/lib/prisma";
+import { siteConfig } from "@/config/site";
+import { formatCurrency } from "@/lib/format";
+
+export type StoreSettings = {
+  ownerNotifyEmail: string | null;
+  ownerNotifyWhatsapp: string | null;
+  notifyCustomerEmail: boolean;
+  notifyCustomerWhatsapp: boolean;
+};
+
+const DEFAULT_SETTINGS: StoreSettings = {
+  ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? null,
+  ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? null,
+  notifyCustomerEmail: true,
+  notifyCustomerWhatsapp: true,
+};
+
+export async function getStoreSettings(): Promise<StoreSettings> {
+  if (isDbConfigured) {
+    try {
+      const row = await prisma.storeSettings.findUnique({ where: { id: 1 } });
+      if (row) {
+        return {
+          ownerNotifyEmail: row.ownerNotifyEmail ?? DEFAULT_SETTINGS.ownerNotifyEmail,
+          ownerNotifyWhatsapp: row.ownerNotifyWhatsapp ?? DEFAULT_SETTINGS.ownerNotifyWhatsapp,
+          notifyCustomerEmail: row.notifyCustomerEmail,
+          notifyCustomerWhatsapp: row.notifyCustomerWhatsapp,
+        };
+      }
+    } catch (e) {
+      console.warn("[notify] settings read failed:", (e as Error).message);
+    }
+  }
+  return DEFAULT_SETTINGS;
+}
+
+// ---------------------------------------------------------------------------
+// Channels
+// ---------------------------------------------------------------------------
+export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<void> {
+  const from = process.env.EMAIL_FROM ?? `${siteConfig.name} <onboarding@resend.dev>`;
+
+  // 1) Resend (HTTP API — no dependency needed)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ from, to: [opts.to], subject: opts.subject, html: opts.html }),
+      });
+      if (!res.ok) console.warn("[notify] Resend error:", await res.text());
+      return;
+    } catch (e) {
+      console.warn("[notify] Resend request failed:", (e as Error).message);
+      return;
+    }
+  }
+
+  // 2) SMTP via nodemailer (dynamically imported so it's optional)
+  if (process.env.SMTP_HOST) {
+    try {
+      // Variable specifier keeps this an optional runtime dependency.
+      const specifier = "nodemailer";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const nodemailer: any = await import(specifier);
+      const transport = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT ?? 587),
+        secure: process.env.SMTP_SECURE === "true",
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
+      await transport.sendMail({ from, to: opts.to, subject: opts.subject, html: opts.html });
+      return;
+    } catch (e) {
+      console.warn("[notify] SMTP send failed:", (e as Error).message);
+      return;
+    }
+  }
+
+  // 3) Demo fallback
+  console.log(`\n📧 [EMAIL → ${opts.to}] ${opts.subject}\n(No email provider configured — set RESEND_API_KEY or SMTP_* to send.)`);
+}
+
+/** Normalize a phone number to international digits for WhatsApp (defaults PK 92). */
+function normalizePhone(raw: string): string {
+  let digits = raw.replace(/[^0-9]/g, "");
+  if (digits.startsWith("0")) digits = "92" + digits.slice(1);
+  return digits;
+}
+
+export async function sendWhatsApp(opts: { to: string; text: string }): Promise<void> {
+  const to = normalizePhone(opts.to);
+  if (!to) return;
+
+  const token = process.env.WHATSAPP_TOKEN;
+  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+
+  if (token && phoneId) {
+    try {
+      const res = await fetch(`https://graph.facebook.com/v20.0/${phoneId}/messages`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to,
+          type: "text",
+          text: { body: opts.text },
+        }),
+      });
+      if (!res.ok) console.warn("[notify] WhatsApp error:", await res.text());
+      return;
+    } catch (e) {
+      console.warn("[notify] WhatsApp request failed:", (e as Error).message);
+      return;
+    }
+  }
+
+  console.log(`\n💬 [WHATSAPP → ${to}]\n${opts.text}\n(No WhatsApp provider configured — set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID to send.)`);
+}
+
+// ---------------------------------------------------------------------------
+// Message builders
+// ---------------------------------------------------------------------------
+type OrderLike = {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  address: string;
+  city: string;
+  total: number;
+  paymentMethod: string;
+  items: { name: string; quantity: number; price: number }[];
+};
+
+function itemsTextLines(order: OrderLike): string {
+  return order.items.map((i) => `• ${i.name} × ${i.quantity} — ${formatCurrency(i.price * i.quantity)}`).join("\n");
+}
+function itemsHtmlRows(order: OrderLike): string {
+  return order.items
+    .map(
+      (i) =>
+        `<tr><td style="padding:6px 0;color:#374151">${i.name} × ${i.quantity}</td><td style="padding:6px 0;text-align:right;color:#111827">${formatCurrency(i.price * i.quantity)}</td></tr>`
+    )
+    .join("");
+}
+function emailShell(title: string, body: string): string {
+  return `<div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px">
+    <h2 style="color:#0067a5;margin:0 0 4px">${siteConfig.name}</h2>
+    <h3 style="margin:16px 0 8px;color:#111827">${title}</h3>
+    ${body}
+    <p style="margin-top:24px;color:#6b7280;font-size:13px">${siteConfig.name} · ${siteConfig.contact.phone} · ${siteConfig.contact.email}</p>
+  </div>`;
+}
+
+// ---------------------------------------------------------------------------
+// High-level notifications
+// ---------------------------------------------------------------------------
+
+/** Fire when a new order is placed: alert the owner + confirm to the customer. */
+export async function notifyNewOrder(order: OrderLike): Promise<void> {
+  const settings = await getStoreSettings();
+  const tasks: Promise<void>[] = [];
+
+  // → Owner alert
+  if (settings.ownerNotifyEmail) {
+    tasks.push(
+      sendEmail({
+        to: settings.ownerNotifyEmail,
+        subject: `🛒 New order ${order.orderNumber} — ${formatCurrency(order.total)}`,
+        html: emailShell(
+          `New order received: ${order.orderNumber}`,
+          `<p style="color:#374151">Customer: <b>${order.customerName}</b> (${order.customerPhone}, ${order.customerEmail})<br/>
+           Deliver to: ${order.address}, ${order.city}<br/>Payment: ${order.paymentMethod}</p>
+           <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
+           <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>`
+        ),
+      })
+    );
+  }
+  if (settings.ownerNotifyWhatsapp) {
+    tasks.push(
+      sendWhatsApp({
+        to: settings.ownerNotifyWhatsapp,
+        text: `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDeliver to: ${order.address}, ${order.city}\nPayment: ${order.paymentMethod}\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*`,
+      })
+    );
+  }
+
+  // → Customer confirmation
+  if (settings.notifyCustomerEmail && order.customerEmail) {
+    tasks.push(
+      sendEmail({
+        to: order.customerEmail,
+        subject: `Order confirmed — ${order.orderNumber}`,
+        html: emailShell(
+          `Thank you for your order, ${order.customerName}!`,
+          `<p style="color:#374151">We've received your order <b>${order.orderNumber}</b> and will contact you shortly to confirm delivery.</p>
+           <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
+           <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>
+           <p style="color:#374151;margin-top:12px">Payment method: ${order.paymentMethod}</p>`
+        ),
+      })
+    );
+  }
+  if (settings.notifyCustomerWhatsapp && order.customerPhone) {
+    tasks.push(
+      sendWhatsApp({
+        to: order.customerPhone,
+        text: `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\nPayment: ${order.paymentMethod}\n\nWe'll contact you shortly to confirm delivery.`,
+      })
+    );
+  }
+
+  await Promise.allSettled(tasks);
+}
+
+/** Fire when the owner dispatches an order: notify the customer. */
+export async function notifyDispatch(order: OrderLike): Promise<void> {
+  const settings = await getStoreSettings();
+  const tasks: Promise<void>[] = [];
+
+  if (settings.notifyCustomerEmail && order.customerEmail) {
+    tasks.push(
+      sendEmail({
+        to: order.customerEmail,
+        subject: `Your order ${order.orderNumber} has been dispatched 🚚`,
+        html: emailShell(
+          `Your order is on its way!`,
+          `<p style="color:#374151">Good news ${order.customerName} — your order <b>${order.orderNumber}</b> has been dispatched and will reach you soon.</p>
+           <p style="color:#374151">Deliver to: ${order.address}, ${order.city}</p>
+           <p style="color:#374151">Total: <b>${formatCurrency(order.total)}</b> (${order.paymentMethod})</p>`
+        ),
+      })
+    );
+  }
+  if (settings.notifyCustomerWhatsapp && order.customerPhone) {
+    tasks.push(
+      sendWhatsApp({
+        to: order.customerPhone,
+        text: `🚚 Hi ${order.customerName}, your order *${order.orderNumber}* from ${siteConfig.name} has been *dispatched* and is on its way!\n\nDeliver to: ${order.address}, ${order.city}\nTotal: ${formatCurrency(order.total)} (${order.paymentMethod})\n\nThank you for shopping with us!`,
+      })
+    );
+  }
+
+  await Promise.allSettled(tasks);
+}

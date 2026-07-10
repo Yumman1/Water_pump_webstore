@@ -51,6 +51,7 @@ export type ProductQuery = {
   sort?: "newest" | "price-asc" | "price-desc" | "name-asc";
   featured?: boolean;
   condition?: "NEW" | "USED";
+  brand?: string;
   onSale?: boolean;
   minPrice?: number;
   maxPrice?: number;

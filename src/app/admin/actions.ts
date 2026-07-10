@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin-auth";
 import { slugify } from "@/lib/utils";
+import { notifyDispatch } from "@/lib/notify";
 
 async function requireAdmin() {
   const user = await getAdminUser();
@@ -136,6 +137,53 @@ export async function updateOrder(id: string, fd: FormData) {
   });
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${id}`);
+}
+
+/** Mark an order as dispatched (SHIPPED) and notify the customer. */
+export async function dispatchOrder(id: string) {
+  await requireAdmin();
+  const order = await prisma.order.update({
+    where: { id },
+    data: { status: "SHIPPED" },
+    include: { items: true },
+  });
+  try {
+    await notifyDispatch({
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone,
+      address: order.address,
+      city: order.city,
+      total: order.total,
+      paymentMethod: order.paymentMethod,
+      items: order.items.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+    });
+  } catch (e) {
+    console.warn("[dispatch] notification failed:", (e as Error).message);
+  }
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${id}`);
+}
+
+// ---------------------------------------------------------------------------
+// Store settings (notification email / WhatsApp)
+// ---------------------------------------------------------------------------
+export async function saveSettings(fd: FormData) {
+  await requireAdmin();
+  const data = {
+    ownerNotifyEmail: str(fd, "ownerNotifyEmail") || null,
+    ownerNotifyWhatsapp: str(fd, "ownerNotifyWhatsapp") || null,
+    notifyCustomerEmail: bool(fd, "notifyCustomerEmail"),
+    notifyCustomerWhatsapp: bool(fd, "notifyCustomerWhatsapp"),
+  };
+  await prisma.storeSettings.upsert({
+    where: { id: 1 },
+    update: data,
+    create: { id: 1, ...data },
+  });
+  revalidatePath("/admin/settings");
+  redirect("/admin/settings?saved=1");
 }
 
 // ---------------------------------------------------------------------------

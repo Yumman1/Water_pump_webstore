@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getService, services } from "@/data/services";
 import { ServiceRequestForm } from "@/components/store/ServiceRequestForm";
@@ -34,19 +35,19 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
 
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <div>
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-brand-50 text-4xl">{service.emoji}</div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{service.title}</h1>
-              {service.priceFrom && (
-                <p className="text-sm text-gray-500">
-                  From <span className="font-semibold text-brand-700">{service.priceFrom}</span>
-                </p>
-              )}
-            </div>
+          <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-gray-100">
+            <Image src={service.image} alt={service.title} fill priority sizes="(max-width:1024px) 100vw, 60vw" className="object-cover" />
+          </div>
+          <div className="mt-5">
+            <h1 className="text-3xl font-bold text-gray-900">{service.title}</h1>
+            {service.priceFrom && (
+              <p className="mt-1 text-sm text-gray-500">
+                From <span className="font-semibold text-brand-700">{service.priceFrom}</span>
+              </p>
+            )}
           </div>
 
-          <p className="mt-6 leading-relaxed text-gray-600">{service.description}</p>
+          <p className="mt-5 leading-relaxed text-gray-600">{service.description}</p>
 
           <h2 className="mt-8 text-lg font-bold text-gray-900">What&apos;s included</h2>
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -74,7 +75,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 .filter((s) => s.slug !== service.slug)
                 .map((s) => (
                   <Link key={s.slug} href={`/services/${s.slug}`} className="rounded-full border bg-white px-3 py-1.5 text-sm text-gray-700 hover:border-brand-400 hover:text-brand-700">
-                    {s.emoji} {s.title}
+                    {s.title}
                   </Link>
                 ))}
             </div>

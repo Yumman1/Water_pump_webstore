@@ -178,6 +178,16 @@ model OrderItem {
   @@index([orderId])
 }
 
+// Single-row store configuration edited from /admin/settings.
+model StoreSettings {
+  id                    Int      @id @default(1)
+  ownerNotifyEmail      String? // where new-order alerts are sent
+  ownerNotifyWhatsapp   String? // owner WhatsApp number for new-order alerts
+  notifyCustomerEmail   Boolean  @default(true)
+  notifyCustomerWhatsapp Boolean @default(true)
+  updatedAt             DateTime @updatedAt
+}
+
 model Coupon {
   id           String       @id @default(cuid())
   code         String       @unique

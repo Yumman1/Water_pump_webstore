@@ -63,6 +63,7 @@ async function main() {
         stock: p.stock,
         lowStockThreshold: p.lowStockThreshold,
         weightKg: p.weightKg ?? null,
+        condition: p.condition ?? "NEW",
         featured: p.featured,
         active: p.active,
         images: p.images,
@@ -83,6 +84,7 @@ async function main() {
         stock: p.stock,
         lowStockThreshold: p.lowStockThreshold,
         weightKg: p.weightKg ?? null,
+        condition: p.condition ?? "NEW",
         featured: p.featured,
         active: p.active,
         images: p.images,
@@ -93,6 +95,18 @@ async function main() {
     });
   }
   console.log(`   ✓ ${products.length} products`);
+
+  // --- Store settings (default) --------------------------------------------
+  await prisma.storeSettings.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? adminEmail,
+      ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? null,
+    },
+  });
+  console.log("   ✓ Store settings");
 
   // --- Coupon ---------------------------------------------------------------
   await prisma.coupon.upsert({

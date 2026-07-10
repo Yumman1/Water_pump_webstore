@@ -99,11 +99,14 @@ export function ProductForm({
         </div>
 
         <div className="space-y-4 rounded-xl border bg-white p-6">
-          <h2 className="font-semibold text-gray-900">Pricing</h2>
-          <Field label="Price *">
+          <h2 className="font-semibold text-gray-900">Pricing &amp; Sale</h2>
+          <Field label="Price *" hint="The price the customer pays (the sale price if on sale).">
             <input name="price" type="number" step="0.01" required defaultValue={p?.price} className={inputClass} />
           </Field>
-          <Field label="Compare-at Price" hint="Original price (shown struck through).">
+          <Field
+            label="Original / Compare-at Price"
+            hint="🏷️ To put this item ON SALE, set this HIGHER than the price. The old price is struck through and a red SALE badge appears. Leave blank for no sale."
+          >
             <input name="compareAtPrice" type="number" step="0.01" defaultValue={p?.compareAtPrice ?? ""} className={inputClass} />
           </Field>
           <Field label="Cost" hint="Your cost (for profit tracking, not shown to customers).">
