@@ -1,0 +1,83 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getProductBySlug, getRelatedProducts } from "@/lib/data";
+import { ProductDetailClient } from "@/components/store/ProductDetailClient";
+import { ProductGrid } from "@/components/store/ProductGrid";
+
+export const revalidate = 60;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const product = await getProductBySlug(params.slug);
+  if (!product) return { title: "Product not found" };
+  return {
+    title: product.name,
+    description: product.shortDescription ?? product.description.slice(0, 150),
+  };
+}
+
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const product = await getProductBySlug(params.slug);
+  if (!product || !product.active) notFound();
+
+  const related = await getRelatedProducts(product, 4);
+  const specs = Object.entries(product.specs ?? {});
+
+  return (
+    <div className="container py-8">
+      {/* Breadcrumb */}
+      <nav className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
+        <Link href="/" className="hover:text-brand-600">Home</Link>
+        <span>/</span>
+        <Link href="/shop" className="hover:text-brand-600">Shop</Link>
+        {product.category && (
+          <>
+            <span>/</span>
+            <Link href={`/category/${product.category.slug}`} className="hover:text-brand-600">
+              {product.category.name}
+            </Link>
+          </>
+        )}
+        <span>/</span>
+        <span className="text-gray-700">{product.name}</span>
+      </nav>
+
+      <ProductDetailClient product={product} />
+
+      {/* Description + specs */}
+      <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_360px]">
+        <div>
+          <h2 className="text-lg font-bold text-gray-900">Description</h2>
+          <p className="mt-3 whitespace-pre-line leading-relaxed text-gray-600">{product.description}</p>
+        </div>
+        {specs.length > 0 && (
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Specifications</h2>
+            <table className="mt-3 w-full overflow-hidden rounded-lg border text-sm">
+              <tbody>
+                {specs.map(([k, v], i) => (
+                  <tr key={k} className={i % 2 ? "bg-gray-50" : "bg-white"}>
+                    <td className="w-1/2 border-r px-4 py-2 font-medium text-gray-600">{k}</td>
+                    <td className="px-4 py-2 text-gray-900">{String(v)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Related */}
+      {related.length > 0 && (
+        <div className="mt-14">
+          <h2 className="mb-6 text-xl font-bold text-gray-900">Related Products</h2>
+          <ProductGrid products={related} />
+        </div>
+      )}
+    </div>
+  );
+}

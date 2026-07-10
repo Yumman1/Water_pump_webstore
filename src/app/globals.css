@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Brand colors — change these HSL/hex values to recolor the whole store.
+ * The default is a professional water-blue palette.
+ */
+:root {
+  --brand-50: #eff9ff;
+  --brand-100: #def2ff;
+  --brand-200: #b6e6ff;
+  --brand-300: #75d3ff;
+  --brand-400: #2cbcff;
+  --brand-500: #00a3ef;
+  --brand-600: #0081cc;
+  --brand-700: #0067a5;
+  --brand-800: #065788;
+  --brand-900: #0b4a71;
+
+  --accent: #ff7a1a;
+  --accent-foreground: #ffffff;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  border-color: theme("colors.gray.200");
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased;
+}
+
+/* Utility: hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Simple line clamp helpers */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

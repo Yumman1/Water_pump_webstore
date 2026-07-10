@@ -1,0 +1,187 @@
+// Prisma schema for the e-commerce webstore + admin/CRM.
+// Works with any PostgreSQL provider (Supabase, Neon, Vercel Postgres, RDS...).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  COD
+  CARD
+  BANK_TRANSFER
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+// Staff / admin accounts for the dashboard.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(STAFF)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  sortOrder   Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  sku               String   @unique
+  brand             String?
+  description       String
+  shortDescription  String?
+  price             Float
+  compareAtPrice    Float?
+  cost              Float?
+  stock             Int      @default(0)
+  lowStockThreshold Int      @default(5)
+  weightKg          Float?
+  featured          Boolean  @default(false)
+  active            Boolean  @default(true)
+  images            String[] // array of image URLs
+  specs             Json? // key/value technical specifications
+  tags              String[]
+  categoryId        String
+  category          Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  orderItems    OrderItem[]
+  inventoryLogs InventoryLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([featured])
+}
+
+// Records every stock movement for auditability.
+model InventoryLog {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  change    Int // +restock, -sale/adjustment
+  reason    String
+  newStock  Int
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  address   String?
+  city      String?
+  country   String?  @default("Pakistan")
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id          String @id @default(cuid())
+  orderNumber String @unique
+
+  // Snapshot of customer info at time of purchase (guest checkout friendly).
+  customerName  String
+  customerEmail String
+  customerPhone String
+  address       String
+  city          String
+  country       String @default("Pakistan")
+  notes         String?
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  items OrderItem[]
+
+  subtotal Float
+  shipping Float @default(0)
+  tax      Float @default(0)
+  discount Float @default(0)
+  total    Float
+
+  status        OrderStatus   @default(PENDING)
+  paymentMethod PaymentMethod @default(COD)
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  couponCode String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  name      String
+  sku       String
+  price     Float
+  quantity  Int
+
+  @@index([orderId])
+}
+
+model Coupon {
+  id           String       @id @default(cuid())
+  code         String       @unique
+  type         DiscountType @default(PERCENTAGE)
+  value        Float
+  minSubtotal  Float        @default(0)
+  active       Boolean      @default(true)
+  expiresAt    DateTime?
+  usageLimit   Int?
+  usageCount   Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}

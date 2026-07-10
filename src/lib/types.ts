@@ -1,0 +1,56 @@
+/** UI-facing types. Both the database and the demo-data fallback normalize to these. */
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  sortOrder: number;
+  productCount?: number;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  slug: string;
+  sku: string;
+  brand: string | null;
+  description: string;
+  shortDescription: string | null;
+  price: number;
+  compareAtPrice: number | null;
+  cost: number | null;
+  stock: number;
+  lowStockThreshold: number;
+  weightKg: number | null;
+  featured: boolean;
+  active: boolean;
+  images: string[];
+  tags: string[];
+  specs: Record<string, string>;
+  categoryId: string;
+  category?: { id: string; name: string; slug: string } | null;
+};
+
+export type CartItem = {
+  productId: string;
+  slug: string;
+  name: string;
+  sku: string;
+  price: number;
+  image: string;
+  quantity: number;
+  stock: number;
+};
+
+export type ProductQuery = {
+  categorySlug?: string;
+  search?: string;
+  sort?: "newest" | "price-asc" | "price-desc" | "name-asc";
+  featured?: boolean;
+  minPrice?: number;
+  maxPrice?: number;
+  page?: number;
+  pageSize?: number;
+};
