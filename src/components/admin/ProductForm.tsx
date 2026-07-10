@@ -82,6 +82,12 @@ export function ProductForm({
           <Field label="Brand">
             <input name="brand" defaultValue={p?.brand ?? ""} className={inputClass} />
           </Field>
+          <Field label="Condition">
+            <select name="condition" defaultValue={p?.condition ?? "NEW"} className={inputClass}>
+              <option value="NEW">New</option>
+              <option value="USED">Used / Refurbished</option>
+            </select>
+          </Field>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="featured" defaultChecked={p?.featured} className="h-4 w-4" />
             Featured on homepage

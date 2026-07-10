@@ -41,6 +41,7 @@ function seedProductToProduct(p: (typeof seedProducts)[number]): Product {
     stock: p.stock,
     lowStockThreshold: p.lowStockThreshold,
     weightKg: p.weightKg ?? null,
+    condition: p.condition ?? "NEW",
     featured: p.featured,
     active: p.active,
     images: p.images,
@@ -67,6 +68,7 @@ function dbProductToProduct(p: any): Product {
     stock: p.stock,
     lowStockThreshold: p.lowStockThreshold,
     weightKg: p.weightKg,
+    condition: p.condition ?? "NEW",
     featured: p.featured,
     active: p.active,
     images: p.images ?? [],
@@ -124,6 +126,8 @@ export async function getProducts(
     search,
     sort = "newest",
     featured,
+    condition,
+    onSale,
     minPrice,
     maxPrice,
     page = 1,
@@ -136,6 +140,8 @@ export async function getProducts(
       const where: any = { active: true };
       if (categorySlug) where.category = { slug: categorySlug };
       if (featured !== undefined) where.featured = featured;
+      if (condition) where.condition = condition;
+      if (onSale) where.compareAtPrice = { not: null };
       if (search) {
         where.OR = [
           { name: { contains: search, mode: "insensitive" } },
@@ -179,6 +185,8 @@ export async function getProducts(
   let list = seedProducts.filter((p) => p.active).map(seedProductToProduct);
   if (categorySlug) list = list.filter((p) => p.category?.slug === categorySlug);
   if (featured !== undefined) list = list.filter((p) => p.featured === featured);
+  if (condition) list = list.filter((p) => p.condition === condition);
+  if (onSale) list = list.filter((p) => p.compareAtPrice != null && p.compareAtPrice > p.price);
   if (search) {
     const q = search.toLowerCase();
     list = list.filter(
@@ -234,9 +242,16 @@ export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
 export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
   const { products } = await getProducts({
     categorySlug: product.category?.slug,
+    condition: product.condition,
     pageSize: limit + 1,
   });
   return products.filter((p) => p.id !== product.id).slice(0, limit);
+}
+
+/** Products currently on sale (have a compare-at price higher than price). */
+export async function getDealsProducts(limit = 24): Promise<Product[]> {
+  const { products } = await getProducts({ onSale: true, pageSize: limit });
+  return products.filter((p) => p.compareAtPrice && p.compareAtPrice > p.price);
 }
 
 export async function getAllProductSlugs(): Promise<string[]> {

@@ -40,6 +40,11 @@ enum DiscountType {
   FIXED
 }
 
+enum ProductCondition {
+  NEW
+  USED
+}
+
 // Staff / admin accounts for the dashboard.
 model User {
   id           String   @id @default(cuid())
@@ -77,6 +82,7 @@ model Product {
   stock             Int      @default(0)
   lowStockThreshold Int      @default(5)
   weightKg          Float?
+  condition         ProductCondition @default(NEW)
   featured          Boolean  @default(false)
   active            Boolean  @default(true)
   images            String[] // array of image URLs

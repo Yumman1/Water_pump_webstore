@@ -32,6 +32,7 @@ export type SeedProduct = {
   stock: number;
   lowStockThreshold: number;
   weightKg?: number;
+  condition?: "NEW" | "USED";
   featured: boolean;
   active: boolean;
   images: string[];
@@ -433,6 +434,118 @@ export const products: SeedProduct[] = [
       "Pressure Range": "1.4 – 4.6 bar",
       Fitting: "1/4 inch",
       Contact: "230V / 20A",
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // USED / REFURBISHED PUMPS
+  // ---------------------------------------------------------------------------
+  {
+    name: "Used AquaDeep 1.5HP Submersible Pump (Refurbished)",
+    slug: "used-aquadeep-1-5hp-submersible-pump",
+    sku: "US-SB-15",
+    brand: "AquaDeep",
+    categorySlug: "submersible-pumps",
+    condition: "USED",
+    shortDescription: "Tested & refurbished 1.5HP submersible pump — great value.",
+    description:
+      "A fully tested and refurbished AquaDeep 1.5HP submersible pump. Professionally serviced with new seals and inspected for performance. Backed by a 3-month workshop warranty — an economical choice for borewells.",
+    price: 26000,
+    compareAtPrice: 42000,
+    cost: 15000,
+    stock: 4,
+    lowStockThreshold: 2,
+    weightKg: 16,
+    featured: false,
+    active: true,
+    images: [img("used-sub-1"), img("used-sub-1b")],
+    tags: ["used", "refurbished", "submersible"],
+    specs: {
+      Power: "1.5 HP",
+      Condition: "Refurbished — tested",
+      "Max Head": "45 m",
+      Warranty: "3 months (workshop)",
+    },
+  },
+  {
+    name: "Used SolarMax 2HP Submersible Pump",
+    slug: "used-solarmax-2hp-submersible-pump",
+    sku: "US-SB-20",
+    brand: "SolarMax",
+    categorySlug: "submersible-pumps",
+    condition: "USED",
+    shortDescription: "Second-hand 2HP submersible pump in good working condition.",
+    description:
+      "A second-hand SolarMax 2HP submersible pump in good working order. Fully functional, cosmetic wear only. Ideal for budget-conscious buyers who need reliable deep-well pumping.",
+    price: 62000,
+    compareAtPrice: 95000,
+    cost: 40000,
+    stock: 2,
+    lowStockThreshold: 2,
+    weightKg: 21,
+    featured: false,
+    active: true,
+    images: [img("used-sub-2")],
+    tags: ["used", "submersible", "solar"],
+    specs: {
+      Power: "2 HP",
+      Condition: "Used — good",
+      "Max Head": "60 m",
+      Warranty: "1 month",
+    },
+  },
+  {
+    name: "Used FlowForce 2HP Centrifugal Pump (Refurbished)",
+    slug: "used-flowforce-2hp-centrifugal-pump",
+    sku: "US-CF-20",
+    brand: "FlowForce",
+    categorySlug: "centrifugal-pumps",
+    condition: "USED",
+    shortDescription: "Refurbished 2HP centrifugal pump — serviced & tested.",
+    description:
+      "This refurbished FlowForce 2HP centrifugal pump has been serviced with a new mechanical seal and bearings, then performance-tested. Excellent value for water transfer and irrigation.",
+    price: 21000,
+    compareAtPrice: 34000,
+    cost: 12000,
+    stock: 5,
+    lowStockThreshold: 2,
+    weightKg: 18,
+    featured: false,
+    active: true,
+    images: [img("used-cf-1"), img("used-cf-1b")],
+    tags: ["used", "refurbished", "centrifugal"],
+    specs: {
+      Power: "2 HP",
+      Condition: "Refurbished — tested",
+      "Max Flow": "24,000 L/h",
+      Warranty: "3 months (workshop)",
+    },
+  },
+  {
+    name: "Used FlowForce 3HP Centrifugal Pump",
+    slug: "used-flowforce-3hp-centrifugal-pump",
+    sku: "US-CF-30",
+    brand: "FlowForce",
+    categorySlug: "centrifugal-pumps",
+    condition: "USED",
+    shortDescription: "Second-hand 3HP centrifugal pump, single-phase.",
+    description:
+      "A used FlowForce 3HP single-phase centrifugal pump in working condition. Some cosmetic wear. Great for agricultural water transfer on a budget.",
+    price: 33000,
+    compareAtPrice: 52000,
+    cost: 20000,
+    stock: 3,
+    lowStockThreshold: 2,
+    weightKg: 26,
+    featured: false,
+    active: true,
+    images: [img("used-cf-2")],
+    tags: ["used", "centrifugal"],
+    specs: {
+      Power: "3 HP",
+      Condition: "Used — working",
+      Phase: "Single-phase",
+      Warranty: "1 month",
     },
   },
 ];

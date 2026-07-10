@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCategoryBySlug } from "@/lib/data";
-import { ProductListing } from "@/components/store/ProductListing";
+import { getCategories, getCategoryBySlug } from "@/lib/data";
+import { ProductListing, type NavLink } from "@/components/store/ProductListing";
 
 export const revalidate = 60;
 
@@ -21,14 +21,28 @@ export default async function CategoryPage({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const category = await getCategoryBySlug(params.slug);
+  const [category, categories] = await Promise.all([
+    getCategoryBySlug(params.slug),
+    getCategories(),
+  ]);
   if (!category) notFound();
+
+  const navLinks: NavLink[] = [
+    { label: "All Products", href: "/shop", active: false },
+    ...categories.map((c) => ({
+      label: c.name,
+      href: `/category/${c.slug}`,
+      active: c.slug === category.slug,
+      count: c.productCount,
+    })),
+  ];
 
   return (
     <ProductListing
       title={category.name}
       description={category.description ?? undefined}
-      activeCategorySlug={category.slug}
+      query={{ categorySlug: category.slug, condition: "NEW" }}
+      navLinks={navLinks}
       searchParams={searchParams}
     />
   );

@@ -67,6 +67,8 @@ export async function saveProduct(id: string | null, fd: FormData) {
     stock: Math.round(num(fd, "stock")),
     lowStockThreshold: Math.round(num(fd, "lowStockThreshold")) || 5,
     weightKg: str(fd, "weightKg") ? num(fd, "weightKg") : null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    condition: (str(fd, "condition") === "USED" ? "USED" : "NEW") as any,
     featured: bool(fd, "featured"),
     active: bool(fd, "active"),
     images: parseList(str(fd, "images")),

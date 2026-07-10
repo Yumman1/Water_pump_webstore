@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 import { ButtonLink } from "@/components/ui/button";
 import { ProductGrid } from "@/components/store/ProductGrid";
 import { Icons, type IconName } from "@/components/ui/icons";
+import { services } from "@/data/services";
 
 export const revalidate = 60;
 
@@ -102,6 +103,31 @@ export default async function HomePage() {
           </Link>
         </div>
         <ProductGrid products={featured} />
+      </section>
+
+      {/* Services teaser */}
+      <section className="border-t bg-white">
+        <div className="container py-12">
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Our Services</h2>
+              <p className="text-gray-500">Installation, maintenance & complete water solutions</p>
+            </div>
+            <Link href="/services" className="text-sm font-medium text-brand-600 hover:text-brand-700">View all →</Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {services.map((s) => (
+              <Link
+                key={s.slug}
+                href={`/services/${s.slug}`}
+                className="group flex flex-col items-center gap-2 rounded-xl border bg-white p-4 text-center transition-shadow hover:shadow-md"
+              >
+                <span className="text-3xl">{s.emoji}</span>
+                <span className="text-sm font-semibold text-gray-800 group-hover:text-brand-700">{s.title}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* CTA banner */}

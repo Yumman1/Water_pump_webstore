@@ -24,6 +24,7 @@ export type Product = {
   stock: number;
   lowStockThreshold: number;
   weightKg: number | null;
+  condition: "NEW" | "USED";
   featured: boolean;
   active: boolean;
   images: string[];
@@ -49,6 +50,8 @@ export type ProductQuery = {
   search?: string;
   sort?: "newest" | "price-asc" | "price-desc" | "name-asc";
   featured?: boolean;
+  condition?: "NEW" | "USED";
+  onSale?: boolean;
   minPrice?: number;
   maxPrice?: number;
   page?: number;

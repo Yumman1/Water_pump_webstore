@@ -23,17 +23,20 @@ export async function SiteFooter() {
           <h4 className="font-semibold text-white">Shop</h4>
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/shop" className="text-gray-400 hover:text-white">All Products</Link></li>
-            {categories.slice(0, 5).map((c) => (
+            {categories.slice(0, 4).map((c) => (
               <li key={c.id}>
                 <Link href={`/category/${c.slug}`} className="text-gray-400 hover:text-white">{c.name}</Link>
               </li>
             ))}
+            <li><Link href="/deals" className="text-gray-400 hover:text-white">Special Offers</Link></li>
+            <li><Link href="/used-pumps" className="text-gray-400 hover:text-white">Used Pumps</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-white">Company</h4>
           <ul className="mt-3 space-y-2 text-sm">
+            <li><Link href="/services" className="text-gray-400 hover:text-white">Services</Link></li>
             <li><Link href="/about" className="text-gray-400 hover:text-white">About Us</Link></li>
             <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
             <li><Link href="/shipping" className="text-gray-400 hover:text-white">Shipping & Returns</Link></li>
