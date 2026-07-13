@@ -6,6 +6,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { ProductGrid } from "@/components/store/ProductGrid";
 import { Icons, type IconName } from "@/components/ui/icons";
 import { services } from "@/data/services";
+import { HeroMedia } from "@/components/store/HeroMedia";
+import { ShowcaseVideo } from "@/components/store/ShowcaseVideo";
 
 export const revalidate = 60;
 
@@ -16,13 +18,7 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden bg-brand-900 text-white">
-        <Image
-          src={siteConfig.hero.image}
-          alt=""
-          fill
-          priority
-          className="object-cover opacity-25"
-        />
+        <HeroMedia />
         <div className="container relative grid gap-6 py-16 md:py-24 lg:w-2/3">
           <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
             {siteConfig.hero.heading}
@@ -104,6 +100,23 @@ export default async function HomePage() {
         </div>
         <ProductGrid products={featured} />
       </section>
+
+      {/* Video showcase */}
+      {siteConfig.showcase.enabled && siteConfig.showcase.clips.length > 0 && (
+        <section className="border-t bg-gray-50">
+          <div className="container py-12">
+            <div className="mb-6 text-center">
+              <h2 className="text-2xl font-bold text-gray-900">{siteConfig.showcase.heading}</h2>
+              <p className="text-gray-500">{siteConfig.showcase.subheading}</p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {siteConfig.showcase.clips.map((clip) => (
+                <ShowcaseVideo key={clip.title} clip={clip} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Services teaser */}
       <section className="border-t bg-white">

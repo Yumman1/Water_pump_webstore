@@ -75,6 +75,7 @@ npm run dev
 | To change… | Edit… |
 |---|---|
 | Company name, logo, contact info, colors, currency, shipping, hero text | `src/config/site.ts` |
+| Hero background video, homepage video clips, and the on-load deal pop-up | `src/config/site.ts` (`hero.video`, `showcase`, `promoPopup`) |
 | Brand colors (palette) | CSS variables at the top of `src/app/globals.css` |
 | Logo image | replace `public/logo.svg` (or point `siteConfig.logo` at a PNG) |
 | Demo products & categories | `src/data/seed-data.ts`, then `npm run db:seed` |

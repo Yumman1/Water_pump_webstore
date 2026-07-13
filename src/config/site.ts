@@ -61,8 +61,51 @@ export const siteConfig = {
       "From solar-powered irrigation to home pressure boosting — genuine pumps, expert advice, and fast nationwide delivery.",
     ctaLabel: "Shop All Pumps",
     ctaHref: "/shop",
-    // Background image for the hero (replaceable).
+    // Background image for the hero (used as the video poster / fallback).
     image: "https://picsum.photos/seed/pump-hero/1600/900",
+    // OPTIONAL background video (muted, looping). Set to "" to use just the image.
+    // Replace with your own short, compressed clip (MP4, ideally < 5 MB, ~10-20s).
+    video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  },
+
+  // Homepage video showcase — "creative space" for production / deal / install clips.
+  // Replace `src` with your own MP4s and `poster` with a thumbnail image.
+  showcase: {
+    enabled: true,
+    heading: "See Us in Action",
+    subheading: "A look inside our warehouse, installations and the products we love.",
+    clips: [
+      {
+        title: "Inside Our Warehouse",
+        description: "Genuine stock, ready to ship nationwide.",
+        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        poster: "https://picsum.photos/seed/clip-warehouse/800/500",
+      },
+      {
+        title: "Professional Installation",
+        description: "Our team installing a solar submersible pump.",
+        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+        poster: "https://picsum.photos/seed/clip-install/800/500",
+      },
+      {
+        title: "This Week's Deals",
+        description: "Big savings across pumps, motors & accessories.",
+        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+        poster: "https://picsum.photos/seed/clip-deals/800/500",
+      },
+    ],
+  },
+
+  // Deal pop-up shown once per visit when the site loads. Set enabled:false to hide.
+  promoPopup: {
+    enabled: true,
+    badge: "Limited Time Offer",
+    heading: "Get 10% Off Your First Order",
+    message: "Use code WELCOME10 at checkout on orders over Rs 10,000. Genuine pumps, nationwide delivery.",
+    couponCode: "WELCOME10",
+    ctaLabel: "Shop the Deals",
+    ctaHref: "/deals",
+    image: "https://picsum.photos/seed/promo-deal/700/500",
   },
 
   // Trust badges shown across the storefront.
