@@ -71,8 +71,9 @@ export async function ProductListing({
           </aside>
         )}
 
-        {/* Results */}
-        <div>
+        {/* Results (min-w-0 lets the inner horizontal-scroll chips shrink instead
+             of forcing the whole page wide on mobile) */}
+        <div className="min-w-0">
           <div className="mb-4 flex items-center justify-between gap-4">
             <p className="text-sm text-gray-500">
               {total} product{total === 1 ? "" : "s"}
