@@ -17,28 +17,35 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-brand-900 text-white">
-        <HeroMedia />
-        <div className="container relative z-10 flex min-h-[70vh] items-center py-16 md:min-h-[78vh] md:py-24">
-          <div className="animate-fade-up max-w-2xl rounded-2xl bg-slate-900/40 p-6 shadow-2xl ring-1 ring-white/15 backdrop-blur-sm sm:p-8 md:p-10">
+      {/* Hero — split layout: text on a solid panel, video framed beside it */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-800 to-brand-900 text-white">
+        {/* subtle decorative glow */}
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-orange-500/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
+
+        <div className="container relative z-10 grid items-center gap-10 py-14 md:py-20 lg:grid-cols-2">
+          {/* Text */}
+          <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow">
               <Icons.shield className="h-3.5 w-3.5" /> {siteConfig.tagline}
             </span>
-            <h1 className="mt-4 text-3xl font-extrabold leading-tight text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.85)] sm:text-4xl md:text-5xl">
+            <h1 className="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
               {siteConfig.hero.heading}
             </h1>
-            <p className="mt-4 max-w-xl text-lg text-white [text-shadow:0_1px_10px_rgba(0,0,0,0.85)]">
-              {siteConfig.hero.subheading}
-            </p>
+            <p className="mt-4 max-w-xl text-lg text-brand-100">{siteConfig.hero.subheading}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <ButtonLink href={siteConfig.hero.ctaHref} size="lg" variant="accent" className="shadow-lg transition-transform hover:scale-105">
                 {siteConfig.hero.ctaLabel}
               </ButtonLink>
-              <ButtonLink href="/contact" size="lg" variant="outline" className="border-white/50 bg-white/10 text-white shadow-lg backdrop-blur-sm transition-transform hover:scale-105 hover:bg-white/20">
+              <ButtonLink href="/contact" size="lg" variant="outline" className="border-white/50 bg-white/10 text-white shadow-lg transition-transform hover:scale-105 hover:bg-white/20">
                 Get Expert Advice
               </ButtonLink>
             </div>
+          </div>
+
+          {/* Video */}
+          <div className="animate-fade-up delay-200">
+            <HeroMedia />
           </div>
         </div>
       </section>

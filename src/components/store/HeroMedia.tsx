@@ -5,17 +5,17 @@ import Image from "next/image";
 import { siteConfig } from "@/config/site";
 
 /**
- * Hero background media. If a video is configured it plays muted & looping with
- * a slow, continuous "3D" zoom for depth. A near-end seek makes the loop feel
- * seamless (no black-frame flash). Falls back to the image otherwise.
+ * Framed hero media (video if configured, else image), shown in its own column
+ * beside the hero text — so the two never overlap. The video loops muted with a
+ * slow "3D" zoom and a near-end seek to hide the loop seam.
  */
 export function HeroMedia() {
   const { image, video } = siteConfig.hero;
   const ref = useRef<HTMLVideoElement | null>(null);
 
-  if (video) {
-    return (
-      <div className="absolute inset-0 overflow-hidden">
+  return (
+    <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-brand-900 shadow-2xl ring-1 ring-white/10">
+      {video ? (
         <video
           ref={(el) => {
             ref.current = el;
@@ -28,7 +28,6 @@ export function HeroMedia() {
           preload="auto"
           poster={image}
           onTimeUpdate={(e) => {
-            // Restart a hair before the true end to hide the loop seam.
             const v = e.currentTarget;
             if (v.duration && v.currentTime >= v.duration - 0.15) {
               v.currentTime = 0;
@@ -40,19 +39,9 @@ export function HeroMedia() {
         >
           <source src={video} type="video/mp4" />
         </video>
-        {/* Legibility overlays — dark scrim on the left where the text sits.
-            Uses black (opacity modifiers work reliably) rather than the
-            CSS-variable brand color. */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/35 to-black/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      <Image src={image} alt="" fill priority className="hero-zoom object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/25" />
+      ) : (
+        <Image src={image} alt="" fill priority className="hero-zoom object-cover" />
+      )}
     </div>
   );
 }
