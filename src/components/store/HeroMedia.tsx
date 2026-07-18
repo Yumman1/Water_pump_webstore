@@ -40,9 +40,11 @@ export function HeroMedia() {
         >
           <source src={video} type="video/mp4" />
         </video>
-        {/* Legibility overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-900/90 via-brand-900/60 to-brand-900/25" />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-900/80 via-transparent to-brand-900/30" />
+        {/* Legibility overlays — dark scrim on the left where the text sits.
+            Uses black (opacity modifiers work reliably) rather than the
+            CSS-variable brand color. */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
       </div>
     );
   }
@@ -50,7 +52,7 @@ export function HeroMedia() {
   return (
     <div className="absolute inset-0 overflow-hidden">
       <Image src={image} alt="" fill priority className="hero-zoom object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-r from-brand-900/90 via-brand-900/60 to-brand-900/30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/25" />
     </div>
   );
 }

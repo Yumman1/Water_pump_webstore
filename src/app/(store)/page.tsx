@@ -20,18 +20,25 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-brand-900 text-white">
         <HeroMedia />
-        <div className="container relative z-10 grid gap-6 py-16 md:py-24 lg:w-2/3">
-          <h1 className="animate-fade-up text-3xl font-extrabold leading-tight drop-shadow-sm sm:text-4xl md:text-5xl">
-            {siteConfig.hero.heading}
-          </h1>
-          <p className="animate-fade-up delay-100 max-w-xl text-lg text-brand-100">{siteConfig.hero.subheading}</p>
-          <div className="animate-fade-up delay-200 flex flex-wrap gap-3">
-            <ButtonLink href={siteConfig.hero.ctaHref} size="lg" variant="accent" className="transition-transform hover:scale-105">
-              {siteConfig.hero.ctaLabel}
-            </ButtonLink>
-            <ButtonLink href="/contact" size="lg" variant="outline" className="border-white/40 bg-white/10 text-white transition-transform hover:scale-105 hover:bg-white/20">
-              Get Expert Advice
-            </ButtonLink>
+        <div className="container relative z-10 flex min-h-[70vh] items-center py-16 md:min-h-[78vh] md:py-24">
+          <div className="animate-fade-up max-w-2xl rounded-2xl bg-slate-900/75 p-6 shadow-2xl ring-1 ring-white/15 backdrop-blur-md sm:p-8 md:p-10">
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow">
+              <Icons.shield className="h-3.5 w-3.5" /> {siteConfig.tagline}
+            </span>
+            <h1 className="mt-4 text-3xl font-extrabold leading-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.45)] sm:text-4xl md:text-5xl">
+              {siteConfig.hero.heading}
+            </h1>
+            <p className="mt-4 max-w-xl text-lg text-white/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.4)]">
+              {siteConfig.hero.subheading}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <ButtonLink href={siteConfig.hero.ctaHref} size="lg" variant="accent" className="shadow-lg transition-transform hover:scale-105">
+                {siteConfig.hero.ctaLabel}
+              </ButtonLink>
+              <ButtonLink href="/contact" size="lg" variant="outline" className="border-white/50 bg-white/10 text-white shadow-lg backdrop-blur-sm transition-transform hover:scale-105 hover:bg-white/20">
+                Get Expert Advice
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </section>
