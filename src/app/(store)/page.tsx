@@ -21,14 +21,14 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-brand-900 text-white">
         <HeroMedia />
         <div className="container relative z-10 flex min-h-[70vh] items-center py-16 md:min-h-[78vh] md:py-24">
-          <div className="animate-fade-up max-w-2xl rounded-2xl bg-slate-900/75 p-6 shadow-2xl ring-1 ring-white/15 backdrop-blur-md sm:p-8 md:p-10">
+          <div className="animate-fade-up max-w-2xl rounded-2xl bg-slate-900/40 p-6 shadow-2xl ring-1 ring-white/15 backdrop-blur-sm sm:p-8 md:p-10">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow">
               <Icons.shield className="h-3.5 w-3.5" /> {siteConfig.tagline}
             </span>
-            <h1 className="mt-4 text-3xl font-extrabold leading-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.45)] sm:text-4xl md:text-5xl">
+            <h1 className="mt-4 text-3xl font-extrabold leading-tight text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.85)] sm:text-4xl md:text-5xl">
               {siteConfig.hero.heading}
             </h1>
-            <p className="mt-4 max-w-xl text-lg text-white/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.4)]">
+            <p className="mt-4 max-w-xl text-lg text-white [text-shadow:0_1px_10px_rgba(0,0,0,0.85)]">
               {siteConfig.hero.subheading}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
