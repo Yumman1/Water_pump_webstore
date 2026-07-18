@@ -20,7 +20,7 @@ const sizes: Record<Size, string> = {
 };
 
 const baseClass =
-  "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-150 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100";
 
 export function buttonClass(opts: { variant?: Variant; size?: Size; className?: string } = {}) {
   const { variant = "primary", size = "md", className } = opts;

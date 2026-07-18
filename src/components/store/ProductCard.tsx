@@ -13,7 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
   const lowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border bg-white transition-shadow hover:shadow-md">
+    <div className="card-hover group flex flex-col overflow-hidden rounded-xl border bg-white">
       <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-gray-100">
         <Image
           src={product.images[0] ?? "https://picsum.photos/seed/placeholder/800/800"}

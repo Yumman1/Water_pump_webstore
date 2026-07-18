@@ -65,7 +65,7 @@ export const siteConfig = {
     image: "https://picsum.photos/seed/pump-hero/1600/900",
     // OPTIONAL background video (muted, looping). Set to "" to use just the image.
     // Replace with your own short, compressed clip (MP4, ideally < 5 MB, ~10-20s).
-    video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    video: "/hero.mp4",
   },
 
   // Homepage video showcase — "creative space" for production / deal / install clips.

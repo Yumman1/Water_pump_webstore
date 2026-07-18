@@ -55,3 +55,123 @@ input[type="number"] {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+/* Slow, continuous "3D" zoom/pan for the hero video/image */
+@keyframes heroZoom {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate3d(-1.5%, -1.5%, 0);
+  }
+}
+.hero-zoom {
+  animation: heroZoom 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Entrance animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+
+/* Scroll-reveal (paired with the Reveal component) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gentle float (e.g. floating action button, badges) */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Animated shine sweep for the "Special Offers" promo pill */
+@keyframes shine {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+@keyframes softPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 122, 26, 0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 122, 26, 0); }
+}
+.special-pill {
+  position: relative;
+  background-image: linear-gradient(110deg, var(--accent) 0%, #ff9d4d 45%, var(--accent) 55%, var(--accent) 100%);
+  background-size: 200% auto;
+  animation: shine 3.5s linear infinite, softPulse 2.4s ease-in-out infinite;
+  color: #fff;
+}
+
+/* Reusable hover lift for cards */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px -8px rgba(11, 74, 113, 0.25);
+}
+
+/* Underline grow for nav links */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.25rem;
+  height: 2px;
+  background: var(--brand-600);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-zoom,
+  .animate-float,
+  .special-pill,
+  .animate-fade-up {
+    animation: none !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}

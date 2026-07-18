@@ -183,13 +183,18 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
       {/* Desktop nav */}
       <nav className="hidden border-t bg-white lg:block">
         <div className="container flex items-center gap-1 py-1.5">
-          <Link href="/" className={linkClass}>Home</Link>
+          <Link href="/" className={cn(linkClass, "nav-underline")}>Home</Link>
           {ShopMega}
-          <Link href="/deals" className={cn(linkClass, "text-accent hover:text-accent")}>Special Offers</Link>
+          <Link
+            href="/deals"
+            className="special-pill mx-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-bold shadow-sm"
+          >
+            <Icons.tag className="h-4 w-4" /> Special Offers
+          </Link>
           {UsedDrop}
           {ServicesDrop}
-          <Link href="/about" className={linkClass}>About Us</Link>
-          <Link href="/contact" className={linkClass}>Contact Us</Link>
+          <Link href="/about" className={cn(linkClass, "nav-underline")}>About Us</Link>
+          <Link href="/contact" className={cn(linkClass, "nav-underline")}>Contact Us</Link>
         </div>
       </nav>
 
@@ -210,7 +215,9 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
             </form>
             <Link href="/" onClick={() => setMobileOpen(false)} className="block border-b px-3 py-2.5 font-medium text-gray-800">Home</Link>
             <MobileSection id="shop" label="Shop" href="/shop" items={mobileShopItems} />
-            <Link href="/deals" onClick={() => setMobileOpen(false)} className="block border-b px-3 py-2.5 font-medium text-accent">Special Offers &amp; Deals</Link>
+            <Link href="/deals" onClick={() => setMobileOpen(false)} className="my-2 flex items-center justify-center gap-1.5 rounded-lg special-pill px-3 py-2.5 font-bold shadow-sm">
+              <Icons.tag className="h-4 w-4" /> Special Offers &amp; Deals
+            </Link>
             <MobileSection id="used" label="Used Pumps" href="/used-pumps" items={usedItems} />
             <MobileSection id="services" label="Services" href="/services" items={mobileServiceItems} />
             <Link href="/about" onClick={() => setMobileOpen(false)} className="block border-b px-3 py-2.5 font-medium text-gray-800">About Us</Link>

@@ -8,6 +8,7 @@ import { Icons, type IconName } from "@/components/ui/icons";
 import { services } from "@/data/services";
 import { HeroMedia } from "@/components/store/HeroMedia";
 import { ShowcaseVideo } from "@/components/store/ShowcaseVideo";
+import { Reveal } from "@/components/store/Reveal";
 
 export const revalidate = 60;
 
@@ -19,16 +20,16 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-brand-900 text-white">
         <HeroMedia />
-        <div className="container relative grid gap-6 py-16 md:py-24 lg:w-2/3">
-          <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
+        <div className="container relative z-10 grid gap-6 py-16 md:py-24 lg:w-2/3">
+          <h1 className="animate-fade-up text-3xl font-extrabold leading-tight drop-shadow-sm sm:text-4xl md:text-5xl">
             {siteConfig.hero.heading}
           </h1>
-          <p className="max-w-xl text-lg text-brand-100">{siteConfig.hero.subheading}</p>
-          <div className="flex flex-wrap gap-3">
-            <ButtonLink href={siteConfig.hero.ctaHref} size="lg" variant="accent">
+          <p className="animate-fade-up delay-100 max-w-xl text-lg text-brand-100">{siteConfig.hero.subheading}</p>
+          <div className="animate-fade-up delay-200 flex flex-wrap gap-3">
+            <ButtonLink href={siteConfig.hero.ctaHref} size="lg" variant="accent" className="transition-transform hover:scale-105">
               {siteConfig.hero.ctaLabel}
             </ButtonLink>
-            <ButtonLink href="/contact" size="lg" variant="outline" className="border-white/40 bg-white/10 text-white hover:bg-white/20">
+            <ButtonLink href="/contact" size="lg" variant="outline" className="border-white/40 bg-white/10 text-white transition-transform hover:scale-105 hover:bg-white/20">
               Get Expert Advice
             </ButtonLink>
           </div>
@@ -67,11 +68,11 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {categories.slice(0, 12).map((c) => (
+          {categories.slice(0, 12).map((c, i) => (
+            <Reveal key={c.id} delay={(i % 6) * 60}>
             <Link
-              key={c.id}
               href={`/category/${c.slug}`}
-              className="group flex flex-col items-center gap-3 rounded-xl border bg-white p-4 text-center transition-shadow hover:shadow-md"
+              className="card-hover group flex h-full flex-col items-center gap-3 rounded-xl border bg-white p-4 text-center"
             >
               <div className="relative h-20 w-20 overflow-hidden rounded-full bg-gray-100">
                 {c.image && (
@@ -83,6 +84,7 @@ export default async function HomePage() {
                 <p className="text-xs text-gray-400">{c.productCount ?? 0} products</p>
               </div>
             </Link>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -98,7 +100,9 @@ export default async function HomePage() {
             View all →
           </Link>
         </div>
-        <ProductGrid products={featured} />
+        <Reveal>
+          <ProductGrid products={featured} />
+        </Reveal>
       </section>
 
       {/* Video showcase */}
@@ -110,8 +114,10 @@ export default async function HomePage() {
               <p className="text-gray-500">{siteConfig.showcase.subheading}</p>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
-              {siteConfig.showcase.clips.map((clip) => (
-                <ShowcaseVideo key={clip.title} clip={clip} />
+              {siteConfig.showcase.clips.map((clip, i) => (
+                <Reveal key={clip.title} delay={i * 90}>
+                  <ShowcaseVideo clip={clip} />
+                </Reveal>
               ))}
             </div>
           </div>
@@ -133,7 +139,7 @@ export default async function HomePage() {
               <Link
                 key={s.slug}
                 href={`/services/${s.slug}`}
-                className="group flex flex-col overflow-hidden rounded-xl border bg-white transition-shadow hover:shadow-md"
+                className="card-hover group flex flex-col overflow-hidden rounded-xl border bg-white"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                   <Image src={s.image} alt={s.title} fill sizes="(max-width:640px) 50vw, 20vw" className="object-cover transition-transform duration-300 group-hover:scale-105" />

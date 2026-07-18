@@ -44,7 +44,7 @@ export default async function UsedPumpsPage() {
             <Link
               key={c.slug}
               href={`/used-pumps/${c.slug}`}
-              className="group flex items-center gap-4 rounded-xl border bg-white p-5 transition-shadow hover:shadow-md"
+              className="card-hover group flex items-center gap-4 rounded-xl border bg-white p-5"
             >
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
                 <Icons.box className="h-7 w-7" />

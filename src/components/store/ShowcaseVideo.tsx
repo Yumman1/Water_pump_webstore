@@ -10,7 +10,7 @@ export function ShowcaseVideo({ clip }: { clip: Clip }) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <div className="group overflow-hidden rounded-xl border bg-white">
+    <div className="card-hover group overflow-hidden rounded-xl border bg-white">
       <div className="relative aspect-video bg-gray-900">
         {playing ? (
           <video
