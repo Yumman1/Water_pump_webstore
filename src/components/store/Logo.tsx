@@ -2,7 +2,15 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-export function Logo({ className, textClassName }: { className?: string; textClassName?: string }) {
+export function Logo({
+  className,
+  textClassName,
+  light,
+}: {
+  className?: string;
+  textClassName?: string;
+  light?: boolean;
+}) {
   return (
     <Link href="/" className={cn("flex items-center gap-2", className)}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -14,7 +22,7 @@ export function Logo({ className, textClassName }: { className?: string; textCla
           (e.currentTarget as HTMLImageElement).style.display = "none";
         }}
       />
-      <span className={cn("text-lg font-bold tracking-tight text-brand-700", textClassName)}>
+      <span className={cn("text-lg font-bold tracking-tight", light ? "text-white" : "text-brand-700", textClassName)}>
         {siteConfig.name}
       </span>
     </Link>

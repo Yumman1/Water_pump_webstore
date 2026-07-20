@@ -3,13 +3,17 @@
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { Icons } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
-export function CartIcon() {
+export function CartIcon({ light }: { light?: boolean }) {
   const { count } = useCart();
   return (
     <Link
       href="/cart"
-      className="relative flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100"
+      className={cn(
+        "relative flex h-10 w-10 items-center justify-center rounded-lg",
+        light ? "text-white hover:bg-white/10" : "text-gray-700 hover:bg-gray-100"
+      )}
       aria-label="Cart"
     >
       <Icons.cart />

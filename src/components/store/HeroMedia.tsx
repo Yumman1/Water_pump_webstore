@@ -5,16 +5,17 @@ import Image from "next/image";
 import { siteConfig } from "@/config/site";
 
 /**
- * Framed hero media (video if configured, else image), shown in its own column
- * beside the hero text — so the two never overlap. The video loops muted with a
- * slow "3D" zoom and a near-end seek to hide the loop seam.
+ * Full-bleed hero background media (video if configured, else image). Fills the
+ * hero section behind the header and text; the parent applies the dark tint.
+ * The video loops muted with a slow "3D" zoom and a near-end seek to hide the
+ * loop seam.
  */
 export function HeroMedia() {
   const { image, video } = siteConfig.hero;
   const ref = useRef<HTMLVideoElement | null>(null);
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-brand-900 shadow-2xl ring-1 ring-white/10">
+    <div className="absolute inset-0 overflow-hidden">
       {video ? (
         <video
           ref={(el) => {
