@@ -1,0 +1,15 @@
+---
+description: Always commit and push completed work to main without asking
+alwaysApply: true
+---
+
+# Auto-push to main
+
+For this project, after finishing code changes:
+
+1. Commit the relevant changes with a clear message (do not ask first).
+2. Push directly to `main` (create `main` on the remote if it does not exist yet).
+3. Do not ask for confirmation before committing or pushing to `main`.
+4. Prefer updating `main` over leaving work only on a feature branch.
+5. Still never force-push to `main` unless the user explicitly requests a force push.
+6. Never commit secrets (`.env`, credentials, API keys).
