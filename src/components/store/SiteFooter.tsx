@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCategories } from "@/lib/data";
 import { siteConfig } from "@/config/site";
 import { Icons } from "@/components/ui/icons";
+import { Logo } from "./Logo";
 
 export async function SiteFooter() {
   const categories = await getCategories();
@@ -11,7 +12,7 @@ export async function SiteFooter() {
     <footer className="mt-16 border-t bg-gray-900 text-gray-300">
       <div className="container grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <h3 className="text-lg font-bold text-white">{siteConfig.name}</h3>
+          <Logo className="[&_img]:h-10 [&_img]:max-w-[180px] sm:[&_img]:h-11 sm:[&_img]:max-w-[220px]" />
           <p className="mt-3 text-sm leading-relaxed text-gray-400">{siteConfig.description}</p>
           <div className="mt-4 flex gap-3">
             <a href={siteConfig.social.facebook} className="text-gray-400 hover:text-white" aria-label="Facebook" target="_blank" rel="noreferrer">Facebook</a>
