@@ -30,7 +30,6 @@ export async function SiteFooter() {
               </li>
             ))}
             <li><Link href="/deals" className="text-gray-400 hover:text-white">Special Offers</Link></li>
-            <li><Link href="/used-pumps" className="text-gray-400 hover:text-white">Used Pumps</Link></li>
           </ul>
         </div>
 

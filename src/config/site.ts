@@ -8,11 +8,11 @@
  */
 
 export const siteConfig = {
-  name: "AquaFlow Pumps",
-  legalName: "AquaFlow Pumps (Pvt) Ltd.",
-  tagline: "Pakistan's Trusted Water Pump Store",
+  name: "Jawed",
+  legalName: "Jawed Pumps & Motors",
+  tagline: "Copper Motors, Bearing Pumps & Complete Sets",
   description:
-    "Buy water pumps online — solar pumps, submersible pumps, pressure booster pumps, centrifugal pumps and motors. Genuine products, nationwide delivery, expert support.",
+    "Jawed copper motors, monoblock pressure pumps, bearing pumps and complete motor+pump sets. Genuine products, nationwide delivery, expert support.",
 
   // Logo: put an image at /public/logo.png (or .svg) to use it automatically.
   // If the file is missing, the name is shown as a styled text logo.
@@ -56,10 +56,10 @@ export const siteConfig = {
 
   // Homepage hero.
   hero: {
-    heading: "Powerful Pumps for Every Need",
+    heading: "Copper Motors & Bearing Pumps",
     subheading:
-      "From solar-powered irrigation to home pressure boosting — genuine pumps, expert advice, and fast nationwide delivery.",
-    ctaLabel: "Shop All Pumps",
+      "Jawed and Premium copper motors, monoblock pressure pumps, bearing pumps and complete sets — genuine stock with nationwide delivery.",
+    ctaLabel: "Shop All Products",
     ctaHref: "/shop",
     // Background image for the hero (used as the video poster / fallback).
     image: "https://picsum.photos/seed/pump-hero/1600/900",

@@ -14,19 +14,9 @@ export type MenuGroup = { title: string; items: MenuItem[] };
 
 // Brands (used both in the mega-menu and for /brand/[slug] pages).
 export const brands: { label: string; slug: string }[] = [
-  { label: "Hyundai", slug: "hyundai" },
-  { label: "Taifu", slug: "taifu" },
-  { label: "Happy", slug: "happy" },
-  { label: "Espa", slug: "espa" },
-  { label: "LEO", slug: "leo" },
-  { label: "ASTRO", slug: "astro" },
-  { label: "PUMPCO", slug: "pumpco" },
-  { label: "Ingco", slug: "ingco" },
-  { label: "Pedrollo", slug: "pedrollo" },
-  { label: "Leverage", slug: "leverage" },
-  { label: "K.E Pioneer", slug: "ke-pioneer" },
-  { label: "Ocean Pumps", slug: "ocean-pumps" },
-  { label: "Shahzad Pumps", slug: "shahzad-pumps" },
+  { label: "Jawed", slug: "jawed" },
+  { label: "Premium", slug: "premium" },
+  { label: "Imported", slug: "imported" },
 ];
 
 export function getBrandBySlug(slug: string) {
@@ -38,46 +28,13 @@ const cat = (label: string, slug: string): MenuItem => ({ label, href: `/categor
 // Category groups (also used to build the Shop page sidebar).
 export const categoryGroups: MenuGroup[] = [
   {
-    title: "Water Pumps",
+    title: "Products",
     items: [
-      cat("Centrifugal Pumps", "centrifugal-pumps"),
-      cat("Circulating Pumps", "circulating-pumps"),
-      cat("Solar Pumps", "solar-pumps"),
-      cat("Pressure Pumps", "pressure-pumps"),
-      cat("Self-Priming Pumps", "self-priming-pumps"),
-      cat("Submersible Pumps and Motors", "submersible-pumps"),
-      cat("Submersible Sewage Pumps", "submersible-sewage-pumps"),
-      cat("High Pressure Washers", "high-pressure-washers"),
-      cat("Swimming Pool Pumps", "swimming-pool-pumps"),
-      cat("Chemical Dosing Pumps", "chemical-dosing-pumps"),
-      cat("Fountain Pumps", "fountain-pumps"),
-      cat("Gear Pumps", "gear-pumps"),
+      cat("Copper Motors", "copper-motors"),
+      cat("Monoblock Pressure Pumps", "monoblock-pressure-pumps"),
+      cat("Bearing Pumps", "bearing-pumps"),
+      cat("Complete Sets", "complete-sets"),
     ],
-  },
-  {
-    title: "Pressure & Expansion Tanks",
-    items: [cat("Pressure Tanks", "pressure-tanks")],
-  },
-  {
-    title: "Seals",
-    items: [cat("Pump Seals", "pump-seals"), cat("Mechanical Seals", "mechanical-seals")],
-  },
-  {
-    title: "Pump Control Switches",
-    items: [
-      cat("Pressure Switches", "pressure-switches"),
-      cat("Float Switches", "float-switches"),
-      cat("Automatic Pump Control Switch", "automatic-pump-control-switch"),
-      cat("Pressure Drives", "pressure-drives"),
-    ],
-  },
-  {
-    title: "Motors",
-    items: [cat("Induction Motors", "induction-motors"), cat("Submersible Motors", "submersible-motors")],
-  },
-  {
-    title: "Accessories",
-    items: [cat("Pump Accessories", "pump-accessories")],
   },
 ];
 

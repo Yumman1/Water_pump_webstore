@@ -10,7 +10,6 @@ import { Icons } from "@/components/ui/icons";
 import type { Category } from "@/lib/types";
 import { siteConfig } from "@/config/site";
 import { services } from "@/data/services";
-import { usedCategories } from "@/data/used-pumps";
 import { categoryGroups, brandGroup } from "@/config/menu";
 import { cn } from "@/lib/utils";
 
@@ -38,11 +37,6 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
 
   const overlay = isHome; // uses fixed overlay layout
   const light = isHome && !mobileOpen; // white text over the video / dark header
-
-  const usedItems: DropItem[] = [
-    { label: "All Used Pumps", href: "/used-pumps" },
-    ...usedCategories.map((c) => ({ label: c.label, href: `/used-pumps/${c.slug}` })),
-  ];
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -103,23 +97,6 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const UsedDrop = (
-    <div className="group relative">
-      <Link href="/used-pumps" className={cn(linkClass, "inline-flex items-center gap-1")}>
-        Used Pumps {caret}
-      </Link>
-      <div className="invisible absolute left-0 top-full z-50 min-w-[220px] pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-        <div className="overflow-hidden rounded-lg border bg-white py-1 shadow-lg">
-          {usedItems.map((it) => (
-            <Link key={it.href} href={it.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700">
-              {it.label}
-            </Link>
-          ))}
         </div>
       </div>
     </div>
@@ -227,7 +204,6 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
           <Link href="/deals" className="special-pill mx-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-bold shadow-sm">
             <Icons.tag className="h-4 w-4" /> Special Offers
           </Link>
-          {UsedDrop}
           {ServicesDrop}
           <Link href="/about" className={cn(linkClass, "nav-underline")}>About Us</Link>
           <Link href="/contact" className={cn(linkClass, "nav-underline")}>Contact Us</Link>
@@ -254,7 +230,6 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
             <Link href="/deals" onClick={() => setMobileOpen(false)} className="my-2 flex items-center justify-center gap-1.5 rounded-lg special-pill px-3 py-2.5 font-bold shadow-sm">
               <Icons.tag className="h-4 w-4" /> Special Offers &amp; Deals
             </Link>
-            <MobileSection id="used" label="Used Pumps" href="/used-pumps" items={usedItems} />
             <MobileSection id="services" label="Services" href="/services" items={mobileServiceItems} />
             <Link href="/about" onClick={() => setMobileOpen(false)} className="block border-b px-3 py-2.5 font-medium text-gray-800">About Us</Link>
             <Link href="/contact" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 font-medium text-gray-800">Contact Us</Link>
