@@ -14,9 +14,9 @@ export const siteConfig = {
   description:
     "Buy water pumps online — solar pumps, submersible pumps, pressure booster pumps, centrifugal pumps and motors. Genuine products, nationwide delivery, expert support.",
 
-  // Logo: put an image at /public/logo.svg (or .png) to use it automatically.
+  // Logo: put an image at /public/logo.png (or .svg) to use it automatically.
   // If the file is missing, the name is shown as a styled text logo.
-  logo: "/logo.svg",
+  logo: "/logo.png",
 
   currency: {
     code: "PKR",
