@@ -39,6 +39,8 @@ export type SeedProduct = {
   images: string[];
   tags: string[];
   specs: Record<string, string>;
+  /** Optional looping product video (card cover + detail gallery). */
+  video?: string;
 };
 
 const img = (seed: string) => `https://picsum.photos/seed/${seed}/800/800`;
@@ -90,9 +92,11 @@ type ProductInput = {
   specs: Record<string, string>;
   imageSeed: string;
   stock?: number;
+  video?: string;
 };
 
 function product(p: ProductInput): SeedProduct {
+  const specs = p.video ? { ...p.specs, Video: p.video } : p.specs;
   return {
     name: p.name,
     slug: p.slug,
@@ -108,7 +112,8 @@ function product(p: ProductInput): SeedProduct {
     active: true,
     images: [img(p.imageSeed), img(`${p.imageSeed}-b`)],
     tags: p.tags,
-    specs: p.specs,
+    specs,
+    video: p.video,
   };
 }
 
@@ -127,6 +132,7 @@ export const products: SeedProduct[] = [
     tags: ["copper", "motor", "0.5hp"],
     specs: { Power: "0.5 HP", Winding: "100% Copper", Brand: "Jawed", Warranty: "As per dealer policy" },
     imageSeed: "cm-05",
+    video: "/videos/copper-motors/0-5hp-copper-motor.mp4",
   }),
   product({
     name: "1HP J Copper Motor",
@@ -141,6 +147,7 @@ export const products: SeedProduct[] = [
     tags: ["copper", "motor", "1hp", "j-series"],
     specs: { Power: "1 HP", Series: "J", Winding: "100% Copper", Brand: "Jawed", Warranty: "As per dealer policy" },
     imageSeed: "cm-1j",
+    video: "/videos/copper-motors/1hp-j-copper-motor.mp4",
   }),
   product({
     name: "1HP S Copper Motor Heavy Duty",
@@ -161,6 +168,7 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "cm-1s",
+    video: "/videos/copper-motors/1hp-s-copper-motor.mp4",
   }),
   product({
     name: "1HP Full Load Heavy Duty Copper Motor",
@@ -181,6 +189,7 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "cm-1fl",
+    video: "/videos/copper-motors/1hp-full-load-copper-motor.mp4",
   }),
 
   // --- Monoblock Pressure Pumps ---

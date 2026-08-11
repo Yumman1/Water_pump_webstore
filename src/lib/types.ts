@@ -30,6 +30,8 @@ export type Product = {
   images: string[];
   tags: string[];
   specs: Record<string, string>;
+  /** Looping product video shown on cards and the product page when set. */
+  video: string | null;
   categoryId: string;
   category?: { id: string; name: string; slug: string } | null;
 };

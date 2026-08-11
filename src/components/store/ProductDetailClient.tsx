@@ -9,9 +9,15 @@ import { Icons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
 export function ProductDetailClient({ product }: { product: Product }) {
+  const images = product.images.length ? product.images : ["https://picsum.photos/seed/placeholder/800/800"];
+  // Gallery items: video first when present, then still images.
+  const media: { type: "video" | "image"; src: string }[] = [
+    ...(product.video ? [{ type: "video" as const, src: product.video }] : []),
+    ...images.map((src) => ({ type: "image" as const, src })),
+  ];
   const [active, setActive] = useState(0);
   const [qty, setQty] = useState(1);
-  const images = product.images.length ? product.images : ["https://picsum.photos/seed/placeholder/800/800"];
+  const current = media[active] ?? media[0];
   const discount =
     product.compareAtPrice && product.compareAtPrice > product.price
       ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
@@ -23,23 +29,49 @@ export function ProductDetailClient({ product }: { product: Product }) {
       {/* Gallery */}
       <div>
         <div className="relative aspect-square overflow-hidden rounded-xl border bg-gray-100">
-          <Image src={images[active]} alt={product.name} fill priority sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+          {current?.type === "video" ? (
+            <video
+              key={current.src}
+              src={current.src}
+              className="h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              preload="metadata"
+              aria-label={product.name}
+            />
+          ) : (
+            <Image
+              src={current?.src ?? images[0]}
+              alt={product.name}
+              fill
+              priority
+              sizes="(max-width:1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+          )}
           {discount > 0 && (
             <span className="absolute left-3 top-3 rounded-md bg-accent px-2 py-1 text-sm font-bold text-white">-{discount}%</span>
           )}
         </div>
-        {images.length > 1 && (
+        {media.length > 1 && (
           <div className="mt-3 flex gap-2">
-            {images.map((src, i) => (
+            {media.map((item, i) => (
               <button
-                key={i}
+                key={`${item.type}-${item.src}-${i}`}
                 onClick={() => setActive(i)}
                 className={cn(
                   "relative h-20 w-20 overflow-hidden rounded-lg border-2",
                   i === active ? "border-brand-600" : "border-transparent"
                 )}
               >
-                <Image src={src} alt="" fill sizes="80px" className="object-cover" />
+                {item.type === "video" ? (
+                  <video src={item.src} className="h-full w-full object-cover" muted playsInline preload="metadata" />
+                ) : (
+                  <Image src={item.src} alt="" fill sizes="80px" className="object-cover" />
+                )}
               </button>
             ))}
           </div>

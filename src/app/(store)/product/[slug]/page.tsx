@@ -25,7 +25,9 @@ export default async function ProductPage({ params }: { params: { slug: string }
   if (!product || !product.active) notFound();
 
   const related = await getRelatedProducts(product, 4);
-  const specs = Object.entries(product.specs ?? {});
+  const specs = Object.entries(product.specs ?? {}).filter(
+    ([k]) => k.toLowerCase() !== "video"
+  );
 
   return (
     <div className="container py-8">

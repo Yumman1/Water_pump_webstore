@@ -26,6 +26,7 @@ function seedProductsAsProducts(): Product[] {
       images: p.images,
       tags: p.tags,
       specs: p.specs,
+      video: p.video ?? p.specs.Video ?? p.specs.video ?? null,
       categoryId: `cat-${p.categorySlug}`,
       category: cat ? { id: `cat-${cat.slug}`, name: cat.name, slug: cat.slug } : null,
     };
@@ -34,6 +35,7 @@ function seedProductsAsProducts(): Product[] {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapProduct(p: any): Product {
+  const specs = (p.specs as Record<string, string>) ?? {};
   return {
     id: p.id,
     name: p.name,
@@ -53,7 +55,8 @@ function mapProduct(p: any): Product {
     active: p.active,
     images: p.images ?? [],
     tags: p.tags ?? [],
-    specs: (p.specs as Record<string, string>) ?? {},
+    specs,
+    video: p.video ?? specs.Video ?? specs.video ?? null,
     categoryId: p.categoryId,
     category: p.category ? { id: p.category.id, name: p.category.name, slug: p.category.slug } : null,
   };
