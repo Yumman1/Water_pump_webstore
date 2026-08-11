@@ -2,7 +2,8 @@ import { siteConfig } from "@/config/site";
 import { Icons } from "@/components/ui/icons";
 
 export function WhatsAppFab() {
-  const number = siteConfig.contact.whatsapp.replace(/[^0-9]/g, "");
+  let number = siteConfig.contact.whatsapp.replace(/[^0-9]/g, "");
+  if (number.startsWith("0")) number = "92" + number.slice(1);
   if (!number) return null;
   return (
     <a

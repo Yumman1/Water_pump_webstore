@@ -30,7 +30,7 @@ export default function ContactPage() {
               <Icons.whatsapp className="mt-0.5 h-5 w-5 text-green-500" />
               <div>
                 <p className="font-semibold text-gray-900">WhatsApp</p>
-                <a href={`https://wa.me/${siteConfig.contact.whatsapp.replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer" className="text-gray-600 hover:text-brand-600">{siteConfig.contact.whatsapp}</a>
+                <a href={`https://wa.me/${siteConfig.contact.whatsapp.replace(/[^0-9]/g, "").replace(/^0/, "92")}`} target="_blank" rel="noreferrer" className="text-gray-600 hover:text-brand-600">{siteConfig.contact.whatsapp}</a>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-xl border bg-white p-5">
@@ -41,9 +41,19 @@ export default function ContactPage() {
               </div>
             </div>
             <div className="rounded-xl border bg-white p-5">
-              <p className="font-semibold text-gray-900">Address</p>
+              <p className="font-semibold text-gray-900">Head Office</p>
               <p className="mt-1 text-gray-600">{siteConfig.contact.address}</p>
+              <p className="mt-3 font-semibold text-gray-900">Manufacturing</p>
+              <p className="mt-1 text-gray-600">{siteConfig.contact.manufacturing}</p>
               <p className="mt-2 text-sm text-gray-500">{siteConfig.contact.hours}</p>
+              <a
+                href={siteConfig.contact.mapUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block text-sm font-medium text-brand-600 hover:text-brand-700"
+              >
+                View on map →
+              </a>
             </div>
           </div>
 

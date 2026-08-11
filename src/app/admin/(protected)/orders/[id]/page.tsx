@@ -4,6 +4,7 @@ import { getAdminOrder } from "@/lib/admin-data";
 import { isDbConfigured } from "@/lib/prisma";
 import { updateOrder, dispatchOrder } from "@/app/admin/actions";
 import { formatCurrency, formatDateTime } from "@/lib/format";
+import { siteConfig } from "@/config/site";
 import { PageHeader, StatusBadge } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
@@ -37,18 +38,65 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           <div className="rounded-xl border bg-white">
             <div className="border-b p-4"><h2 className="font-semibold text-gray-900">Items</h2></div>
             <div className="divide-y">
-              {order.items?.map((it: { id: string; name: string; sku: string; price: number; quantity: number }) => (
+              {order.items?.map((it: {
+                id: string;
+                name: string;
+                sku: string;
+                price: number;
+                quantity: number;
+                underWarranty?: boolean;
+                listPrice?: number | null;
+              }) => (
                 <div key={it.id} className="flex items-center justify-between p-4 text-sm">
                   <div>
-                    <p className="font-medium text-gray-900">{it.name}</p>
+                    <p className="font-medium text-gray-900">
+                      {it.name}
+                      {it.underWarranty ? (
+                        <span className="ml-2 rounded bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700">
+                          Warranty
+                        </span>
+                      ) : null}
+                    </p>
                     <p className="text-xs text-gray-400">SKU: {it.sku} · Qty: {it.quantity}</p>
                   </div>
-                  <p className="font-medium">{formatCurrency(it.price * it.quantity)}</p>
+                  <p className="text-right font-medium">
+                    {it.underWarranty && it.listPrice != null ? (
+                      <>
+                        <span className="mr-1 text-gray-400 line-through">{formatCurrency(it.listPrice * it.quantity)}</span>
+                        {formatCurrency(0)}
+                      </>
+                    ) : (
+                      formatCurrency(it.price * it.quantity)
+                    )}
+                  </p>
                 </div>
               ))}
             </div>
             <div className="space-y-2 border-t p-4 text-sm">
               <div className="flex justify-between"><span className="text-gray-500">Subtotal</span><span>{formatCurrency(order.subtotal)}</span></div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Installation & removal</span>
+                <span>
+                  {order.installationType === "WARRANTY" ? (
+                    <>
+                      <span className="mr-1 text-gray-400 line-through">{formatCurrency(siteConfig.installation.fee)}</span>
+                      {formatCurrency(0)}
+                    </>
+                  ) : (
+                    formatCurrency(order.installationFee ?? 0)
+                  )}
+                </span>
+              </div>
+              {order.installationType && (
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>
+                    {order.installationType === "NONE" && "No installation"}
+                    {order.installationType === "WARRANTY" && "Under warranty"}
+                    {order.installationType === "PAID" && "Without warranty"}
+                  </span>
+                  {order.replacementSerial && <span>Serial: {order.replacementSerial}</span>}
+                </div>
+              )}
               <div className="flex justify-between"><span className="text-gray-500">Shipping</span><span>{order.shipping === 0 ? "Free" : formatCurrency(order.shipping)}</span></div>
               {order.discount > 0 && <div className="flex justify-between text-green-600"><span>Discount{order.couponCode ? ` (${order.couponCode})` : ""}</span><span>-{formatCurrency(order.discount)}</span></div>}
               {order.tax > 0 && <div className="flex justify-between"><span className="text-gray-500">Tax</span><span>{formatCurrency(order.tax)}</span></div>}
@@ -71,6 +119,21 @@ export default async function OrderDetailPage({ params }: { params: { id: string
             {order.notes && (
               <div className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-600">
                 <span className="font-medium text-gray-700">Notes: </span>{order.notes}
+              </div>
+            )}
+            {(order.installationType || order.replacementSerial) && (
+              <div className="mt-3 rounded-lg bg-brand-50 p-3 text-sm text-gray-700">
+                <p className="font-medium text-gray-900">Installation</p>
+                <p className="mt-1">
+                  {order.installationType === "NONE" && "No installation & removal"}
+                  {order.installationType === "WARRANTY" && "Under warranty (fee waived)"}
+                  {order.installationType === "PAID" && "Without warranty"}
+                  {" — "}
+                  {formatCurrency(order.installationFee ?? 0)}
+                </p>
+                {order.replacementSerial && (
+                  <p className="mt-1">Replacement serial: <span className="font-semibold">{order.replacementSerial}</span></p>
+                )}
               </div>
             )}
           </div>

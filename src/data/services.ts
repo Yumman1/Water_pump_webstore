@@ -2,6 +2,8 @@
  * SERVICES  —  edit to match the services your business offers.
  * Replace the `image` URLs with real photos of your work.
  * Each service gets its own page at /services/[slug] with a request form.
+ *
+ * Installation & removal is offered at checkout (not as a standalone service page).
  */
 export type Service = {
   slug: string;
@@ -16,38 +18,6 @@ export type Service = {
 const img = (seed: string) => `https://picsum.photos/seed/${seed}/800/600`;
 
 export const services: Service[] = [
-  {
-    slug: "plumbing-service",
-    title: "Plumbing Service",
-    image: img("svc-plumbing"),
-    short: "Professional plumbing for homes, offices and commercial spaces.",
-    description:
-      "Our experienced plumbers handle everything from leak repairs and pipe fittings to complete water-supply installations. Fast, clean and reliable work with genuine parts.",
-    features: [
-      "Leak detection & repair",
-      "Pipe fitting & replacement",
-      "Water tank & supply line installation",
-      "Tap, valve & fixture fitting",
-      "Emergency call-outs",
-    ],
-    priceFrom: "Rs 1,500",
-  },
-  {
-    slug: "pump-installation-removal",
-    title: "Pump Installation & Removal",
-    image: img("svc-installation"),
-    short: "Expert installation, replacement and removal of all pump types.",
-    description:
-      "We install, replace and remove submersible, centrifugal, solar and pressure pumps safely and correctly. Includes wiring, pipe connections, testing and commissioning.",
-    features: [
-      "Submersible & borewell pump installation",
-      "Surface & monoblock pump setup",
-      "Solar pump installation & panel wiring",
-      "Old pump removal & disposal",
-      "On-site testing & commissioning",
-    ],
-    priceFrom: "Rs 3,000",
-  },
   {
     slug: "fountain-setup",
     title: "Fountain Setup",

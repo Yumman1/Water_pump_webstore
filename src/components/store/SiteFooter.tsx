@@ -57,6 +57,7 @@ export async function SiteFooter() {
             </li>
             <li>{siteConfig.contact.email}</li>
             <li>{siteConfig.contact.address}</li>
+            <li>{siteConfig.contact.manufacturing}</li>
             <li>{siteConfig.contact.hours}</li>
           </ul>
         </div>

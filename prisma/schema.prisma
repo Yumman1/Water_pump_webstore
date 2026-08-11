@@ -45,6 +45,12 @@ enum ProductCondition {
   USED
 }
 
+enum InstallationType {
+  NONE
+  WARRANTY
+  PAID
+}
+
 // Staff / admin accounts for the dashboard.
 model User {
   id           String   @id @default(cuid())
@@ -157,6 +163,10 @@ model Order {
 
   couponCode String?
 
+  installationType  InstallationType @default(NONE)
+  installationFee   Float            @default(0)
+  replacementSerial String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -165,15 +175,17 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String?
-  product   Product? @relation(fields: [productId], references: [id])
-  name      String
-  sku       String
-  price     Float
-  quantity  Int
+  id            String  @id @default(cuid())
+  orderId       String
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String?
+  product       Product? @relation(fields: [productId], references: [id])
+  name          String
+  sku           String
+  price         Float
+  listPrice     Float?
+  quantity      Int
+  underWarranty Boolean @default(false)
 
   @@index([orderId])
 }

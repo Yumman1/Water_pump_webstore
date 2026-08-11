@@ -145,19 +145,58 @@ type OrderLike = {
   city: string;
   total: number;
   paymentMethod: string;
-  items: { name: string; quantity: number; price: number }[];
+  installationType?: "NONE" | "WARRANTY" | "PAID" | string | null;
+  installationFee?: number | null;
+  replacementSerial?: string | null;
+  items: {
+    name: string;
+    quantity: number;
+    price: number;
+    listPrice?: number | null;
+    underWarranty?: boolean;
+  }[];
 };
 
+function installLabel(type?: string | null): string {
+  if (type === "WARRANTY") return "Installation & removal under warranty";
+  if (type === "PAID") return "Installation & removal without warranty";
+  if (type === "NONE") return "No installation & removal";
+  return "";
+}
+
 function itemsTextLines(order: OrderLike): string {
-  return order.items.map((i) => `• ${i.name} × ${i.quantity} — ${formatCurrency(i.price * i.quantity)}`).join("\n");
+  return order.items
+    .map((i) => {
+      const tag = i.underWarranty ? " [warranty]" : "";
+      return `• ${i.name} × ${i.quantity}${tag} — ${formatCurrency(i.price * i.quantity)}`;
+    })
+    .join("\n");
 }
 function itemsHtmlRows(order: OrderLike): string {
   return order.items
-    .map(
-      (i) =>
-        `<tr><td style="padding:6px 0;color:#374151">${i.name} × ${i.quantity}</td><td style="padding:6px 0;text-align:right;color:#111827">${formatCurrency(i.price * i.quantity)}</td></tr>`
-    )
+    .map((i) => {
+      const tag = i.underWarranty ? ' <span style="color:#15803d;font-size:12px">(warranty)</span>' : "";
+      return `<tr><td style="padding:6px 0;color:#374151">${i.name} × ${i.quantity}${tag}</td><td style="padding:6px 0;text-align:right;color:#111827">${formatCurrency(i.price * i.quantity)}</td></tr>`;
+    })
     .join("");
+}
+
+function installTextBlock(order: OrderLike): string {
+  const label = installLabel(order.installationType);
+  if (!label) return "";
+  const fee = formatCurrency(order.installationFee ?? 0);
+  const serial = order.replacementSerial ? `\nReplacement serial: ${order.replacementSerial}` : "";
+  return `\nInstallation: ${label} (${fee})${serial}`;
+}
+
+function installHtmlBlock(order: OrderLike): string {
+  const label = installLabel(order.installationType);
+  if (!label) return "";
+  const fee = formatCurrency(order.installationFee ?? 0);
+  const serial = order.replacementSerial
+    ? `<br/>Replacement serial: <b>${order.replacementSerial}</b>`
+    : "";
+  return `<p style="color:#374151;margin-top:8px">Installation: <b>${label}</b> — ${fee}${serial}</p>`;
 }
 function emailShell(title: string, body: string): string {
   return `<div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px">
@@ -187,6 +226,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
           `New order received: ${order.orderNumber}`,
           `<p style="color:#374151">Customer: <b>${order.customerName}</b> (${order.customerPhone}, ${order.customerEmail})<br/>
            Deliver to: ${order.address}, ${order.city}<br/>Payment: ${order.paymentMethod}</p>
+           ${installHtmlBlock(order)}
            <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
            <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>`
         ),
@@ -197,7 +237,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
     tasks.push(
       sendWhatsApp({
         to: settings.ownerNotifyWhatsapp,
-        text: `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDeliver to: ${order.address}, ${order.city}\nPayment: ${order.paymentMethod}\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*`,
+        text: `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDeliver to: ${order.address}, ${order.city}\nPayment: ${order.paymentMethod}${installTextBlock(order)}\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*`,
       })
     );
   }
@@ -211,6 +251,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
         html: emailShell(
           `Thank you for your order, ${order.customerName}!`,
           `<p style="color:#374151">We've received your order <b>${order.orderNumber}</b> and will contact you shortly to confirm delivery.</p>
+           ${installHtmlBlock(order)}
            <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
            <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>
            <p style="color:#374151;margin-top:12px">Payment method: ${order.paymentMethod}</p>`
@@ -222,7 +263,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
     tasks.push(
       sendWhatsApp({
         to: order.customerPhone,
-        text: `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\nPayment: ${order.paymentMethod}\n\nWe'll contact you shortly to confirm delivery.`,
+        text: `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*${installTextBlock(order)}\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\nPayment: ${order.paymentMethod}\n\nWe'll contact you shortly to confirm delivery.`,
       })
     );
   }

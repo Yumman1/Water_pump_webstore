@@ -9,6 +9,7 @@ import { services } from "@/data/services";
 import { HeroMedia } from "@/components/store/HeroMedia";
 import { ShowcaseVideo } from "@/components/store/ShowcaseVideo";
 import { Reveal } from "@/components/store/Reveal";
+import { Certifications } from "@/components/store/Certifications";
 
 export const revalidate = 60;
 
@@ -64,6 +65,8 @@ export default async function HomePage() {
           })}
         </div>
       </section>
+
+      <Certifications className="border-b bg-gray-50 py-12" />
 
       {/* Categories */}
       <section className="container py-12">

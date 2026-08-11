@@ -6,6 +6,8 @@ import { generateOrderNumber } from "@/lib/utils";
 import { notifyNewOrder } from "@/lib/notify";
 import { products as seedProducts } from "@/data/seed-data";
 
+const INSTALL_FEE = siteConfig.installation.fee;
+
 const orderSchema = z.object({
   customerName: z.string().min(2),
   customerEmail: z.string().email(),
@@ -15,10 +17,28 @@ const orderSchema = z.object({
   notes: z.string().optional(),
   paymentMethod: z.enum(["COD", "BANK_TRANSFER"]).default("COD"),
   couponCode: z.string().optional(),
+  installationType: z.enum(["NONE", "WARRANTY", "PAID"]).default("NONE"),
+  replacementSerial: z.string().optional(),
   items: z
-    .array(z.object({ productId: z.string(), quantity: z.number().int().positive() }))
+    .array(
+      z.object({
+        productId: z.string(),
+        quantity: z.number().int().positive(),
+        underWarranty: z.boolean().optional().default(false),
+      })
+    )
     .min(1),
 });
+
+function computeInstallFee(type: "NONE" | "WARRANTY" | "PAID") {
+  return type === "PAID" ? INSTALL_FEE : 0;
+}
+
+function computeShipping(merchandisePlusInstall: number) {
+  if (merchandisePlusInstall === 0) return 0;
+  if (merchandisePlusInstall >= siteConfig.shipping.freeShippingThreshold) return 0;
+  return siteConfig.shipping.flatRate;
+}
 
 export async function POST(req: Request) {
   let body: unknown;
@@ -34,15 +54,38 @@ export async function POST(req: Request) {
   }
   const data = parsed.data;
 
+  if (data.installationType === "WARRANTY" && !data.replacementSerial?.trim()) {
+    return NextResponse.json(
+      { error: "Serial number is required for warranty installation & removal." },
+      { status: 400 }
+    );
+  }
+
+  const installationType = data.installationType;
+  const installationFee = computeInstallFee(installationType);
+  const replacementSerial =
+    installationType === "WARRANTY" ? data.replacementSerial!.trim() : null;
+
   // --- Demo mode: no database configured -----------------------------------
   if (!isDbConfigured) {
     const orderNumber = generateOrderNumber();
     const demoItems = data.items.map((i) => {
       const p = seedProducts.find((sp) => `prod-${sp.slug}` === i.productId);
-      return { name: p?.name ?? "Item", quantity: i.quantity, price: p?.price ?? 0 };
+      const listPrice = p?.price ?? 0;
+      const price = i.underWarranty ? 0 : listPrice;
+      return {
+        name: p?.name ?? "Item",
+        quantity: i.quantity,
+        price,
+        listPrice,
+        underWarranty: !!i.underWarranty,
+      };
     });
     const subtotal = demoItems.reduce((s, i) => s + i.price * i.quantity, 0);
-    const shipping = subtotal >= siteConfig.shipping.freeShippingThreshold ? 0 : siteConfig.shipping.flatRate;
+    const shipping = computeShipping(subtotal + installationFee);
+    const tax = Math.round(subtotal * siteConfig.taxRate);
+    const total = Math.max(0, subtotal) + shipping + tax + installationFee;
+
     await notifyNewOrder({
       orderNumber,
       customerName: data.customerName,
@@ -50,20 +93,27 @@ export async function POST(req: Request) {
       customerPhone: data.customerPhone,
       address: data.address,
       city: data.city,
-      total: subtotal + shipping,
+      total,
       paymentMethod: data.paymentMethod,
+      installationType,
+      installationFee,
+      replacementSerial,
       items: demoItems,
     });
+
     return NextResponse.json({
       orderNumber,
       demo: true,
+      installationType,
+      installationFee,
+      replacementSerial,
+      total,
       message:
         "Order received (demo mode). Connect a database to persist orders and manage inventory.",
     });
   }
 
   try {
-    // Load real products & validate stock.
     const productIds = data.items.map((i) => i.productId);
     const products = await prisma.product.findMany({ where: { id: { in: productIds } } });
     if (products.length !== productIds.length) {
@@ -75,12 +125,21 @@ export async function POST(req: Request) {
       if (p.stock < i.quantity) {
         throw new Error(`Insufficient stock for ${p.name}.`);
       }
-      return { product: p, quantity: i.quantity, lineTotal: p.price * i.quantity };
+      const underWarranty = !!i.underWarranty;
+      const listPrice = p.price;
+      const price = underWarranty ? 0 : p.price;
+      return {
+        product: p,
+        quantity: i.quantity,
+        underWarranty,
+        listPrice,
+        price,
+        lineTotal: price * i.quantity,
+      };
     });
 
     const subtotal = lineItems.reduce((s, l) => s + l.lineTotal, 0);
 
-    // Optional coupon.
     let discount = 0;
     let appliedCoupon: string | undefined;
     if (data.couponCode) {
@@ -97,12 +156,11 @@ export async function POST(req: Request) {
       }
     }
 
-    const shipping = subtotal >= siteConfig.shipping.freeShippingThreshold ? 0 : siteConfig.shipping.flatRate;
+    const shipping = computeShipping(Math.max(0, subtotal - discount) + installationFee);
     const tax = Math.round(subtotal * siteConfig.taxRate);
-    const total = Math.max(0, subtotal - discount) + shipping + tax;
+    const total = Math.max(0, subtotal - discount) + shipping + tax + installationFee;
     const orderNumber = generateOrderNumber();
 
-    // Create order + decrement stock atomically.
     const order = await prisma.$transaction(async (tx) => {
       const customer = await tx.customer.upsert({
         where: { email: data.customerEmail.toLowerCase() },
@@ -133,19 +191,23 @@ export async function POST(req: Request) {
           total,
           paymentMethod: data.paymentMethod,
           couponCode: appliedCoupon,
+          installationType,
+          installationFee,
+          replacementSerial,
           items: {
             create: lineItems.map((l) => ({
               productId: l.product.id,
               name: l.product.name,
               sku: l.product.sku,
-              price: l.product.price,
+              price: l.price,
+              listPrice: l.listPrice,
               quantity: l.quantity,
+              underWarranty: l.underWarranty,
             })),
           },
         },
       });
 
-      // Decrement stock + log inventory movement.
       for (const l of lineItems) {
         const newStock = l.product.stock - l.quantity;
         await tx.product.update({ where: { id: l.product.id }, data: { stock: newStock } });
@@ -166,7 +228,6 @@ export async function POST(req: Request) {
       return created;
     });
 
-    // Notify owner + customer (email + WhatsApp). Best-effort; never blocks success.
     try {
       await notifyNewOrder({
         orderNumber: order.orderNumber,
@@ -177,13 +238,29 @@ export async function POST(req: Request) {
         city: order.city,
         total: order.total,
         paymentMethod: order.paymentMethod,
-        items: lineItems.map((l) => ({ name: l.product.name, quantity: l.quantity, price: l.product.price })),
+        installationType,
+        installationFee,
+        replacementSerial,
+        items: lineItems.map((l) => ({
+          name: l.product.name,
+          quantity: l.quantity,
+          price: l.price,
+          listPrice: l.listPrice,
+          underWarranty: l.underWarranty,
+        })),
       });
     } catch (e) {
       console.warn("[orders] notification failed:", (e as Error).message);
     }
 
-    return NextResponse.json({ orderNumber: order.orderNumber, id: order.id });
+    return NextResponse.json({
+      orderNumber: order.orderNumber,
+      id: order.id,
+      installationType,
+      installationFee,
+      replacementSerial,
+      total: order.total,
+    });
   } catch (e) {
     console.error("[orders] create failed:", e);
     return NextResponse.json(

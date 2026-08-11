@@ -27,11 +27,12 @@ export const siteConfig = {
   },
 
   contact: {
-    phone: "+92 300 1234567",
-    whatsapp: "+92 300 1234567",
+    phone: "0304-1088901",
+    whatsapp: "0304-1088901",
     email: "sales@aquaflowpumps.example",
-    address: "Plot 123, Industrial Area, Lahore, Pakistan",
-    mapUrl: "https://maps.google.com/?q=Lahore",
+    address: "F-28 Main Suparco Road-13, Industrial Estate, Karachi (Head Office)",
+    manufacturing: "Gujranwala, Punjab (Manufacturing unit)",
+    mapUrl: "https://maps.google.com/?q=F-28+Main+Suparco+Road+Industrial+Estate+Karachi",
     hours: "Mon – Sat, 9:00 AM – 8:00 PM",
   },
 
@@ -50,6 +51,11 @@ export const siteConfig = {
 
   // GST / sales tax as a fraction (0.0 = disabled). Applied at checkout.
   taxRate: 0.0,
+
+  // Checkout installation & removal fee (PKR).
+  installation: {
+    fee: 10000,
+  },
 
   // Homepage promo bar (set text to "" to hide).
   announcement: "🚚 Free delivery on orders over Rs 50,000 — Order now!",
