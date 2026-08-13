@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { formatCurrency } from "@/lib/format";
@@ -8,19 +8,25 @@ import { siteConfig } from "@/config/site";
 import { Button, ButtonLink } from "@/components/ui/button";
 
 type PaymentMethod = "COD" | "BANK_TRANSFER";
-type InstallationType = "NONE" | "WARRANTY" | "PAID";
 
 const INSTALL_FEE = siteConfig.installation.fee;
 
 export default function CheckoutPage() {
-  const { items, clear } = useCart();
+  const {
+    items,
+    clear,
+    installationType,
+    replacementSerial,
+    productsSubtotal,
+    listSubtotal,
+    installationFee,
+    shipping,
+    total,
+  } = useCart();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [payment, setPayment] = useState<PaymentMethod>("COD");
-  const [installationType, setInstallationType] = useState<InstallationType>("NONE");
-  const [replacementSerial, setReplacementSerial] = useState("");
-  const [warrantyIds, setWarrantyIds] = useState<Record<string, boolean>>({});
   const [form, setForm] = useState({
     customerName: "",
     customerEmail: "",
@@ -29,28 +35,6 @@ export default function CheckoutPage() {
     city: "",
     notes: "",
   });
-
-  const linePrices = useMemo(
-    () =>
-      items.map((i) => {
-        const underWarranty = !!warrantyIds[i.productId];
-        const list = i.price * i.quantity;
-        const charged = underWarranty ? 0 : list;
-        return { ...i, underWarranty, list, charged };
-      }),
-    [items, warrantyIds]
-  );
-
-  const productsSubtotal = linePrices.reduce((s, i) => s + i.charged, 0);
-  const installationFee = installationType === "PAID" ? INSTALL_FEE : 0;
-  const shippingCharge =
-    productsSubtotal + installationFee === 0
-      ? 0
-      : productsSubtotal + installationFee >= siteConfig.shipping.freeShippingThreshold
-        ? 0
-        : siteConfig.shipping.flatRate;
-  const tax = Math.round(productsSubtotal * siteConfig.taxRate);
-  const total = productsSubtotal + installationFee + shippingCharge + tax;
 
   if (items.length === 0 && !submitting) {
     return (
@@ -65,15 +49,11 @@ export default function CheckoutPage() {
     setForm((f) => ({ ...f, [field]: value }));
   }
 
-  function toggleWarranty(productId: string) {
-    setWarrantyIds((prev) => ({ ...prev, [productId]: !prev[productId] }));
-  }
-
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     if (installationType === "WARRANTY" && !replacementSerial.trim()) {
-      setError("Please enter the serial number of the motor being replaced.");
+      setError("Please enter the serial number on the cart page for warranty installation.");
       return;
     }
     setSubmitting(true);
@@ -89,7 +69,7 @@ export default function CheckoutPage() {
           items: items.map((i) => ({
             productId: i.productId,
             quantity: i.quantity,
-            underWarranty: !!warrantyIds[i.productId],
+            underWarranty: !!i.underWarranty,
           })),
         }),
       });
@@ -111,23 +91,12 @@ export default function CheckoutPage() {
   const inputClass =
     "h-11 w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500";
 
-  const installOptions: { value: InstallationType; title: string; desc: string }[] = [
-    {
-      value: "NONE",
-      title: "No installation & removal",
-      desc: "We deliver the product only. You handle installation yourself.",
-    },
-    {
-      value: "WARRANTY",
-      title: "Installation & removal under warranty",
-      desc: `Fee waived (normally ${formatCurrency(INSTALL_FEE)}). Enter the serial number of the motor being replaced.`,
-    },
-    {
-      value: "PAID",
-      title: "Installation & removal without warranty",
-      desc: `${formatCurrency(INSTALL_FEE)} — for any motor not under warranty (our brand or another).`,
-    },
-  ];
+  const installLabel =
+    installationType === "WARRANTY"
+      ? "Installation & removal under warranty"
+      : installationType === "PAID"
+        ? "Installation & removal without warranty"
+        : "No installation & removal";
 
   return (
     <div className="container py-8">
@@ -165,94 +134,51 @@ export default function CheckoutPage() {
           </div>
 
           <div className="rounded-xl border bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900">Products & warranty</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Select “Buy under warranty” for any item that is a warranty replacement — its price becomes free (shown struck through).
-            </p>
-            <ul className="mt-4 divide-y">
-              {linePrices.map((i) => (
-                <li key={i.productId} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">{i.name} × {i.quantity}</p>
-                    <p className="text-sm text-gray-500">
-                      {i.underWarranty ? (
-                        <>
-                          <span className="mr-2 text-gray-400 line-through">{formatCurrency(i.list)}</span>
-                          <span className="font-semibold text-green-700">{formatCurrency(0)}</span>
-                          <span className="ml-2 rounded bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700">Warranty</span>
-                        </>
-                      ) : (
-                        formatCurrency(i.list)
-                      )}
-                    </p>
-                  </div>
-                  <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700">
-                    <input
-                      type="checkbox"
-                      checked={!!warrantyIds[i.productId]}
-                      onChange={() => toggleWarranty(i.productId)}
-                      className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
-                    />
-                    Buy under warranty
-                  </label>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-gray-900">Warranty & installation</h2>
+              <ButtonLink href="/cart" variant="outline" size="sm">Edit on cart</ButtonLink>
+            </div>
+            <ul className="mt-4 divide-y text-sm">
+              {items.map((i) => (
+                <li key={i.productId} className="flex justify-between gap-2 py-3">
+                  <span className="text-gray-700">
+                    {i.name} × {i.quantity}
+                    {i.underWarranty ? (
+                      <span className="ml-2 rounded bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700">Warranty</span>
+                    ) : null}
+                  </span>
+                  <span className="font-medium">
+                    {i.underWarranty ? (
+                      <>
+                        <span className="mr-1 text-gray-400 line-through">{formatCurrency(i.price * i.quantity)}</span>
+                        {formatCurrency(0)}
+                      </>
+                    ) : (
+                      formatCurrency(i.price * i.quantity)
+                    )}
+                  </span>
                 </li>
               ))}
             </ul>
-          </div>
-
-          <div className="rounded-xl border bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900">Installation & removal</h2>
-            <div className="mt-4 space-y-3">
-              {installOptions.map((opt) => (
-                <label
-                  key={opt.value}
-                  className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 ${
-                    installationType === opt.value ? "border-brand-600 bg-brand-50" : ""
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="installation"
-                    checked={installationType === opt.value}
-                    onChange={() => setInstallationType(opt.value)}
-                    className="mt-1"
-                  />
-                  <div>
-                    <p className="font-medium text-gray-900">{opt.title}</p>
-                    <p className="text-sm text-gray-500">{opt.desc}</p>
-                    {opt.value === "WARRANTY" && installationType === "WARRANTY" && (
-                      <p className="mt-1 text-sm">
-                        <span className="text-gray-400 line-through">{formatCurrency(INSTALL_FEE)}</span>{" "}
-                        <span className="font-semibold text-green-700">{formatCurrency(0)}</span>
-                      </p>
-                    )}
-                    {opt.value === "PAID" && (
-                      <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(INSTALL_FEE)}</p>
-                    )}
-                  </div>
-                </label>
-              ))}
+            <div className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-700">
+              <p>
+                <span className="font-medium">Installation:</span> {installLabel}
+                {installationType === "WARRANTY" ? (
+                  <>
+                    {" — "}
+                    <span className="text-gray-400 line-through">{formatCurrency(INSTALL_FEE)}</span>{" "}
+                    {formatCurrency(0)}
+                  </>
+                ) : (
+                  <> — {formatCurrency(installationFee)}</>
+                )}
+              </p>
+              {replacementSerial && (
+                <p className="mt-1">
+                  <span className="font-medium">Replacement serial:</span> {replacementSerial}
+                </p>
+              )}
             </div>
-
-            {installationType === "WARRANTY" && (
-              <div className="mt-4">
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Serial number of motor being replaced *
-                </label>
-                <input
-                  required
-                  value={replacementSerial}
-                  onChange={(e) => setReplacementSerial(e.target.value)}
-                  className={inputClass}
-                  placeholder="Enter motor serial number"
-                />
-              </div>
-            )}
-
-            <p className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-              Note: Your previous motor may be bought back and the amount deducted from the total. The buy-back value
-              depends on condition and assessment by our team.
-            </p>
           </div>
 
           <div className="rounded-xl border bg-white p-6">
@@ -278,33 +204,22 @@ export default function CheckoutPage() {
 
         <div className="h-fit rounded-xl border bg-white p-6">
           <h2 className="text-lg font-bold text-gray-900">Your Order</h2>
-          <div className="mt-4 max-h-64 space-y-3 overflow-y-auto">
-            {linePrices.map((i) => (
-              <div key={i.productId} className="flex justify-between gap-2 text-sm">
-                <span className="text-gray-600">
-                  {i.name} × {i.quantity}
-                  {i.underWarranty ? " (warranty)" : ""}
-                </span>
-                <span className="text-right font-medium">
-                  {i.underWarranty ? (
-                    <>
-                      <span className="mr-1 text-gray-400 line-through">{formatCurrency(i.list)}</span>
-                      {formatCurrency(0)}
-                    </>
-                  ) : (
-                    formatCurrency(i.charged)
-                  )}
-                </span>
-              </div>
-            ))}
-          </div>
-          <dl className="mt-4 space-y-2 border-t pt-4 text-sm">
+          <dl className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-gray-500">Products</dt>
-              <dd>{formatCurrency(productsSubtotal)}</dd>
+              <dd>
+                {productsSubtotal < listSubtotal ? (
+                  <>
+                    <span className="mr-1 text-gray-400 line-through">{formatCurrency(listSubtotal)}</span>
+                    {formatCurrency(productsSubtotal)}
+                  </>
+                ) : (
+                  formatCurrency(productsSubtotal)
+                )}
+              </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-gray-500">Installation & removal</dt>
+              <dt className="text-gray-500">Installation</dt>
               <dd>
                 {installationType === "WARRANTY" ? (
                   <>
@@ -318,14 +233,8 @@ export default function CheckoutPage() {
             </div>
             <div className="flex justify-between">
               <dt className="text-gray-500">Shipping</dt>
-              <dd>{shippingCharge === 0 ? "Free" : formatCurrency(shippingCharge)}</dd>
+              <dd>{shipping === 0 ? "Free" : formatCurrency(shipping)}</dd>
             </div>
-            {tax > 0 && (
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Tax</dt>
-                <dd>{formatCurrency(tax)}</dd>
-              </div>
-            )}
           </dl>
           <div className="mt-4 flex justify-between border-t pt-4">
             <span className="font-bold text-gray-900">Total</span>

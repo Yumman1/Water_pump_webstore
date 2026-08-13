@@ -45,7 +45,10 @@ export type CartItem = {
   image: string;
   quantity: number;
   stock: number;
+  underWarranty?: boolean;
 };
+
+export type InstallationType = "NONE" | "WARRANTY" | "PAID";
 
 export type ProductQuery = {
   categorySlug?: string;
