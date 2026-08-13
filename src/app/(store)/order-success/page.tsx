@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { siteConfig } from "@/config/site";
 import { formatCurrency } from "@/lib/format";
+import { getPricingConfig } from "@/lib/pricing";
 
 function installLabel(type?: string) {
   if (type === "WARRANTY") return "Installation & removal under warranty";
@@ -12,7 +13,7 @@ function installLabel(type?: string) {
   return null;
 }
 
-function SuccessContent({
+async function SuccessContent({
   orderNumber,
   install,
   fee,
@@ -25,6 +26,7 @@ function SuccessContent({
   serial?: string;
   total?: string;
 }) {
+  const pricing = await getPricingConfig();
   const installText = installLabel(install);
   const feeNum = fee != null && fee !== "" ? Number(fee) : null;
   const totalNum = total != null && total !== "" ? Number(total) : null;
@@ -57,7 +59,7 @@ function SuccessContent({
                     —{" "}
                     {install === "WARRANTY" ? (
                       <>
-                        <span className="text-gray-400 line-through">{formatCurrency(siteConfig.installation.fee)}</span>{" "}
+                        <span className="text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>{" "}
                         {formatCurrency(0)}
                       </>
                     ) : (

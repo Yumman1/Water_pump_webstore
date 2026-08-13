@@ -192,12 +192,15 @@ model OrderItem {
 
 // Single-row store configuration edited from /admin/settings.
 model StoreSettings {
-  id                    Int      @id @default(1)
-  ownerNotifyEmail      String? // where new-order alerts are sent
-  ownerNotifyWhatsapp   String? // owner WhatsApp number for new-order alerts
-  notifyCustomerEmail   Boolean  @default(true)
-  notifyCustomerWhatsapp Boolean @default(true)
-  updatedAt             DateTime @updatedAt
+  id                     Int      @id @default(1)
+  ownerNotifyEmail       String? // where new-order alerts are sent
+  ownerNotifyWhatsapp    String? // owner WhatsApp number for new-order alerts
+  notifyCustomerEmail    Boolean  @default(true)
+  notifyCustomerWhatsapp Boolean  @default(true)
+  shippingFlatRate       Float    @default(500)
+  freeShippingThreshold  Float    @default(50000)
+  installationFee        Float    @default(10000)
+  updatedAt              DateTime @updatedAt
 }
 
 model Coupon {

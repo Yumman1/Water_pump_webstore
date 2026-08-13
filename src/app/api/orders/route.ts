@@ -5,8 +5,7 @@ import { siteConfig } from "@/config/site";
 import { generateOrderNumber } from "@/lib/utils";
 import { notifyNewOrder } from "@/lib/notify";
 import { products as seedProducts } from "@/data/seed-data";
-
-const INSTALL_FEE = siteConfig.installation.fee;
+import { computeShippingFee, getPricingConfig } from "@/lib/pricing";
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
@@ -30,16 +29,6 @@ const orderSchema = z.object({
     .min(1),
 });
 
-function computeInstallFee(type: "NONE" | "WARRANTY" | "PAID") {
-  return type === "PAID" ? INSTALL_FEE : 0;
-}
-
-function computeShipping(merchandisePlusInstall: number) {
-  if (merchandisePlusInstall === 0) return 0;
-  if (merchandisePlusInstall >= siteConfig.shipping.freeShippingThreshold) return 0;
-  return siteConfig.shipping.flatRate;
-}
-
 export async function POST(req: Request) {
   let body: unknown;
   try {
@@ -53,6 +42,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Please fill in all required fields." }, { status: 400 });
   }
   const data = parsed.data;
+  const pricing = await getPricingConfig();
 
   if (data.installationType === "WARRANTY" && !data.replacementSerial?.trim()) {
     return NextResponse.json(
@@ -62,7 +52,7 @@ export async function POST(req: Request) {
   }
 
   const installationType = data.installationType;
-  const installationFee = computeInstallFee(installationType);
+  const installationFee = installationType === "PAID" ? pricing.installationFee : 0;
   const replacementSerial =
     installationType === "WARRANTY" ? data.replacementSerial!.trim() : null;
 
@@ -82,7 +72,7 @@ export async function POST(req: Request) {
       };
     });
     const subtotal = demoItems.reduce((s, i) => s + i.price * i.quantity, 0);
-    const shipping = computeShipping(subtotal + installationFee);
+    const shipping = computeShippingFee(subtotal + installationFee, pricing);
     const tax = Math.round(subtotal * siteConfig.taxRate);
     const total = Math.max(0, subtotal) + shipping + tax + installationFee;
 
@@ -156,7 +146,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const shipping = computeShipping(Math.max(0, subtotal - discount) + installationFee);
+    const shipping = computeShippingFee(Math.max(0, subtotal - discount) + installationFee, pricing);
     const tax = Math.round(subtotal * siteConfig.taxRate);
     const total = Math.max(0, subtotal - discount) + shipping + tax + installationFee;
     const orderNumber = generateOrderNumber();

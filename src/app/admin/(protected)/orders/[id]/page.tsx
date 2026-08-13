@@ -4,7 +4,7 @@ import { getAdminOrder } from "@/lib/admin-data";
 import { isDbConfigured } from "@/lib/prisma";
 import { updateOrder, dispatchOrder } from "@/app/admin/actions";
 import { formatCurrency, formatDateTime } from "@/lib/format";
-import { siteConfig } from "@/config/site";
+import { getPricingConfig } from "@/lib/pricing";
 import { PageHeader, StatusBadge } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
@@ -16,6 +16,7 @@ const inputClass = "h-10 w-full rounded-lg border border-gray-300 px-3 text-sm f
 export default async function OrderDetailPage({ params }: { params: { id: string } }) {
   const order = await getAdminOrder(params.id);
   if (!order) notFound();
+  const pricing = await getPricingConfig();
 
   const action = updateOrder.bind(null, order.id);
   const dispatch = dispatchOrder.bind(null, order.id);
@@ -79,7 +80,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
                 <span>
                   {order.installationType === "WARRANTY" ? (
                     <>
-                      <span className="mr-1 text-gray-400 line-through">{formatCurrency(siteConfig.installation.fee)}</span>
+                      <span className="mr-1 text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>
                       {formatCurrency(0)}
                     </>
                   ) : (

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
 import { formatCurrency } from "@/lib/format";
+import { getPricingConfig } from "@/lib/pricing";
 
 export const metadata: Metadata = { title: "Shipping & Returns" };
+export const dynamic = "force-dynamic";
 
-export default function ShippingPage() {
+export default async function ShippingPage() {
+  const pricing = await getPricingConfig();
+
   return (
     <div className="container py-12">
       <div className="mx-auto max-w-3xl space-y-8">
@@ -17,8 +20,8 @@ export default function ShippingPage() {
           <h2 className="text-xl font-semibold text-gray-900">Shipping</h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-gray-600">
             <li>Nationwide delivery across Pakistan.</li>
-            <li>Flat shipping rate of {formatCurrency(siteConfig.shipping.flatRate)} per order.</li>
-            <li>Free shipping on orders over {formatCurrency(siteConfig.shipping.freeShippingThreshold)}.</li>
+            <li>Flat shipping rate of {formatCurrency(pricing.shippingFlatRate)} per order.</li>
+            <li>Free shipping on orders over {formatCurrency(pricing.freeShippingThreshold)}.</li>
             <li>Orders are typically dispatched within 1–2 business days.</li>
           </ul>
         </section>

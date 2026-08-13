@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
+import { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import type { CartItem, InstallationType } from "@/lib/types";
 import { siteConfig } from "@/config/site";
+import type { PricingConfig } from "@/lib/pricing";
 
 const STORAGE_KEY = "cart:v2";
 
@@ -27,6 +28,14 @@ const initialState: CartState = {
   installationType: "NONE",
   replacementSerial: "",
 };
+
+function defaultPricing(): PricingConfig {
+  return {
+    shippingFlatRate: siteConfig.shipping.flatRate,
+    freeShippingThreshold: siteConfig.shipping.freeShippingThreshold,
+    installationFee: siteConfig.installation.fee,
+  };
+}
 
 function reducer(state: CartState, action: Action): CartState {
   switch (action.type) {
@@ -88,6 +97,7 @@ type CartContextValue = {
   items: CartItem[];
   installationType: InstallationType;
   replacementSerial: string;
+  pricing: PricingConfig;
   addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
@@ -96,7 +106,6 @@ type CartContextValue = {
   setReplacementSerial: (serial: string) => void;
   clear: () => void;
   count: number;
-  /** Charged product subtotal (warranty lines = 0). Alias kept for older callers. */
   subtotal: number;
   listSubtotal: number;
   productsSubtotal: number;
@@ -109,6 +118,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [pricing, setPricing] = useState<PricingConfig>(defaultPricing);
 
   useEffect(() => {
     try {
@@ -140,6 +150,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [state]);
 
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/pricing")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        setPricing({
+          shippingFlatRate: Number(data.shippingFlatRate) || defaultPricing().shippingFlatRate,
+          freeShippingThreshold: Number(data.freeShippingThreshold) || defaultPricing().freeShippingThreshold,
+          installationFee: Number(data.installationFee) || defaultPricing().installationFee,
+        });
+      })
+      .catch(() => {
+        /* keep defaults */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const value = useMemo<CartContextValue>(() => {
     const count = state.items.reduce((n, i) => n + i.quantity, 0);
     const listSubtotal = state.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -147,19 +177,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       (sum, i) => sum + (i.underWarranty ? 0 : i.price * i.quantity),
       0
     );
-    const installationFee = state.installationType === "PAID" ? siteConfig.installation.fee : 0;
+    const installationFee = state.installationType === "PAID" ? pricing.installationFee : 0;
     const shipping =
       productsSubtotal + installationFee === 0
         ? 0
-        : productsSubtotal + installationFee >= siteConfig.shipping.freeShippingThreshold
+        : productsSubtotal + installationFee >= pricing.freeShippingThreshold
           ? 0
-          : siteConfig.shipping.flatRate;
+          : pricing.shippingFlatRate;
     const total = productsSubtotal + installationFee + shipping;
 
     return {
       items: state.items,
       installationType: state.installationType,
       replacementSerial: state.replacementSerial,
+      pricing,
       addItem: (item) => dispatch({ type: "ADD", item }),
       removeItem: (productId) => dispatch({ type: "REMOVE", productId }),
       setQuantity: (productId, quantity) => dispatch({ type: "SET_QTY", productId, quantity }),
@@ -178,7 +209,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       shipping,
       total,
     };
-  }, [state]);
+  }, [state, pricing]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

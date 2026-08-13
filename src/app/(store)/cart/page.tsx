@@ -4,12 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
 import { formatCurrency } from "@/lib/format";
-import { siteConfig } from "@/config/site";
 import { ButtonLink } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import type { InstallationType } from "@/lib/types";
-
-const INSTALL_FEE = siteConfig.installation.fee;
 
 export default function CartPage() {
   const {
@@ -27,6 +24,7 @@ export default function CartPage() {
     installationFee,
     shipping,
     total,
+    pricing,
   } = useCart();
 
   if (items.length === 0) {
@@ -51,12 +49,12 @@ export default function CartPage() {
     {
       value: "WARRANTY",
       title: "Installation & removal under warranty",
-      desc: `Fee waived (normally ${formatCurrency(INSTALL_FEE)}). Enter the serial number of the motor being replaced.`,
+      desc: `Fee waived (normally ${formatCurrency(pricing.installationFee)}). Enter the serial number of the motor being replaced.`,
     },
     {
       value: "PAID",
       title: "Installation & removal without warranty",
-      desc: `${formatCurrency(INSTALL_FEE)} — for any motor not under warranty (our brand or another).`,
+      desc: `${formatCurrency(pricing.installationFee)} — for any motor not under warranty (our brand or another).`,
     },
   ];
 
@@ -158,12 +156,12 @@ export default function CartPage() {
                     <p className="text-sm text-gray-500">{opt.desc}</p>
                     {opt.value === "WARRANTY" && installationType === "WARRANTY" && (
                       <p className="mt-1 text-sm">
-                        <span className="text-gray-400 line-through">{formatCurrency(INSTALL_FEE)}</span>{" "}
+                        <span className="text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>{" "}
                         <span className="font-semibold text-green-700">{formatCurrency(0)}</span>
                       </p>
                     )}
                     {opt.value === "PAID" && (
-                      <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(INSTALL_FEE)}</p>
+                      <p className="mt-1 text-sm font-semibold text-gray-900">{formatCurrency(pricing.installationFee)}</p>
                     )}
                   </div>
                 </label>
@@ -212,7 +210,7 @@ export default function CartPage() {
               <dd className="font-medium">
                 {installationType === "WARRANTY" ? (
                   <>
-                    <span className="mr-1 text-gray-400 line-through">{formatCurrency(INSTALL_FEE)}</span>
+                    <span className="mr-1 text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>
                     {formatCurrency(0)}
                   </>
                 ) : (
@@ -226,7 +224,7 @@ export default function CartPage() {
             </div>
             {shipping > 0 && (
               <p className="text-xs text-gray-400">
-                Add {formatCurrency(siteConfig.shipping.freeShippingThreshold - productsSubtotal - installationFee)} more for free shipping.
+                Add {formatCurrency(Math.max(0, pricing.freeShippingThreshold - productsSubtotal - installationFee))} more for free shipping.
               </p>
             )}
           </dl>

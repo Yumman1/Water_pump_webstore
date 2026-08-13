@@ -4,12 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { formatCurrency } from "@/lib/format";
-import { siteConfig } from "@/config/site";
 import { Button, ButtonLink } from "@/components/ui/button";
 
 type PaymentMethod = "COD" | "BANK_TRANSFER";
-
-const INSTALL_FEE = siteConfig.installation.fee;
 
 export default function CheckoutPage() {
   const {
@@ -22,6 +19,7 @@ export default function CheckoutPage() {
     installationFee,
     shipping,
     total,
+    pricing,
   } = useCart();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
@@ -166,7 +164,7 @@ export default function CheckoutPage() {
                 {installationType === "WARRANTY" ? (
                   <>
                     {" — "}
-                    <span className="text-gray-400 line-through">{formatCurrency(INSTALL_FEE)}</span>{" "}
+                    <span className="text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>{" "}
                     {formatCurrency(0)}
                   </>
                 ) : (
@@ -223,7 +221,7 @@ export default function CheckoutPage() {
               <dd>
                 {installationType === "WARRANTY" ? (
                   <>
-                    <span className="mr-1 text-gray-400 line-through">{formatCurrency(INSTALL_FEE)}</span>
+                    <span className="mr-1 text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>
                     {formatCurrency(0)}
                   </>
                 ) : (

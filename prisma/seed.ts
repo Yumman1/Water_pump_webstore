@@ -104,6 +104,9 @@ async function main() {
       id: 1,
       ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? adminEmail,
       ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? null,
+      shippingFlatRate: 500,
+      freeShippingThreshold: 50000,
+      installationFee: 10000,
     },
   });
   console.log("   ✓ Store settings");

@@ -69,6 +69,56 @@ export default async function SettingsPage({ searchParams }: { searchParams: { s
           </label>
         </div>
 
+        <div className="space-y-4 rounded-xl border bg-white p-6">
+          <h2 className="font-semibold text-gray-900">Delivery & installation fees</h2>
+          <p className="text-sm text-gray-500">
+            These amounts apply on the cart and checkout. Leave delivery at 0 for free shipping always.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Delivery fee (PKR)</label>
+              <input
+                name="shippingFlatRate"
+                type="number"
+                min={0}
+                step={1}
+                required
+                defaultValue={settings.shippingFlatRate}
+                className={inputClass}
+              />
+              <p className="mt-1 text-xs text-gray-400">Flat delivery charge per order (when free-shipping threshold is not met).</p>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Free delivery over (PKR)</label>
+              <input
+                name="freeShippingThreshold"
+                type="number"
+                min={0}
+                step={1}
+                required
+                defaultValue={settings.freeShippingThreshold}
+                className={inputClass}
+              />
+              <p className="mt-1 text-xs text-gray-400">Orders at or above this amount get free delivery.</p>
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm font-medium text-gray-700">Installation &amp; removal fee (PKR)</label>
+              <input
+                name="installationFee"
+                type="number"
+                min={0}
+                step={1}
+                required
+                defaultValue={settings.installationFee}
+                className={inputClass}
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Charged when the customer chooses installation without warranty. Under-warranty install stays free (this amount is shown struck through).
+              </p>
+            </div>
+          </div>
+        </div>
+
         <Button type="submit" size="lg" disabled={!isDbConfigured}>Save Settings</Button>
         {!isDbConfigured && <p className="mt-2 text-sm text-amber-600">Connect a database to save settings.</p>}
       </form>

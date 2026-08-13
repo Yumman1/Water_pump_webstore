@@ -18,6 +18,9 @@ export type StoreSettings = {
   ownerNotifyWhatsapp: string | null;
   notifyCustomerEmail: boolean;
   notifyCustomerWhatsapp: boolean;
+  shippingFlatRate: number;
+  freeShippingThreshold: number;
+  installationFee: number;
 };
 
 const DEFAULT_SETTINGS: StoreSettings = {
@@ -25,6 +28,9 @@ const DEFAULT_SETTINGS: StoreSettings = {
   ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? null,
   notifyCustomerEmail: true,
   notifyCustomerWhatsapp: true,
+  shippingFlatRate: siteConfig.shipping.flatRate,
+  freeShippingThreshold: siteConfig.shipping.freeShippingThreshold,
+  installationFee: siteConfig.installation.fee,
 };
 
 export async function getStoreSettings(): Promise<StoreSettings> {
@@ -37,6 +43,9 @@ export async function getStoreSettings(): Promise<StoreSettings> {
           ownerNotifyWhatsapp: row.ownerNotifyWhatsapp ?? DEFAULT_SETTINGS.ownerNotifyWhatsapp,
           notifyCustomerEmail: row.notifyCustomerEmail,
           notifyCustomerWhatsapp: row.notifyCustomerWhatsapp,
+          shippingFlatRate: row.shippingFlatRate ?? DEFAULT_SETTINGS.shippingFlatRate,
+          freeShippingThreshold: row.freeShippingThreshold ?? DEFAULT_SETTINGS.freeShippingThreshold,
+          installationFee: row.installationFee ?? DEFAULT_SETTINGS.installationFee,
         };
       }
     } catch (e) {

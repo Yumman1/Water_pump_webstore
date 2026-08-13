@@ -176,6 +176,9 @@ export async function saveSettings(fd: FormData) {
     ownerNotifyWhatsapp: str(fd, "ownerNotifyWhatsapp") || null,
     notifyCustomerEmail: bool(fd, "notifyCustomerEmail"),
     notifyCustomerWhatsapp: bool(fd, "notifyCustomerWhatsapp"),
+    shippingFlatRate: Math.max(0, num(fd, "shippingFlatRate")),
+    freeShippingThreshold: Math.max(0, num(fd, "freeShippingThreshold")),
+    installationFee: Math.max(0, num(fd, "installationFee")),
   };
   await prisma.storeSettings.upsert({
     where: { id: 1 },
@@ -183,6 +186,10 @@ export async function saveSettings(fd: FormData) {
     create: { id: 1, ...data },
   });
   revalidatePath("/admin/settings");
+  revalidatePath("/cart");
+  revalidatePath("/checkout");
+  revalidatePath("/shipping");
+  revalidatePath("/api/pricing");
   redirect("/admin/settings?saved=1");
 }
 
