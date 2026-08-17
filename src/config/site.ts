@@ -10,7 +10,7 @@
 export const siteConfig = {
   name: "Jawed",
   legalName: "Jawed Pumps & Motors",
-  tagline: "Copper Motors, Bearing Pumps & Complete Sets",
+  tagline: "Domestic, Industrial and Agricultural pumps",
   description:
     "Jawed copper motors, monoblock pressure pumps, bearing pumps and complete motor+pump sets. Genuine products, nationwide delivery, expert support.",
 
@@ -62,7 +62,7 @@ export const siteConfig = {
 
   // Homepage hero.
   hero: {
-    heading: "Copper Motors & Bearing Pumps",
+    heading: "SERVING THE BEST SINCE 1980",
     subheading:
       "Jawed and Premium copper motors, monoblock pressure pumps, bearing pumps and complete sets — genuine stock with nationwide delivery.",
     ctaLabel: "Shop All Products",
