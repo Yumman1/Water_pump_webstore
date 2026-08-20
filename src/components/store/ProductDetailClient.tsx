@@ -9,7 +9,12 @@ import { Icons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
 export function ProductDetailClient({ product }: { product: Product }) {
-  const images = product.images.length ? product.images : ["https://picsum.photos/seed/placeholder/800/800"];
+  // Prefer real photos; skip placeholder when a product video is the cover.
+  const images = product.images.length
+    ? product.images
+    : product.video
+      ? []
+      : ["https://picsum.photos/seed/placeholder/800/800"];
   // Gallery items: video first when present, then still images.
   const media: { type: "video" | "image"; src: string }[] = [
     ...(product.video ? [{ type: "video" as const, src: product.video }] : []),

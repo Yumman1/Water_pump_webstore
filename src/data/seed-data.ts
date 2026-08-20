@@ -91,6 +91,8 @@ type ProductInput = {
   tags: string[];
   specs: Record<string, string>;
   imageSeed: string;
+  /** Real product photos under /public/products/<slug>/ (cover first). */
+  images?: string[];
   stock?: number;
   video?: string;
 };
@@ -110,11 +112,16 @@ function product(p: ProductInput): SeedProduct {
     lowStockThreshold: 3,
     featured: p.featured ?? false,
     active: true,
-    images: [img(p.imageSeed), img(`${p.imageSeed}-b`)],
+    images: p.images !== undefined ? p.images : [img(p.imageSeed), img(`${p.imageSeed}-b`)],
     tags: p.tags,
     specs,
     video: p.video,
   };
+}
+
+/** Local product media under public/products/<slug>/ */
+function pm(slug: string, ...files: string[]) {
+  return files.map((f) => `/products/${slug}/${f}`);
 }
 
 export const products: SeedProduct[] = [
@@ -192,7 +199,7 @@ export const products: SeedProduct[] = [
     video: "/videos/copper-motors/1hp-full-load-copper-motor.mp4",
   }),
 
-  // --- Monoblock Pressure Pumps ---
+  // --- Monoblock Pressure Pumps (video covers) ---
   product({
     name: "0.5HP Monoblock Pressure Pump Jawed",
     slug: "0-5hp-monoblock-pressure-pump-jawed",
@@ -206,6 +213,8 @@ export const products: SeedProduct[] = [
     tags: ["monoblock", "pressure", "0.5hp", "jawed"],
     specs: { Power: "0.5 HP", Type: "Monoblock Pressure Pump", Brand: "Jawed", Warranty: "As per dealer policy" },
     imageSeed: "mb-jw-05",
+    images: pm("0-5hp-monoblock-pressure-pump-jawed", "cover.jpg"),
+    video: "/products/0-5hp-monoblock-pressure-pump-jawed/video.mp4",
   }),
   product({
     name: "1HP Monoblock Pressure Pump Jawed",
@@ -219,6 +228,8 @@ export const products: SeedProduct[] = [
     tags: ["monoblock", "pressure", "1hp", "jawed"],
     specs: { Power: "1 HP", Type: "Monoblock Pressure Pump", Brand: "Jawed", Warranty: "As per dealer policy" },
     imageSeed: "mb-jw-1",
+    images: pm("1hp-monoblock-pressure-pump-jawed", "cover.jpg"),
+    video: "/products/1hp-monoblock-pressure-pump-jawed/video.mp4",
   }),
   product({
     name: "2HP Monoblock Pressure Pump Jawed (Steel Impeller)",
@@ -239,6 +250,8 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "mb-jw-2",
+    images: pm("2hp-monoblock-pressure-pump-jawed-steel-impeller", "cover.jpg"),
+    video: "/products/2hp-monoblock-pressure-pump-jawed-steel-impeller/video.mp4",
   }),
   product({
     name: "0.5HP Monoblock Pressure Pump Premium",
@@ -252,6 +265,8 @@ export const products: SeedProduct[] = [
     tags: ["monoblock", "pressure", "0.5hp", "premium"],
     specs: { Power: "0.5 HP", Type: "Monoblock Pressure Pump", Brand: "Premium", Warranty: "As per dealer policy" },
     imageSeed: "mb-pr-05",
+    images: pm("0-5hp-monoblock-pressure-pump-premium", "cover.jpg"),
+    video: "/products/0-5hp-monoblock-pressure-pump-premium/video.mp4",
   }),
   product({
     name: "1HP Monoblock Pressure Pump Premium",
@@ -265,6 +280,30 @@ export const products: SeedProduct[] = [
     tags: ["monoblock", "pressure", "1hp", "premium"],
     specs: { Power: "1 HP", Type: "Monoblock Pressure Pump", Brand: "Premium", Warranty: "As per dealer policy" },
     imageSeed: "mb-pr-1",
+    images: pm("1hp-monoblock-pressure-pump-premium", "cover.jpg"),
+    video: "/products/1hp-monoblock-pressure-pump-premium/video.mp4",
+  }),
+  product({
+    name: "2HP Monoblock Pressure Pump Premium (Steel Impeller)",
+    slug: "2hp-monoblock-pressure-pump-premium-steel-impeller",
+    sku: "PR-MB-2",
+    brand: "Premium",
+    categorySlug: "monoblock-pressure-pumps",
+    shortDescription: "2HP Premium monoblock with steel impeller for heavy pressure duty.",
+    description:
+      "2HP Premium monoblock pressure pump fitted with a steel impeller for durability under higher pressure and abrasive duty.",
+    featured: true,
+    tags: ["monoblock", "pressure", "2hp", "premium", "steel-impeller"],
+    specs: {
+      Power: "2 HP",
+      Type: "Monoblock Pressure Pump",
+      Impeller: "Steel",
+      Brand: "Premium",
+      Warranty: "As per dealer policy",
+    },
+    imageSeed: "mb-pr-2",
+    images: pm("2hp-monoblock-pressure-pump-premium-steel-impeller", "cover.jpg"),
+    video: "/products/2hp-monoblock-pressure-pump-premium-steel-impeller/video.mp4",
   }),
 
   // --- Bearing Pumps ---
@@ -326,6 +365,14 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "bp-gd25",
+    images: pm(
+      "1hp-bearing-pump-gd25000",
+      "cover.png",
+      "gallery-01.png",
+      "gallery-02.png",
+      "gallery-03.png",
+      "gallery-04.png"
+    ),
   }),
   product({
     name: "1HP Bearing Pump GD26000 (Steel Plate)",
@@ -345,6 +392,14 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "bp-gd26",
+    images: pm(
+      "1hp-bearing-pump-gd26000",
+      "cover.png",
+      "gallery-01.png",
+      "gallery-02.png",
+      "gallery-03.png",
+      "gallery-04.png"
+    ),
   }),
   product({
     name: "1HP Bearing Pump GD22000 (Steel Plate)",
@@ -383,6 +438,14 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "bp-gd7",
+    images: pm(
+      "1hp-bearing-pump-gd7000",
+      "cover.png",
+      "gallery-01.png",
+      "gallery-02.png",
+      "gallery-03.png",
+      "gallery-04.png"
+    ),
   }),
   product({
     name: "1HP Bearing Cut-Size Pump GD45000",
@@ -420,6 +483,40 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "bp-inchi-05",
+    images: pm(
+      "0-5hp-inchi-bearing-jawed-pump",
+      "cover.jpg",
+      "gallery-01.jpg",
+      "gallery-02.jpg",
+      "gallery-03.jpg",
+      "gallery-04.jpg"
+    ),
+  }),
+  product({
+    name: "0.5HP / Inchi Bearing Diamond Pump",
+    slug: "0-5hp-inchi-bearing-diamond-pump",
+    sku: "DM-BP-INCHI-05",
+    brand: "Imported",
+    categorySlug: "bearing-pumps",
+    shortDescription: "0.5HP Inchi Diamond bearing pump.",
+    description:
+      "0.5HP / Inchi Diamond bearing pump for lighter duty sets — an imported-line option alongside Jawed Inchi pumps.",
+    tags: ["bearing", "0.5hp", "inchi", "diamond", "imported"],
+    specs: {
+      Power: "0.5 HP",
+      Type: "Inchi Bearing",
+      Brand: "Diamond",
+      Warranty: "As per dealer policy",
+    },
+    imageSeed: "bp-diamond-05",
+    images: pm(
+      "0-5hp-inchi-bearing-diamond-pump",
+      "cover.png",
+      "gallery-01.png",
+      "gallery-02.png",
+      "gallery-03.png",
+      "gallery-04.png"
+    ),
   }),
 
   // --- Complete Sets ---
@@ -441,6 +538,14 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "set-05",
+    images: pm(
+      "set-0-5hp-copper-inchi-bearing",
+      "cover.jpg",
+      "gallery-01.jpg",
+      "gallery-02.jpg",
+      "gallery-03.jpg",
+      "gallery-04.jpg"
+    ),
   }),
   product({
     name: "1HP J Copper Motor + GD45000 Bearing Pump Set",
@@ -477,6 +582,14 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "set-1j-gd7",
+    images: pm(
+      "set-1hp-j-gd7000",
+      "cover.jpg",
+      "gallery-01.jpg",
+      "gallery-02.jpg",
+      "gallery-03.jpg",
+      "gallery-04.jpg"
+    ),
   }),
   product({
     name: "1HP J Copper Motor + GD22000 Pump Set",
@@ -495,6 +608,13 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "set-1j-gd22",
+    images: pm(
+      "set-1hp-j-gd22000",
+      "cover.jpg",
+      "gallery-01.jpg",
+      "gallery-02.jpg",
+      "gallery-03.jpg"
+    ),
   }),
   product({
     name: "1HP S Copper Motor + GD25000 Bearing Pump Set",
@@ -513,6 +633,7 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "set-1s-gd25",
+    images: pm("set-1hp-s-gd25000", "cover.jpg", "gallery-01.jpg"),
   }),
   product({
     name: "1HP S Copper Motor + GD26000 Bearing Pump Set",
@@ -569,5 +690,13 @@ export const products: SeedProduct[] = [
       Warranty: "As per dealer policy",
     },
     imageSeed: "set-pr-gd50",
+    images: pm(
+      "set-1hp-full-load-premium-gd50000",
+      "cover.jpg",
+      "gallery-01.jpg",
+      "gallery-02.jpg",
+      "gallery-03.jpg",
+      "gallery-04.jpg"
+    ),
   }),
 ];
