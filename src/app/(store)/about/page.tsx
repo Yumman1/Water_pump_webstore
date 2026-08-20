@@ -5,29 +5,59 @@ import { Certifications } from "@/components/store/Certifications";
 
 export const metadata: Metadata = { title: "About Us" };
 
+const highlights: { title: string; description: string; icon: IconName }[] = [
+  {
+    title: "Four Decades of Trust",
+    description: "Serving the best B2B and B2C clients since 1980.",
+    icon: "shield",
+  },
+  {
+    title: "Uncompromised Quality",
+    description: "Featuring 100% genuine copper windings for maximum durability and efficiency.",
+    icon: "check",
+  },
+  {
+    title: "End-to-End Solutions",
+    description: "A complete catalog of motors, monoblock pressure pumps, and bearing pumps.",
+    icon: "box",
+  },
+  {
+    title: "Nationwide Reach",
+    description:
+      "Headquartered in Karachi and manufactured in Gujranwala, we deliver anywhere in Pakistan with secure Cash-on-Delivery (COD).",
+    icon: "truck",
+  },
+  {
+    title: "Expert Support",
+    description: "Transparent guidance and reliable after-sales care to ensure you get the exact right fit.",
+    icon: "headset",
+  },
+];
+
 export default function AboutPage() {
   return (
     <div className="py-12">
       <div className="container">
         <div className="mx-auto max-w-3xl">
           <h1 className="text-3xl font-bold text-gray-900">About {siteConfig.name}</h1>
-          <p className="mt-4 text-lg text-gray-600">{siteConfig.description}</p>
 
-          <div className="mt-8 space-y-4 leading-relaxed text-gray-600">
+          <div className="mt-6 space-y-4 text-lg leading-relaxed text-gray-600">
             <p>
-              {siteConfig.legalName} supplies copper motors, monoblock pressure pumps, bearing pumps and
-              complete motor+pump sets across Pakistan. We focus on genuine products, clear guidance, and
-              reliable after-sales support for homes, farms and industry.
+              For over four decades, the Jawed name has been synonymous with industrial-grade power and
+              unwavering reliability. Established in 1980, we began our journey as a dedicated B2B supplier,
+              engineering high-performance motors for industries that demanded nothing but the best.
             </p>
             <p>
-              Head office: {siteConfig.contact.address}. Manufacturing: {siteConfig.contact.manufacturing}.
-              With nationwide delivery and cash-on-delivery options, getting the right pump has never been easier.
+              Today, Jawed Pumps &amp; Motors has evolved to bring that exact same industrial strength
+              directly to your doorstep. From 100% copper motors and robust monoblock pressure pumps to
+              heavy-duty bearing pumps and complete pump sets, we provide water solutions that stand the test
+              of time.
             </p>
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {siteConfig.features.map((f) => {
-              const Icon = Icons[f.icon as IconName] ?? Icons.check;
+            {highlights.map((f) => {
+              const Icon = Icons[f.icon] ?? Icons.check;
               return (
                 <div key={f.title} className="flex items-start gap-3 rounded-xl border bg-white p-5">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
@@ -40,6 +70,17 @@ export default function AboutPage() {
                 </div>
               );
             })}
+          </div>
+
+          <div className="mt-10 space-y-4 leading-relaxed text-gray-600">
+            <p>
+              Proudly manufactured in the industrial hub of Gujranwala and distributed through our Karachi
+              headquarters (F-28 Main Suparco Road-13), we bridge the gap between world-class engineering and
+              everyday utility. Whether you are powering a large-scale farm, an industrial facility, or securing
+              reliable water pressure for your home, Jawed delivers. With nationwide delivery, easy
+              cash-on-delivery options, and expert after-sales support, getting the right pump has never been
+              more seamless.
+            </p>
           </div>
         </div>
       </div>
