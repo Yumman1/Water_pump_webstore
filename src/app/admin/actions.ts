@@ -55,11 +55,25 @@ export async function saveProduct(id: string | null, fd: FormData) {
   const name = str(fd, "name");
   const slug = str(fd, "slug") || slugify(name);
 
+  const brandSelect = str(fd, "brandSelect");
+  const brandCustom = str(fd, "brandCustom");
+  const brand =
+    brandSelect === "__custom"
+      ? brandCustom || null
+      : brandSelect || null;
+
+  const specs = parseSpecs(str(fd, "specs"));
+  // Dedicated video field is stored in specs so no schema migration is required.
+  delete specs.Video;
+  delete specs.video;
+  const video = str(fd, "video");
+  if (video) specs.Video = video;
+
   const data = {
     name,
     slug,
     sku: str(fd, "sku"),
-    brand: str(fd, "brand") || null,
+    brand,
     description: str(fd, "description"),
     shortDescription: str(fd, "shortDescription") || null,
     price: num(fd, "price"),
@@ -71,10 +85,10 @@ export async function saveProduct(id: string | null, fd: FormData) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     condition: (str(fd, "condition") === "USED" ? "USED" : "NEW") as any,
     featured: bool(fd, "featured"),
-    active: bool(fd, "active"),
+    active: str(fd, "active") !== "false",
     images: parseList(str(fd, "images")),
     tags: parseList(str(fd, "tags")),
-    specs: parseSpecs(str(fd, "specs")),
+    specs,
     categoryId: str(fd, "categoryId"),
   };
 
@@ -85,7 +99,21 @@ export async function saveProduct(id: string | null, fd: FormData) {
   }
   revalidatePath("/admin/products");
   revalidatePath("/shop");
+  revalidatePath(`/product/${slug}`);
   redirect("/admin/products");
+}
+
+export async function toggleProductActive(id: string) {
+  await requireAdmin();
+  const product = await prisma.product.findUnique({ where: { id } });
+  if (!product) throw new Error("Product not found.");
+  await prisma.product.update({
+    where: { id },
+    data: { active: !product.active },
+  });
+  revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath(`/product/${product.slug}`);
 }
 
 export async function deleteProduct(id: string) {
