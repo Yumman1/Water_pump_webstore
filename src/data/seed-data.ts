@@ -134,7 +134,7 @@ export const products: SeedProduct[] = [
     categorySlug: "copper-motors",
     shortDescription: "0.5HP 100% copper motor, throws water up to 30 feet (2nd floor).",
     description:
-      "Jawed 0.5HP copper motor for light domestic and small-farm pumping. Runs on 220V single-phase at 2 amp and 1450 RPM with 100% copper winding. Delivers water throw-up of about 30 feet, suitable for 2nd-floor height, and is covered by a 1-year warranty.",
+      "The Jawed 0.5HP copper motor is a compact, efficient choice for light domestic and small farm water pumping. It runs on 220V single phase power at 2 amp and a steady 1450 RPM, with a full 100% copper winding for cooler running and longer service life. Water throw-up reaches about 30 feet, which is suitable for second floor height in typical homes. Pair it with a matching 0.5HP / 1 inch bearing pump for a complete light duty set. Covered by a 1 year warranty.",
     featured: true,
     tags: ["copper", "motor", "0.5hp"],
     specs: {
@@ -158,7 +158,7 @@ export const products: SeedProduct[] = [
     categorySlug: "copper-motors",
     shortDescription: "1HP J copper motor, throws water up to 55 feet (4th floor).",
     description:
-      "Jawed 1HP J-series copper motor for standard pump sets (GD45000, GD7000, GD22000 and similar). Runs on 220V single-phase at 3 amp and 1450 RPM with 100% copper winding. Water throw-up reaches about 55 feet, suitable for 4th-floor height, with a 1-year warranty.",
+      "The Jawed 1HP J series copper motor is built for everyday pump sets and is a popular match for GD45000, GD7000 and GD22000 bearing pumps. It operates on 220V single phase at 3 amp and 1450 RPM, using 100% copper winding for reliable duty cycles. Water throw-up reaches about 55 feet, suitable for fourth floor height in multi storey homes. Choose this motor when you need a balanced, dependable drive for standard agricultural and domestic pumping. Covered by a 1 year warranty.",
     featured: true,
     tags: ["copper", "motor", "1hp", "j-series"],
     specs: {
@@ -183,7 +183,7 @@ export const products: SeedProduct[] = [
     categorySlug: "copper-motors",
     shortDescription: "1HP S heavy-duty copper motor, throw-up up to 70 feet.",
     description:
-      "Jawed 1HP S-series heavy-duty copper motor for tougher pumping loads, including GD25000 / GD26000 class sets. Runs on 220V at 4 amp and 1450 RPM with 100% copper winding. Water throw-up up to 70 feet, backed by a 1-year warranty.",
+      "The Jawed 1HP S series heavy duty copper motor is made for tougher pumping loads where continuous or demanding duty is expected. It runs on 220V at 4 amp and 1450 RPM with 100% copper winding for strength under load. Water throw-up reaches up to 70 feet, making it a strong partner for GD25000 and GD26000 class bearing pump sets. Ideal for farms and homes that need more head than a standard J series motor. Covered by a 1 year warranty.",
     tags: ["copper", "motor", "1hp", "s-series", "heavy-duty"],
     specs: {
       Power: "1 HP",
@@ -208,7 +208,7 @@ export const products: SeedProduct[] = [
     categorySlug: "copper-motors",
     shortDescription: "1HP full-load heavy-duty copper motor, throw-up up to 100 feet.",
     description:
-      "Jawed 1HP full-load heavy-duty copper motor for high-demand installations and 2HP class bearing pumps (GD50000). Runs on 220V at 5 amp and 1450 RPM with 100% copper winding. Water throw-up up to 100 feet, with a 1-year warranty.",
+      "The Jawed 1HP full load heavy duty copper motor is engineered for high demand installations and professional pumping setups. It draws 5 amp on 220V at 1450 RPM and uses 100% copper winding to handle sustained load without compromise. Water throw-up reaches up to 100 feet, so it pairs naturally with 2HP class bearing pumps such as GD50000. Select this motor when you need maximum head and continuous duty performance. Covered by a 1 year warranty.",
     featured: true,
     tags: ["copper", "motor", "1hp", "full-load", "heavy-duty"],
     specs: {
@@ -235,7 +235,7 @@ export const products: SeedProduct[] = [
     categorySlug: "monoblock-pressure-pumps",
     shortDescription: "0.5HP Jawed monoblock. Tank to overhead up to 30 feet (2nd floor).",
     description:
-      "Jawed 0.5HP monoblock pressure pump for residential boosting from tank to overhead tank. Capacity up to 30 feet (2nd floor height) with 100% copper winding. Ideal for showers, taps and rooftop tanks. Covered by a 1-year warranty.",
+      "The Jawed 0.5HP monoblock pressure pump is designed for residential boosting from a ground or underground tank up to the overhead tank. With 100% copper winding and tank to overhead capacity of up to 30 feet (second floor height), it improves pressure for showers, taps, kitchens and rooftop tanks. The compact monoblock design is simple to install and maintain in homes and small buildings. A practical everyday booster when you need steady domestic pressure without a separate motor and pump set. Covered by a 1 year warranty.",
     featured: true,
     tags: ["monoblock", "pressure", "0.5hp", "jawed"],
     specs: {
@@ -258,7 +258,7 @@ export const products: SeedProduct[] = [
     categorySlug: "monoblock-pressure-pumps",
     shortDescription: "1HP Jawed monoblock. Tank to overhead 60 feet (4th floor).",
     description:
-      "Jawed 1HP monoblock pressure pump for homes and small farms. Tank to overhead tank capacity of 60 feet (4th floor height) with 100% copper wiring. Stronger flow and head for larger homes, gardens and light commercial use. Covered by a 1-year warranty.",
+      "The Jawed 1HP monoblock pressure pump delivers stronger flow and head for larger homes, gardens and light commercial boosting. Tank to overhead tank capacity reaches 60 feet (fourth floor height), with 100% copper wiring for efficient, durable running. Use it to lift water from storage to higher floors or to maintain pressure across multiple bathrooms and outdoor points. A solid step up from 0.5HP units when your building height or demand needs more power. Covered by a 1 year warranty.",
     tags: ["monoblock", "pressure", "1hp", "jawed"],
     specs: {
       Power: "1 HP",
@@ -280,7 +280,7 @@ export const products: SeedProduct[] = [
     categorySlug: "monoblock-pressure-pumps",
     shortDescription: "2HP Jawed monoblock with steel impeller. Tank to overhead up to 75 feet.",
     description:
-      "Jawed 2HP monoblock pressure pump with a steel impeller for heavy pressure duty. Tank to overhead tank capacity up to 75 feet with 100% copper wiring. Built for higher head and demanding installations. Covered by a 1-year warranty.",
+      "The Jawed 2HP monoblock pressure pump with steel impeller is built for heavy pressure duty and higher head installations. Tank to overhead capacity reaches up to 75 feet, and 100% copper wiring supports reliable performance under load. The steel impeller adds durability compared with standard plastic impellers, especially where abrasive or continuous duty is expected. Choose this model for taller buildings, larger rooftop tanks or demanding residential and light commercial pressure needs. Covered by a 1 year warranty.",
     featured: true,
     tags: ["monoblock", "pressure", "2hp", "jawed", "steel-impeller"],
     specs: {
@@ -304,7 +304,7 @@ export const products: SeedProduct[] = [
     categorySlug: "monoblock-pressure-pumps",
     shortDescription: "0.5HP Premium monoblock. Tank to overhead up to 30 feet (2nd floor).",
     description:
-      "Premium 0.5HP monoblock pressure pump for residential boosting from tank to overhead tank. Capacity up to 30 feet (2nd floor height) with 100% copper winding. Suited to showers, taps and rooftop tanks. Covered by a 1-year warranty.",
+      "The Premium 0.5HP monoblock pressure pump is a refined residential booster for lifting water from tank to overhead tank. Capacity reaches up to 30 feet (second floor height) with 100% copper winding for efficient everyday use. It suits showers, taps, kitchens and rooftop tanks where a clean finish and dependable pressure matter. A compact Premium line option for homes that want stronger bathroom and kitchen flow without a full motor pump set. Covered by a 1 year warranty.",
     tags: ["monoblock", "pressure", "0.5hp", "premium"],
     specs: {
       Power: "0.5 HP",
@@ -326,7 +326,7 @@ export const products: SeedProduct[] = [
     categorySlug: "monoblock-pressure-pumps",
     shortDescription: "1HP Premium monoblock. Tank to overhead 60 feet (4th floor).",
     description:
-      "Premium 1HP monoblock pressure pump for stronger domestic and light commercial boosting. Tank to overhead tank capacity of 60 feet (4th floor height) with 100% copper wiring. Covered by a 1-year warranty.",
+      "The Premium 1HP monoblock pressure pump is made for stronger domestic and light commercial pressure boosting. Tank to overhead tank capacity of 60 feet (fourth floor height) and 100% copper wiring give you the head needed for taller homes and busier water points. Use it where multiple floors, bathrooms or outdoor outlets need consistent pressure from storage. A Premium step up when 0.5HP is not enough for your building height or usage. Covered by a 1 year warranty.",
     tags: ["monoblock", "pressure", "1hp", "premium"],
     specs: {
       Power: "1 HP",
@@ -348,7 +348,7 @@ export const products: SeedProduct[] = [
     categorySlug: "monoblock-pressure-pumps",
     shortDescription: "2HP Premium monoblock with steel impeller. Tank to overhead up to 75 feet.",
     description:
-      "Premium 2HP monoblock pressure pump with a steel impeller for heavy pressure duty. Tank to overhead tank capacity up to 75 feet with 100% copper wiring. Built for higher head and demanding installations. Covered by a 1-year warranty.",
+      "The Premium 2HP monoblock pressure pump with steel impeller handles heavy pressure duty and high head requirements. Tank to overhead capacity reaches up to 75 feet, supported by 100% copper wiring for lasting performance. The steel impeller is chosen for durability under higher pressure and more demanding duty cycles. Ideal for larger homes, taller rooftop lifts and light commercial boosting where strength and finish both matter. Covered by a 1 year warranty.",
     featured: true,
     tags: ["monoblock", "pressure", "2hp", "premium", "steel-impeller"],
     specs: {
@@ -374,7 +374,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "2HP Premium double-belt bearing pump. 70 feet+ deep-well suction.",
     description:
-      "Premium GD50000 2HP double-belt bearing pump for suction of in-line water. Delivers 70 feet and above water suction from deep wells. Steel-plate construction for high-demand agricultural and industrial use. Covered by a 1-year warranty.",
+      "The Premium GD50000 2HP bearing pump is a high capacity double belt unit for suction of in-line water and deep well duty. It delivers 70 feet and above water suction from deep wells, with steel plate construction for agricultural and industrial use. Double belt drive gives stable power transfer when matched with a full load heavy duty copper motor. Choose this pump for high demand irrigation, large farms and professional water transfer jobs. Covered by a 1 year warranty.",
     featured: true,
     tags: ["bearing", "2hp", "gd50000", "premium", "steel-plate", "double-belt"],
     specs: {
@@ -397,7 +397,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "2HP Jawed double-belt bearing pump. 70 feet+ deep-well suction.",
     description:
-      "Jawed GD50000 2HP double-belt bearing pump for suction of in-line water. Delivers 70 feet and above water suction from deep wells. Steel-plate body for heavy agricultural and industrial transfer with a full-load motor. Covered by a 1-year warranty.",
+      "The Jawed GD50000 2HP bearing pump is a heavy duty double belt pump for suction of in-line water from deep wells. Water suction reaches 70 feet and above, backed by a tough steel plate body for agricultural and industrial transfer. Pair it with a 1HP full load heavy duty copper motor for a complete high capacity set. Built for continuous, high demand pumping where head and reliability are critical. Covered by a 1 year warranty.",
     featured: true,
     tags: ["bearing", "2hp", "gd50000", "jawed", "steel-plate", "double-belt"],
     specs: {
@@ -420,7 +420,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "1HP Jawed GD25000 double-belt pump. 30-60 feet bore suction.",
     description:
-      "Jawed GD25000 1HP double-belt bearing pump for suction of in-line water. Suited to 30-60 feet suction from deep well or bore. Commonly paired with the 1HP S copper motor. Covered by a 1-year warranty.",
+      "The Jawed GD25000 1HP bearing pump is a double belt steel plate pump for suction of in-line water from deep wells or bore. It is suited to 30 to 60 feet suction depth and is commonly paired with the 1HP S copper motor for a balanced heavy duty set. Double belt drive keeps power delivery steady for farm and domestic boring applications. A proven model when you need mid range bore suction with durable steel plate construction. Covered by a 1 year warranty.",
     tags: ["bearing", "1hp", "gd25000", "steel-plate", "double-belt"],
     specs: {
       Power: "1 HP",
@@ -450,7 +450,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "1HP Jawed GD26000 double-belt pump. 30-60 feet bore suction.",
     description:
-      "Jawed GD26000 1HP double-belt bearing pump for suction of in-line water. Suited to 30-60 feet suction from deep well or bore. A strong match for the 1HP S copper motor set. Covered by a 1-year warranty.",
+      "The Jawed GD26000 1HP bearing pump is a double belt steel plate pump built for suction of in-line water. It handles 30 to 60 feet suction from deep well or bore and pairs strongly with the 1HP S heavy duty copper motor. Double belt drive supports reliable running for agricultural and domestic water lifting. Choose GD26000 when you want a robust 1HP bearing pump for medium depth bore work. Covered by a 1 year warranty.",
     tags: ["bearing", "1hp", "gd26000", "steel-plate", "double-belt"],
     specs: {
       Power: "1 HP",
@@ -480,7 +480,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "1HP Jawed GD22000 double-belt pump. 30-60 feet bore suction.",
     description:
-      "Jawed GD22000 1HP double-belt bearing pump for suction of in-line water. Suited to 30-60 feet suction from deep well or bore. Popular pairing with the 1HP J copper motor. Covered by a 1-year warranty.",
+      "The Jawed GD22000 1HP bearing pump is a double belt steel plate pump for suction of in-line water from deep well or bore. Suction capacity of 30 to 60 feet makes it a popular pairing with the 1HP J copper motor. Double belt drive and steel plate construction give dependable performance for farms and homes. A versatile 1HP option for everyday boring and in-line water suction needs. Covered by a 1 year warranty.",
     tags: ["bearing", "1hp", "gd22000", "steel-plate", "double-belt"],
     specs: {
       Power: "1 HP",
@@ -502,7 +502,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "1HP Jawed GD7000 double-belt pump. 30-60 feet bore suction.",
     description:
-      "Jawed GD7000 1HP double-belt bearing pump for suction of in-line water. Suited to 30-60 feet suction from deep well or bore for everyday agricultural and domestic sets. Covered by a 1-year warranty.",
+      "The Jawed GD7000 1HP bearing pump is a double belt steel plate pump for everyday agricultural and domestic pumping sets. It is made for suction of in-line water and suits 30 to 60 feet suction from deep well or bore. Double belt drive keeps operation smooth when matched with a 1HP J copper motor. A practical, durable choice for routine farm and household bore work. Covered by a 1 year warranty.",
     tags: ["bearing", "1hp", "gd7000", "steel-plate", "double-belt"],
     specs: {
       Power: "1 HP",
@@ -532,7 +532,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "1HP Jawed GD45000 double-belt cut-size pump. 30-60 feet suction.",
     description:
-      "Jawed GD45000 1HP cut-size double-belt bearing pump for suction of in-line water. Compact footprint with 30-60 feet suction from deep well or bore. Typically matched with a 1HP J copper motor. Covered by a 1-year warranty.",
+      "The Jawed GD45000 1HP cut size bearing pump is a compact double belt unit for suction of in-line water where space is limited. It still delivers 30 to 60 feet suction from deep well or bore, with a smaller footprint than full size models. Typically matched with a 1HP J copper motor for an efficient complete set. Ideal when installation space is tight but you still need solid bore suction performance. Covered by a 1 year warranty.",
     tags: ["bearing", "1hp", "gd45000", "cut-size", "double-belt"],
     specs: {
       Power: "1 HP",
@@ -554,7 +554,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "0.5HP / 1 inch Jawed double-belt pump. 20-25 feet boring suction.",
     description:
-      "Jawed 0.5HP / 1 inch (Inchi) double-belt bearing pump for suction of in-line water. Up to 20-25 feet water suction for boring. Mainly used for in-line water suction and pairs with the 0.5HP copper motor. Covered by a 1-year warranty.",
+      "The Jawed 0.5HP / 1 inch (Inchi) bearing pump is a double belt pump mainly used for suction of in-line water. It provides up to 20 to 25 feet water suction for boring, making it suitable for lighter domestic and small farm duty. Pair it with the 0.5HP copper motor for a complete light duty package that is easy to install and run. A practical entry level bearing pump when you need reliable shallow bore and in-line suction. Covered by a 1 year warranty.",
     tags: ["bearing", "0.5hp", "inchi", "1-inch", "jawed", "double-belt"],
     specs: {
       Power: "0.5 HP",
@@ -583,7 +583,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "0.5HP / 1 inch Imported double-belt pump. 20-25 feet boring suction.",
     description:
-      "Imported Diamond 0.5HP / 1 inch (Inchi) double-belt bearing pump for suction of in-line water. Up to 20-25 feet water suction for boring. Mainly used for in-line water suction as an imported-line option alongside Jawed Inchi pumps. Covered by a 1-year warranty.",
+      "The Imported Diamond 0.5HP / 1 inch (Inchi) bearing pump is a double belt pump mainly used for suction of in-line water. It offers up to 20 to 25 feet water suction for boring, suited to lighter domestic and small farm applications. An imported line alternative alongside Jawed Inchi pumps when you want the same duty class with Diamond branding. Use it with a matching 0.5HP copper motor for a complete light duty set. Covered by a 1 year warranty.",
     tags: ["bearing", "0.5hp", "inchi", "1-inch", "diamond", "imported", "double-belt"],
     specs: {
       Power: "0.5 HP",
