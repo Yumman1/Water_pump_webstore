@@ -171,13 +171,13 @@ export default function CartPage() {
             {installationType === "WARRANTY" && (
               <div className="mt-4">
                 <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Serial number of motor being replaced *
+                  Serial number of unit being replaced *
                 </label>
                 <input
                   value={replacementSerial}
                   onChange={(e) => setReplacementSerial(e.target.value)}
                   className="h-11 w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-                  placeholder="Enter motor serial number"
+                  placeholder="Enter unit serial number"
                 />
               </div>
             )}
@@ -233,7 +233,7 @@ export default function CartPage() {
             <span className="text-lg font-bold text-gray-900">{formatCurrency(total)}</span>
           </div>
           {!canCheckout && (
-            <p className="mt-3 text-sm text-red-600">Enter the replacement motor serial number to continue.</p>
+            <p className="mt-3 text-sm text-red-600">Enter the replacement unit serial number to continue.</p>
           )}
           <ButtonLink
             href={canCheckout ? "/checkout" : "/cart"}

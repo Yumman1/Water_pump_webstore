@@ -79,7 +79,7 @@ export const siteConfig = {
   showcase: {
     enabled: true,
     heading: "See Us in Action",
-    subheading: "Real Jawed products, warehouse stock and water solutions in motion.",
+    subheading: "Real products, warehouse stock and water solutions in motion.",
     clips: [
       {
         title: "Copper Motors",
