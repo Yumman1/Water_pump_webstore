@@ -18,7 +18,7 @@ const highlights: { title: string; description: string; icon: IconName }[] = [
   },
   {
     title: "End-to-End Solutions",
-    description: "A complete catalog of motors, monoblock pressure pumps, and bearing pumps.",
+    description: "A growing catalog of motors, pumps and complete water systems for every need.",
     icon: "box",
   },
   {
@@ -49,9 +49,9 @@ export default function AboutPage() {
             </p>
             <p>
               Today, Jawed Pumps &amp; Motors has evolved to bring that exact same industrial strength
-              directly to your doorstep. From 100% copper motors and robust monoblock pressure pumps to
-              heavy-duty bearing pumps and complete pump sets, we provide water solutions that stand the test
-              of time.
+              directly to your doorstep. Whether you need motors, pressure systems, bore and deep-well
+              pumps, complete sets or future product lines we add to the catalog, we provide water
+              solutions that stand the test of time.
             </p>
           </div>
 

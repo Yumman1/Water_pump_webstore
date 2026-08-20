@@ -12,7 +12,8 @@
 export type MenuItem = { label: string; href: string };
 export type MenuGroup = { title: string; items: MenuItem[] };
 
-// Brands (used both in the mega-menu and for /brand/[slug] pages).
+// Brands shown in the mega-menu and on /brand/[slug] pages.
+// Add new brand labels/slugs here as the catalog expands.
 export const brands: { label: string; slug: string }[] = [
   { label: "Jawed", slug: "jawed" },
   { label: "Premium", slug: "premium" },

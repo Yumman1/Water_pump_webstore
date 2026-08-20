@@ -24,7 +24,7 @@ export default async function ShopPage({
   return (
     <ProductListing
       title="All Products"
-      description="Browse our full range of new pumps, motors and accessories."
+      description="Browse our full range of water pumps, motors and accessories. More products and brands are added as we grow."
       query={{ condition: "NEW" }}
       navLinks={navLinks}
       searchParams={searchParams}

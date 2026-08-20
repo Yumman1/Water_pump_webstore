@@ -10,9 +10,9 @@
 export const siteConfig = {
   name: "Jawed",
   legalName: "Jawed Pumps & Motors",
-  tagline: "Domestic, Industrial and Agricultural pumps",
+  tagline: "Water pump solutions for homes, farms and industry",
   description:
-    "Jawed copper motors, monoblock pressure pumps, bearing pumps and complete motor+pump sets. Genuine products, nationwide delivery, expert support.",
+    "Jawed Pumps & Motors provides industrial-grade water pump solutions for B2B and B2C clients across Pakistan. From motors and pressure systems to bore and deep-well pumping, we help you solve any water lifting or pressure challenge with genuine products, nationwide delivery and expert support.",
 
   // Logo: put an image at /public/logo.png (or .svg) to use it automatically.
   // If the file is missing, the name is shown as a styled text logo.
@@ -64,7 +64,7 @@ export const siteConfig = {
   hero: {
     heading: "SERVING THE BEST SINCE 1980",
     subheading:
-      "Jawed and Premium copper motors, monoblock pressure pumps, bearing pumps and complete sets. Genuine stock with nationwide delivery.",
+      "A trusted B2B name now serving every water pump need, from homes and farms to industry. Genuine stock, expert guidance and nationwide delivery.",
     ctaLabel: "Shop All Products",
     ctaHref: "/shop",
     // Background image for the hero (used as the video poster / fallback).
@@ -79,7 +79,7 @@ export const siteConfig = {
   showcase: {
     enabled: true,
     heading: "See Us in Action",
-    subheading: "A look inside our warehouse, installations and the products we love.",
+    subheading: "A look inside our warehouse, installations and real world water solutions.",
     clips: [
       {
         title: "Inside Our Warehouse",
@@ -89,13 +89,13 @@ export const siteConfig = {
       },
       {
         title: "Professional Installation",
-        description: "Our team installing a solar submersible pump.",
+        description: "Expert installation support for pumps and motors of every type.",
         src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
         poster: "https://picsum.photos/seed/clip-install/800/500",
       },
       {
         title: "This Week's Deals",
-        description: "Big savings across pumps, motors & accessories.",
+        description: "Big savings across water pumps, motors and accessories.",
         src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
         poster: "https://picsum.photos/seed/clip-deals/800/500",
       },
@@ -107,7 +107,7 @@ export const siteConfig = {
     enabled: true,
     badge: "Limited Time Offer",
     heading: "Get 10% Off Your First Order",
-    message: "Use code WELCOME10 at checkout on orders over Rs 10,000. Genuine pumps, nationwide delivery.",
+    message: "Use code WELCOME10 at checkout on orders over Rs 10,000. Genuine products, nationwide delivery.",
     couponCode: "WELCOME10",
     ctaLabel: "Shop the Deals",
     ctaHref: "/deals",
@@ -118,7 +118,7 @@ export const siteConfig = {
   features: [
     { title: "Genuine Products", description: "100% authentic with warranty", icon: "shield" },
     { title: "Nationwide Delivery", description: "Fast shipping across Pakistan", icon: "truck" },
-    { title: "Expert Support", description: "Help choosing the right pump", icon: "headset" },
+    { title: "Expert Support", description: "Solutions for any water pump problem", icon: "headset" },
     { title: "Secure Checkout", description: "Cash on delivery available", icon: "lock" },
   ],
 };

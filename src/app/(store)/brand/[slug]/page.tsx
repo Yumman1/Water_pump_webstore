@@ -37,7 +37,7 @@ export default function BrandPage({
   return (
     <ProductListing
       title={`${brand.label} Products`}
-      description={`Browse all ${brand.label} pumps, motors and accessories.`}
+      description={`Browse ${brand.label} products across our water pump and motor range.`}
       query={{ brand: brand.label }}
       navLinks={navLinks}
       navTitle="Brands"

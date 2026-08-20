@@ -73,7 +73,7 @@ export default async function HomePage() {
         <div className="mb-6 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Shop by Category</h2>
-            <p className="text-gray-500">Find the right pump for your needs</p>
+            <p className="text-gray-500">Solutions for every water lifting and pressure need</p>
           </div>
           <Link href="/shop" className="text-sm font-medium text-brand-600 hover:text-brand-700">
             View all →
@@ -106,7 +106,7 @@ export default async function HomePage() {
         <div className="mb-6 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Featured Products</h2>
-            <p className="text-gray-500">Our most popular pumps</p>
+            <p className="text-gray-500">Trusted picks for homes, farms and industry</p>
           </div>
           <Link href="/shop" className="text-sm font-medium text-brand-600 hover:text-brand-700">
             View all →
@@ -142,7 +142,7 @@ export default async function HomePage() {
           <div className="mb-6 flex items-end justify-between">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Our Services</h2>
-              <p className="text-gray-500">Installation, maintenance & complete water solutions</p>
+              <p className="text-gray-500">Support for installation, maintenance and every water pump challenge</p>
             </div>
             <Link href="/services" className="text-sm font-medium text-brand-600 hover:text-brand-700">View all →</Link>
           </div>
