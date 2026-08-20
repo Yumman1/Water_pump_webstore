@@ -37,7 +37,9 @@ export default function ContactPage() {
               <Icons.headset className="mt-0.5 h-5 w-5 text-brand-600" />
               <div>
                 <p className="font-semibold text-gray-900">Email</p>
-                <p className="text-gray-600">{siteConfig.contact.email}</p>
+                <a href={`mailto:${siteConfig.contact.email}`} className="text-gray-600 hover:text-brand-600">
+                  {siteConfig.contact.email}
+                </a>
               </div>
             </div>
             <div className="rounded-xl border bg-white p-5">

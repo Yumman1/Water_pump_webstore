@@ -55,7 +55,11 @@ export async function SiteFooter() {
               <Icons.whatsapp className="mt-0.5 h-4 w-4 shrink-0 text-green-400" />
               <span>{siteConfig.contact.whatsapp}</span>
             </li>
-            <li>{siteConfig.contact.email}</li>
+            <li>
+              <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-white">
+                {siteConfig.contact.email}
+              </a>
+            </li>
             <li>{siteConfig.contact.address}</li>
             <li>{siteConfig.contact.manufacturing}</li>
             <li>{siteConfig.contact.hours}</li>
