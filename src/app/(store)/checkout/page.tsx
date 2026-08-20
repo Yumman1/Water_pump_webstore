@@ -163,12 +163,12 @@ export default function CheckoutPage() {
                 <span className="font-medium">Installation:</span> {installLabel}
                 {installationType === "WARRANTY" ? (
                   <>
-                    {" — "}
+                    {": "}
                     <span className="text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>{" "}
                     {formatCurrency(0)}
                   </>
                 ) : (
-                  <> — {formatCurrency(installationFee)}</>
+                  <>: {formatCurrency(installationFee)}</>
                 )}
               </p>
               {replacementSerial && (

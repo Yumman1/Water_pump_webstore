@@ -1,5 +1,5 @@
 /**
- * SERVICES  —  edit to match the services your business offers.
+ * SERVICES - edit to match the services your business offers.
  * Replace the `image` URLs with real photos of your work.
  * Each service gets its own page at /services/[slug] with a request form.
  *
@@ -40,7 +40,7 @@ export const services: Service[] = [
     image: img("svc-pool"),
     short: "Keep your pool clean, safe and crystal clear year-round.",
     description:
-      "Complete swimming pool care — cleaning, water balancing, filtration and pump servicing. One-time cleanups or regular maintenance contracts available.",
+      "Complete swimming pool care including cleaning, water balancing, filtration and pump servicing. One-time cleanups or regular maintenance contracts available.",
     features: [
       "Pool cleaning & vacuuming",
       "Water testing & chemical balancing",

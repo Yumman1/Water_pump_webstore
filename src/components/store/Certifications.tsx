@@ -3,7 +3,7 @@ import Image from "next/image";
 const certifications = [
   {
     src: "/certifications/pure-copper.png",
-    alt: "100% Genuine Customer Satisfaction — Pure Copper",
+    alt: "100% Genuine Customer Satisfaction. Pure Copper",
     label: "Pure Copper",
   },
   {

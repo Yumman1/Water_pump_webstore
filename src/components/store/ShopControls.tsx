@@ -6,7 +6,7 @@ const SORTS = [
   { value: "newest", label: "Newest" },
   { value: "price-asc", label: "Price: Low to High" },
   { value: "price-desc", label: "Price: High to Low" },
-  { value: "name-asc", label: "Name: A–Z" },
+  { value: "name-asc", label: "Name: A to Z" },
 ];
 
 export function ShopSort() {

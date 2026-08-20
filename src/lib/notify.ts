@@ -1,13 +1,13 @@
 /**
- * Order notifications — email + WhatsApp, for the shop owner and the customer.
+ * Order notifications, email + WhatsApp, for the shop owner and the customer.
  *
  * Providers are configured via environment variables and used only if present;
  * otherwise messages are logged to the server console (demo mode) so nothing
  * crashes. See .env.example / README for setup.
  *
- *   Email:     RESEND_API_KEY (+ EMAIL_FROM)   — https://resend.com  (recommended)
+ *   Email:     RESEND_API_KEY (+ EMAIL_FROM)  , https://resend.com  (recommended)
  *          or  SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS  (any SMTP, e.g. Gmail)
- *   WhatsApp:  WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID  — Meta WhatsApp Cloud API
+ *   WhatsApp:  WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID . Meta WhatsApp Cloud API
  */
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
@@ -61,7 +61,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
 export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<void> {
   const from = process.env.EMAIL_FROM ?? `${siteConfig.name} <onboarding@resend.dev>`;
 
-  // 1) Resend (HTTP API — no dependency needed)
+  // 1) Resend (HTTP API, no dependency needed)
   if (process.env.RESEND_API_KEY) {
     try {
       const res = await fetch("https://api.resend.com/emails", {
@@ -102,7 +102,7 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
   }
 
   // 3) Demo fallback
-  console.log(`\n📧 [EMAIL → ${opts.to}] ${opts.subject}\n(No email provider configured — set RESEND_API_KEY or SMTP_* to send.)`);
+  console.log(`\n📧 [EMAIL → ${opts.to}] ${opts.subject}\n(No email provider configured, set RESEND_API_KEY or SMTP_* to send.)`);
 }
 
 /** Normalize a phone number to international digits for WhatsApp (defaults PK 92). */
@@ -139,7 +139,7 @@ export async function sendWhatsApp(opts: { to: string; text: string }): Promise<
     }
   }
 
-  console.log(`\n💬 [WHATSAPP → ${to}]\n${opts.text}\n(No WhatsApp provider configured — set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID to send.)`);
+  console.log(`\n💬 [WHATSAPP → ${to}]\n${opts.text}\n(No WhatsApp provider configured, set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID to send.)`);
 }
 
 // ---------------------------------------------------------------------------
@@ -177,7 +177,7 @@ function itemsTextLines(order: OrderLike): string {
   return order.items
     .map((i) => {
       const tag = i.underWarranty ? " [warranty]" : "";
-      return `• ${i.name} × ${i.quantity}${tag} — ${formatCurrency(i.price * i.quantity)}`;
+      return `• ${i.name} × ${i.quantity}${tag}, ${formatCurrency(i.price * i.quantity)}`;
     })
     .join("\n");
 }
@@ -205,7 +205,7 @@ function installHtmlBlock(order: OrderLike): string {
   const serial = order.replacementSerial
     ? `<br/>Replacement serial: <b>${order.replacementSerial}</b>`
     : "";
-  return `<p style="color:#374151;margin-top:8px">Installation: <b>${label}</b> — ${fee}${serial}</p>`;
+  return `<p style="color:#374151;margin-top:8px">Installation: <b>${label}</b>, ${fee}${serial}</p>`;
 }
 function emailShell(title: string, body: string): string {
   return `<div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px">
@@ -230,7 +230,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
     tasks.push(
       sendEmail({
         to: settings.ownerNotifyEmail,
-        subject: `🛒 New order ${order.orderNumber} — ${formatCurrency(order.total)}`,
+        subject: `🛒 New order ${order.orderNumber} (${formatCurrency(order.total)})`,
         html: emailShell(
           `New order received: ${order.orderNumber}`,
           `<p style="color:#374151">Customer: <b>${order.customerName}</b> (${order.customerPhone}, ${order.customerEmail})<br/>
@@ -256,7 +256,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
     tasks.push(
       sendEmail({
         to: order.customerEmail,
-        subject: `Order confirmed — ${order.orderNumber}`,
+        subject: `Order confirmed: ${order.orderNumber}`,
         html: emailShell(
           `Thank you for your order, ${order.customerName}!`,
           `<p style="color:#374151">We've received your order <b>${order.orderNumber}</b> and will contact you shortly to confirm delivery.</p>
@@ -292,7 +292,7 @@ export async function notifyDispatch(order: OrderLike): Promise<void> {
         subject: `Your order ${order.orderNumber} has been dispatched 🚚`,
         html: emailShell(
           `Your order is on its way!`,
-          `<p style="color:#374151">Good news ${order.customerName} — your order <b>${order.orderNumber}</b> has been dispatched and will reach you soon.</p>
+          `<p style="color:#374151">Good news ${order.customerName}. Your order <b>${order.orderNumber}</b> has been dispatched and will reach you soon.</p>
            <p style="color:#374151">Deliver to: ${order.address}, ${order.city}</p>
            <p style="color:#374151">Total: <b>${formatCurrency(order.total)}</b> (${order.paymentMethod})</p>`
         ),

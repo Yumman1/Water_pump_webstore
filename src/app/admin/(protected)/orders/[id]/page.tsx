@@ -129,7 +129,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
                   {order.installationType === "NONE" && "No installation & removal"}
                   {order.installationType === "WARRANTY" && "Under warranty (fee waived)"}
                   {order.installationType === "PAID" && "Without warranty"}
-                  {" — "}
+                  {": "}
                   {formatCurrency(order.installationFee ?? 0)}
                 </p>
                 {order.replacementSerial && (

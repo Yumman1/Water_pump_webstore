@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- *  BRANDING CONFIG  —  EDIT THIS FILE TO MAKE THE STORE YOURS
+ *  BRANDING CONFIG  -  EDIT THIS FILE TO MAKE THE STORE YOURS
  * ============================================================================
  *  Change the company name, logo, contact details, colors and homepage copy
  *  here. Nothing else in the codebase needs to be touched to rebrand.
@@ -33,7 +33,7 @@ export const siteConfig = {
     address: "F-28 Main Suparco Road-13, Industrial Estate, Karachi (Head Office)",
     manufacturing: "Gujranwala, Punjab (Manufacturing unit)",
     mapUrl: "https://maps.google.com/?q=F-28+Main+Suparco+Road+Industrial+Estate+Karachi",
-    hours: "Mon – Sat, 9:00 AM – 8:00 PM",
+    hours: "Mon to Sat, 9:00 AM to 8:00 PM",
   },
 
   social: {
@@ -58,13 +58,13 @@ export const siteConfig = {
   },
 
   // Homepage promo bar (set text to "" to hide).
-  announcement: "🚚 Free delivery on orders over Rs 50,000 — Order now!",
+  announcement: "🚚 Free delivery on orders over Rs 50,000. Order now!",
 
   // Homepage hero.
   hero: {
     heading: "SERVING THE BEST SINCE 1980",
     subheading:
-      "Jawed and Premium copper motors, monoblock pressure pumps, bearing pumps and complete sets — genuine stock with nationwide delivery.",
+      "Jawed and Premium copper motors, monoblock pressure pumps, bearing pumps and complete sets. Genuine stock with nationwide delivery.",
     ctaLabel: "Shop All Products",
     ctaHref: "/shop",
     // Background image for the hero (used as the video poster / fallback).
@@ -74,7 +74,7 @@ export const siteConfig = {
     video: "/hero.mp4",
   },
 
-  // Homepage video showcase — "creative space" for production / deal / install clips.
+  // Homepage video showcase, "creative space" for production / deal / install clips.
   // Replace `src` with your own MP4s and `poster` with a thumbnail image.
   showcase: {
     enabled: true,

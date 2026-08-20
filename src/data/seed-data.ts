@@ -46,13 +46,13 @@ export type SeedProduct = {
 const img = (seed: string) => `https://picsum.photos/seed/${seed}/800/800`;
 
 const PRICE_NOTE =
-  "Contact us for the current price — rates may vary with stock and configuration.";
+  "Contact us for the current price. Rates may vary with stock and configuration.";
 
 export const categories: SeedCategory[] = [
   {
     name: "Copper Motors",
     slug: "copper-motors",
-    description: "100% copper winding motors for reliable pump duty — light to full-load heavy duty.",
+    description: "100% copper winding motors for reliable pump duty, light to full-load heavy duty.",
     image: img("cat-copper-motors"),
     sortOrder: 1,
   },
@@ -66,7 +66,7 @@ export const categories: SeedCategory[] = [
   {
     name: "Bearing Pumps",
     slug: "bearing-pumps",
-    description: "Steel-plate bearing pumps across GD models — Jawed and Premium lines.",
+    description: "Steel-plate bearing pumps across GD models. Jawed and Premium lines.",
     image: img("cat-bearing"),
     sortOrder: 3,
   },
@@ -132,9 +132,9 @@ export const products: SeedProduct[] = [
     sku: "JW-CM-05",
     brand: "Jawed",
     categorySlug: "copper-motors",
-    shortDescription: "0.5HP 100% copper motor — throws water up to 30 feet (2nd floor).",
+    shortDescription: "0.5HP 100% copper motor, throws water up to 30 feet (2nd floor).",
     description:
-      "Jawed 0.5HP copper motor for light domestic and small-farm pumping. Runs on 220V single-phase at 2 amp and 1450 RPM with 100% copper winding. Delivers water throw-up of about 30 feet — suitable for 2nd-floor height — and is covered by a 1-year warranty.",
+      "Jawed 0.5HP copper motor for light domestic and small-farm pumping. Runs on 220V single-phase at 2 amp and 1450 RPM with 100% copper winding. Delivers water throw-up of about 30 feet, suitable for 2nd-floor height, and is covered by a 1-year warranty.",
     featured: true,
     tags: ["copper", "motor", "0.5hp"],
     specs: {
@@ -156,9 +156,9 @@ export const products: SeedProduct[] = [
     sku: "JW-CM-1J",
     brand: "Jawed",
     categorySlug: "copper-motors",
-    shortDescription: "1HP J copper motor — throws water up to 55 feet (4th floor).",
+    shortDescription: "1HP J copper motor, throws water up to 55 feet (4th floor).",
     description:
-      "Jawed 1HP J-series copper motor for standard pump sets (GD45000, GD7000, GD22000 and similar). Runs on 220V single-phase at 3 amp and 1450 RPM with 100% copper winding. Water throw-up reaches about 55 feet — suitable for 4th-floor height — with a 1-year warranty.",
+      "Jawed 1HP J-series copper motor for standard pump sets (GD45000, GD7000, GD22000 and similar). Runs on 220V single-phase at 3 amp and 1450 RPM with 100% copper winding. Water throw-up reaches about 55 feet, suitable for 4th-floor height, with a 1-year warranty.",
     featured: true,
     tags: ["copper", "motor", "1hp", "j-series"],
     specs: {
@@ -181,7 +181,7 @@ export const products: SeedProduct[] = [
     sku: "JW-CM-1S",
     brand: "Jawed",
     categorySlug: "copper-motors",
-    shortDescription: "1HP S heavy-duty copper motor — throw-up up to 70 feet.",
+    shortDescription: "1HP S heavy-duty copper motor, throw-up up to 70 feet.",
     description:
       "Jawed 1HP S-series heavy-duty copper motor for tougher pumping loads, including GD25000 / GD26000 class sets. Runs on 220V at 4 amp and 1450 RPM with 100% copper winding. Water throw-up up to 70 feet, backed by a 1-year warranty.",
     tags: ["copper", "motor", "1hp", "s-series", "heavy-duty"],
@@ -206,7 +206,7 @@ export const products: SeedProduct[] = [
     sku: "JW-CM-1FL",
     brand: "Jawed",
     categorySlug: "copper-motors",
-    shortDescription: "1HP full-load heavy-duty copper motor — throw-up up to 100 feet.",
+    shortDescription: "1HP full-load heavy-duty copper motor, throw-up up to 100 feet.",
     description:
       "Jawed 1HP full-load heavy-duty copper motor for high-demand installations and 2HP class bearing pumps (GD50000). Runs on 220V at 5 amp and 1450 RPM with 100% copper winding. Water throw-up up to 100 feet, with a 1-year warranty.",
     featured: true,
@@ -235,7 +235,7 @@ export const products: SeedProduct[] = [
     categorySlug: "monoblock-pressure-pumps",
     shortDescription: "0.5HP Jawed monoblock pressure pump for home boosting.",
     description:
-      "Compact Jawed 0.5HP monoblock pressure pump for residential pressure boosting — showers, taps and rooftop tanks.",
+      "Compact Jawed 0.5HP monoblock pressure pump for residential pressure boosting, showers, taps and rooftop tanks.",
     featured: true,
     tags: ["monoblock", "pressure", "0.5hp", "jawed"],
     specs: { Power: "0.5 HP", Type: "Monoblock Pressure Pump", Brand: "Jawed", Warranty: "1 Year" },
@@ -409,7 +409,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "1HP GD26000 steel-plate bearing pump.",
     description:
-      "GD26000 1HP bearing pump with steel-plate construction — a strong match for the 1HP S copper motor set.",
+      "GD26000 1HP bearing pump with steel-plate construction, a strong match for the 1HP S copper motor set.",
     tags: ["bearing", "1hp", "gd26000", "steel-plate"],
     specs: {
       Power: "1 HP",
@@ -482,7 +482,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "1HP cut-size GD45000 bearing pump.",
     description:
-      "Cut-size GD45000 1HP bearing pump — compact footprint for installations where space is limited, typically matched with a 1HP J copper motor.",
+      "Cut-size GD45000 1HP bearing pump, compact footprint for installations where space is limited, typically matched with a 1HP J copper motor.",
     tags: ["bearing", "1hp", "gd45000", "cut-size"],
     specs: {
       Power: "1 HP",
@@ -501,7 +501,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "0.5HP Inchi Jawed bearing pump.",
     description:
-      "0.5HP / Inchi Jawed bearing pump for lighter duty sets — pairs with the 0.5HP copper motor as a complete package.",
+      "0.5HP / Inchi Jawed bearing pump for lighter duty sets, pairs with the 0.5HP copper motor as a complete package.",
     tags: ["bearing", "0.5hp", "inchi", "jawed"],
     specs: {
       Power: "0.5 HP",
@@ -527,7 +527,7 @@ export const products: SeedProduct[] = [
     categorySlug: "bearing-pumps",
     shortDescription: "0.5HP Inchi Diamond bearing pump.",
     description:
-      "0.5HP / Inchi Diamond bearing pump for lighter duty sets — an imported-line option alongside Jawed Inchi pumps.",
+      "0.5HP / Inchi Diamond bearing pump for lighter duty sets, an imported-line option alongside Jawed Inchi pumps.",
     tags: ["bearing", "0.5hp", "inchi", "diamond", "imported"],
     specs: {
       Power: "0.5 HP",
@@ -555,7 +555,7 @@ export const products: SeedProduct[] = [
     categorySlug: "complete-sets",
     shortDescription: "Matched 0.5HP motor + Inchi bearing pump set.",
     description:
-      "Complete Jawed set: 0.5HP copper motor paired with the 0.5HP / Inchi Jawed bearing pump — ready for light domestic or small farm installations.",
+      "Complete Jawed set: 0.5HP copper motor paired with the 0.5HP / Inchi Jawed bearing pump, ready for light domestic or small farm installations.",
     featured: true,
     tags: ["set", "0.5hp", "copper", "bearing", "jawed"],
     specs: {

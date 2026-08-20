@@ -19,7 +19,7 @@ export default async function DealsPage() {
           </span>
           <h1 className="mt-4 text-3xl font-extrabold sm:text-4xl">Special Offers &amp; Deals</h1>
           <p className="mx-auto mt-2 max-w-xl text-white/90">
-            Grab our best-priced pumps, motors and accessories. Discounts you won&apos;t find anywhere else — while stocks last!
+            Grab our best-priced pumps, motors and accessories. Discounts you won&apos;t find anywhere else while stocks last!
           </p>
         </div>
       </section>
@@ -28,7 +28,7 @@ export default async function DealsPage() {
         {deals.length === 0 ? (
           <div className="rounded-xl border border-dashed bg-white py-16 text-center">
             <p className="font-medium text-gray-700">No active deals right now</p>
-            <p className="mt-1 text-sm text-gray-500">Check back soon — new offers are added regularly.</p>
+            <p className="mt-1 text-sm text-gray-500">Check back soon. New offers are added regularly.</p>
           </div>
         ) : (
           <>

@@ -68,7 +68,7 @@ export default async function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-500">{p.sku}</td>
-                    <td className="px-4 py-3 text-gray-500">{p.category?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-500">{p.category?.name ?? "-"}</td>
                     <td className="px-4 py-3">
                       <span className="font-medium">{formatCurrency(p.price)}</span>
                       {p.compareAtPrice && p.compareAtPrice > p.price && (

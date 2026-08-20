@@ -2,7 +2,7 @@
  * Storefront data-access layer.
  *
  * When a database is configured (DATABASE_URL set) it reads live data via
- * Prisma. Otherwise — or if the database is temporarily unreachable — it falls
+ * Prisma. Otherwise, or if the database is temporarily unreachable, it falls
  * back to the bundled demo catalog so the storefront always renders. This is
  * what lets you deploy to Vercel first and connect a database later.
  */

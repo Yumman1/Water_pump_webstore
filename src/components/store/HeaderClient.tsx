@@ -148,7 +148,7 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
   }
 
   const mobileShopItems: DropItem[] = megaGroups.flatMap((g) => [
-    { label: `— ${g.title} —`, href: g.items[0]?.href ?? "/shop" },
+    { label: `, ${g.title},`, href: g.items[0]?.href ?? "/shop" },
     ...g.items,
   ]);
   const mobileServiceItems: DropItem[] = services.map((s) => ({ label: s.title, href: `/services/${s.slug}` }));

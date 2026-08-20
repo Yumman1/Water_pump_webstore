@@ -14,7 +14,7 @@ export default function ServicesPage() {
         <div className="container py-12 text-center">
           <h1 className="text-3xl font-extrabold sm:text-4xl">Our Services</h1>
           <p className="mx-auto mt-2 max-w-2xl text-brand-100">
-            Beyond selling pumps, we offer complete installation, maintenance and water solutions —
+            Beyond selling pumps, we offer complete installation, maintenance and water solutions,
             delivered by experienced, trusted professionals.
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function ServicesPage() {
         <div className="container flex flex-col items-center justify-between gap-4 py-10 text-center md:flex-row md:text-left">
           <div>
             <h2 className="text-2xl font-bold text-white">Need a service not listed here?</h2>
-            <p className="text-brand-100">Get in touch — our team handles all kinds of water &amp; pump work.</p>
+            <p className="text-brand-100">Get in touch. Our team handles all kinds of water &amp; pump work.</p>
           </div>
           <ButtonLink href="/contact" size="lg" variant="accent" className="shrink-0">
             Contact Us

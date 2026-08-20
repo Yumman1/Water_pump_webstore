@@ -36,7 +36,7 @@ export default async function AdminCustomersPage() {
                       <p>{c.email}</p>
                       <p className="text-xs">{c.phone}</p>
                     </td>
-                    <td className="px-4 py-3 text-gray-500">{c.city ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-500">{c.city ?? "-"}</td>
                     <td className="px-4 py-3">{c._count?.orders ?? 0}</td>
                     <td className="px-4 py-3 font-medium">{formatCurrency(spent)}</td>
                     <td className="px-4 py-3 text-gray-500">{formatDate(c.createdAt)}</td>

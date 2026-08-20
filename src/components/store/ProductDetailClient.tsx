@@ -17,7 +17,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
       : ["https://picsum.photos/seed/placeholder/800/800"];
   // Gallery items: video first when present, then still images.
   const media: { type: "video" | "image"; src: string }[] = [
-    ...(product.video ? [{ type: "video" as const, src: product.video }] : []),
+    ..(product.video ? [{ type: "video" as const, src: product.video }] : []),
     ...images.map((src) => ({ type: "image" as const, src })),
   ];
   const [active, setActive] = useState(0);
@@ -92,7 +92,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
         {discount > 0 && (
           <div className="mt-4 flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
             <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-extrabold uppercase text-white">Sale!</span>
-            Save {formatCurrency(product.compareAtPrice! - product.price)} ({discount}% off) — limited time
+            Save {formatCurrency(product.compareAtPrice! - product.price)} ({discount}% off). Limited time
           </div>
         )}
 

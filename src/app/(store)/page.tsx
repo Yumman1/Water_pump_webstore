@@ -18,7 +18,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero — full-bleed video behind the transparent header, dark-tinted */}
+      {/* Hero: full-bleed video behind the transparent header, dark-tinted */}
       <section className="relative overflow-hidden bg-brand-900 text-white">
         <HeroMedia />
         {/* Dark tint over the ENTIRE video so all text (nav + hero) is legible */}

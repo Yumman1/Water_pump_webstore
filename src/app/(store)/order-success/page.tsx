@@ -56,7 +56,7 @@ async function SuccessContent({
                 {feeNum != null && (
                   <>
                     {" "}
-                    —{" "}
+                    :{" "}
                     {install === "WARRANTY" ? (
                       <>
                         <span className="text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>{" "}

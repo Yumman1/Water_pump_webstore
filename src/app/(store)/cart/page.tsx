@@ -54,7 +54,7 @@ export default function CartPage() {
     {
       value: "PAID",
       title: "Installation & removal without warranty",
-      desc: `${formatCurrency(pricing.installationFee)} — for any motor not under warranty (our brand or another).`,
+      desc: `${formatCurrency(pricing.installationFee)} for any motor not under warranty (our brand or another).`,
     },
   ];
 

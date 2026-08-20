@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- *  SHOP MEGA-MENU  —  the categorized dropdown shown under "Shop"
+ *  SHOP MEGA-MENU  -  the categorized dropdown shown under "Shop"
  * ============================================================================
  *  Organised into columns/groups exactly like a pump storefront. Category
  *  items link to /category/[slug]; brand items link to /brand/[slug].
