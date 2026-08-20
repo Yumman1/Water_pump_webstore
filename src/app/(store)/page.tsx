@@ -167,8 +167,8 @@ export default async function HomePage() {
       <section className="bg-brand-600">
         <div className="container flex flex-col items-center justify-between gap-4 py-10 text-center md:flex-row md:text-left">
           <div>
-            <h2 className="text-2xl font-bold text-white">Not sure which pump you need?</h2>
-            <p className="text-brand-100">Our experts will help you choose the perfect pump for your requirements.</p>
+            <h2 className="text-2xl font-bold text-white">Not sure which solution you need?</h2>
+            <p className="text-brand-100">Tell us your water challenge. Our experts will recommend the right pump, motor or complete system.</p>
           </div>
           <ButtonLink href="/contact" size="lg" variant="accent" className="shrink-0">
             Talk to an Expert

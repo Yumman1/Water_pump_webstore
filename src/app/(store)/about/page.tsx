@@ -13,7 +13,7 @@ const highlights: { title: string; description: string; icon: IconName }[] = [
   },
   {
     title: "Uncompromised Quality",
-    description: "Featuring 100% genuine copper windings for maximum durability and efficiency.",
+    description: "Industrial-grade materials and build quality for lasting durability and efficiency.",
     icon: "check",
   },
   {
@@ -78,7 +78,7 @@ export default function AboutPage() {
               headquarters (F-28 Main Suparco Road-13), we bridge the gap between world-class engineering and
               everyday utility. Whether you are powering a large-scale farm, an industrial facility, or securing
               reliable water pressure for your home, Jawed delivers. With nationwide delivery, easy
-              cash-on-delivery options, and expert after-sales support, getting the right pump has never been
+              cash-on-delivery options, and expert after-sales support, getting the right water solution has never been
               more seamless.
             </p>
           </div>

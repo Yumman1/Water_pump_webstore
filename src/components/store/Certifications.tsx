@@ -24,7 +24,7 @@ export function Certifications({ className }: { className?: string }) {
       <div className="container">
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold text-gray-900">Quality & Certifications</h2>
-          <p className="mt-1 text-gray-500">Trusted standards behind every Jawed and Premium product</p>
+          <p className="mt-1 text-gray-500">Trusted standards behind every product we supply</p>
         </div>
         <div className="grid grid-cols-1 items-center gap-6 sm:grid-cols-3">
           {certifications.map((c) => (

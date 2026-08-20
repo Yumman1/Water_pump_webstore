@@ -14,7 +14,7 @@ export default function ContactPage() {
     <div className="container py-12">
       <div className="mx-auto max-w-5xl">
         <h1 className="text-3xl font-bold text-gray-900">Contact Us</h1>
-        <p className="mt-2 text-gray-600">Have a question or need help choosing a pump? Get in touch.</p>
+        <p className="mt-2 text-gray-600">Have a water pump problem or need help choosing the right product? Get in touch.</p>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           {/* Info */}

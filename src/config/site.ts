@@ -74,30 +74,30 @@ export const siteConfig = {
     video: "/hero.mp4",
   },
 
-  // Homepage video showcase, "creative space" for production / deal / install clips.
-  // Replace `src` with your own MP4s and `poster` with a thumbnail image.
+  // Homepage video showcase. Prefer your own clips under /public.
+  // Add or swap clips freely as new product lines launch.
   showcase: {
     enabled: true,
     heading: "See Us in Action",
-    subheading: "A look inside our warehouse, installations and real world water solutions.",
+    subheading: "Real Jawed products, warehouse stock and water solutions in motion.",
     clips: [
       {
-        title: "Inside Our Warehouse",
-        description: "Genuine stock, ready to ship nationwide.",
-        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-        poster: "https://picsum.photos/seed/clip-warehouse/800/500",
+        title: "Copper Motors",
+        description: "Industrial-grade motors ready for domestic, farm and factory duty.",
+        src: "/videos/copper-motors/1hp-full-load-copper-motor.mp4",
+        poster: "/logo.png",
       },
       {
-        title: "Professional Installation",
-        description: "Expert installation support for pumps and motors of every type.",
-        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-        poster: "https://picsum.photos/seed/clip-install/800/500",
+        title: "Monoblock Pressure Pumps",
+        description: "Pressure boosting solutions for homes, buildings and light commercial use.",
+        src: "/products/1hp-monoblock-pressure-pump-jawed/video.mp4",
+        poster: "/products/1hp-monoblock-pressure-pump-jawed/cover.jpg",
       },
       {
-        title: "This Week's Deals",
-        description: "Big savings across water pumps, motors and accessories.",
-        src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-        poster: "https://picsum.photos/seed/clip-deals/800/500",
+        title: "Heavy Duty Pumping",
+        description: "Built for tougher water lifting and continuous industrial demand.",
+        src: "/products/2hp-monoblock-pressure-pump-jawed-steel-impeller/video.mp4",
+        poster: "/products/2hp-monoblock-pressure-pump-jawed-steel-impeller/cover.jpg",
       },
     ],
   },

@@ -27,9 +27,10 @@ export function getBrandBySlug(slug: string) {
 const cat = (label: string, slug: string): MenuItem => ({ label, href: `/category/${slug}` });
 
 // Category groups (also used to build the Shop page sidebar).
+// Add new category items here whenever you create a new product line in admin / seed data.
 export const categoryGroups: MenuGroup[] = [
   {
-    title: "Products",
+    title: "Categories",
     items: [
       cat("Copper Motors", "copper-motors"),
       cat("Monoblock Pressure Pumps", "monoblock-pressure-pumps"),

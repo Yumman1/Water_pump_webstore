@@ -49,12 +49,12 @@ export default function CartPage() {
     {
       value: "WARRANTY",
       title: "Installation & removal under warranty",
-      desc: `Fee waived (normally ${formatCurrency(pricing.installationFee)}). Enter the serial number of the motor being replaced.`,
+      desc: `Fee waived (normally ${formatCurrency(pricing.installationFee)}). Enter the serial number of the unit being replaced.`,
     },
     {
       value: "PAID",
       title: "Installation & removal without warranty",
-      desc: `${formatCurrency(pricing.installationFee)} for any motor not under warranty (our brand or another).`,
+      desc: `${formatCurrency(pricing.installationFee)} for any motor or pump not under warranty (our brand or another).`,
     },
   ];
 
