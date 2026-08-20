@@ -1,6 +1,6 @@
 /**
  * SERVICES - edit to match the services your business offers.
- * Replace the `image` URLs with real photos of your work.
+ * Images live under /public/services/.
  * Each service gets its own page at /services/[slug] with a request form.
  *
  * Installation & removal is offered at checkout (not as a standalone service page).
@@ -15,13 +15,11 @@ export type Service = {
   priceFrom?: string;
 };
 
-const img = (seed: string) => `https://picsum.photos/seed/${seed}/800/600`;
-
 export const services: Service[] = [
   {
     slug: "fountain-setup",
     title: "Fountain Setup",
-    image: img("svc-fountain"),
+    image: "/services/fountain-setup.png",
     short: "Design and installation of decorative water fountains.",
     description:
       "Transform your garden, lawn or lobby with a custom water fountain. We handle design, pump selection, plumbing, nozzles and lighting for a stunning result.",
@@ -37,7 +35,7 @@ export const services: Service[] = [
   {
     slug: "swimming-pool-maintenance",
     title: "Swimming Pool Maintenance",
-    image: img("svc-pool"),
+    image: "/services/swimming-pool-maintenance.png",
     short: "Keep your pool clean, safe and crystal clear year-round.",
     description:
       "Complete swimming pool care including cleaning, water balancing, filtration and pump servicing. One-time cleanups or regular maintenance contracts available.",
@@ -53,7 +51,7 @@ export const services: Service[] = [
   {
     slug: "deep-well-boring",
     title: "Deep Well Boring",
-    image: img("svc-boring"),
+    image: "/services/deep-well-boring.png",
     short: "Professional borehole drilling for reliable groundwater.",
     description:
       "We drill deep wells and boreholes for domestic, agricultural and commercial water supply using modern rigs. Includes site survey, drilling, casing and pump installation.",
