@@ -39,7 +39,7 @@ export default async function ShippingPage() {
           <h2 className="text-xl font-semibold text-gray-900">Payment</h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-gray-600">
             <li>Cash on Delivery (COD) available nationwide.</li>
-            <li>Bank transfer accepted, details shared after order placement.</li>
+            <li>Bank transfer accepted. Details shared after order placement.</li>
           </ul>
         </section>
       </div>
