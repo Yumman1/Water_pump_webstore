@@ -2,18 +2,19 @@
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { categories as seedCategories, products as seedProducts } from "@/data/seed-data";
 import type { Category, Product } from "@/lib/types";
+import { cleanCopy, cleanSpecs } from "@/lib/utils";
 
 function seedProductsAsProducts(): Product[] {
   return seedProducts.map((p) => {
     const cat = seedCategories.find((c) => c.slug === p.categorySlug);
     return {
       id: `prod-${p.slug}`,
-      name: p.name,
+      name: cleanCopy(p.name),
       slug: p.slug,
       sku: p.sku,
-      brand: p.brand,
-      description: p.description,
-      shortDescription: p.shortDescription,
+      brand: p.brand ? cleanCopy(p.brand) : p.brand,
+      description: cleanCopy(p.description),
+      shortDescription: cleanCopy(p.shortDescription),
       price: p.price,
       compareAtPrice: p.compareAtPrice ?? null,
       cost: p.cost ?? null,
@@ -25,25 +26,25 @@ function seedProductsAsProducts(): Product[] {
       active: p.active,
       images: p.images,
       tags: p.tags,
-      specs: p.specs,
+      specs: cleanSpecs(p.specs),
       video: p.video ?? p.specs.Video ?? p.specs.video ?? null,
       categoryId: `cat-${p.categorySlug}`,
-      category: cat ? { id: `cat-${cat.slug}`, name: cat.name, slug: cat.slug } : null,
+      category: cat ? { id: `cat-${cat.slug}`, name: cleanCopy(cat.name), slug: cat.slug } : null,
     };
   });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapProduct(p: any): Product {
-  const specs = (p.specs as Record<string, string>) ?? {};
+  const specs = cleanSpecs((p.specs as Record<string, string>) ?? {});
   return {
     id: p.id,
-    name: p.name,
+    name: cleanCopy(p.name),
     slug: p.slug,
     sku: p.sku,
-    brand: p.brand,
-    description: p.description,
-    shortDescription: p.shortDescription,
+    brand: p.brand ? cleanCopy(p.brand) : p.brand,
+    description: cleanCopy(p.description),
+    shortDescription: p.shortDescription ? cleanCopy(p.shortDescription) : p.shortDescription,
     price: p.price,
     compareAtPrice: p.compareAtPrice,
     cost: p.cost,
@@ -58,7 +59,7 @@ function mapProduct(p: any): Product {
     specs,
     video: p.video ?? specs.Video ?? specs.video ?? null,
     categoryId: p.categoryId,
-    category: p.category ? { id: p.category.id, name: p.category.name, slug: p.category.slug } : null,
+    category: p.category ? { id: p.category.id, name: cleanCopy(p.category.name), slug: p.category.slug } : null,
   };
 }
 

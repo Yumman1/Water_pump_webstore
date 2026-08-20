@@ -17,7 +17,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
       : ["https://picsum.photos/seed/placeholder/800/800"];
   // Gallery items: video first when present, then still images.
   const media: { type: "video" | "image"; src: string }[] = [
-    ..(product.video ? [{ type: "video" as const, src: product.video }] : []),
+    ...(product.video ? [{ type: "video" as const, src: product.video }] : []),
     ...images.map((src) => ({ type: "image" as const, src })),
   ];
   const [active, setActive] = useState(0);

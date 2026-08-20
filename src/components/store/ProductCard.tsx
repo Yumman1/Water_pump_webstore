@@ -38,7 +38,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
           {discount > 0 && (
             <span className="rounded-md bg-red-600 px-2 py-0.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm">
-              Sale −{discount}%
+              Sale -{discount}%
             </span>
           )}
           {product.condition === "USED" && (

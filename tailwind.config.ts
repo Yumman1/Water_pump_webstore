@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand palette — override these (or the CSS vars in globals.css) to rebrand.
+        // Brand palette - override these (or the CSS vars in globals.css) to rebrand.
         brand: {
           50: "var(--brand-50)",
           100: "var(--brand-100)",

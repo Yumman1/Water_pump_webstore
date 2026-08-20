@@ -9,6 +9,7 @@
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { categories as seedCategories, products as seedProducts } from "@/data/seed-data";
 import type { Category, Product, ProductQuery } from "@/lib/types";
+import { cleanCopy, cleanSpecs } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Fallback: normalize the bundled seed data into UI shapes.
@@ -16,9 +17,9 @@ import type { Category, Product, ProductQuery } from "@/lib/types";
 function seedCategoryToCategory(c: (typeof seedCategories)[number]): Category {
   return {
     id: `cat-${c.slug}`,
-    name: c.name,
+    name: cleanCopy(c.name),
     slug: c.slug,
-    description: c.description,
+    description: cleanCopy(c.description),
     image: c.image,
     sortOrder: c.sortOrder,
     productCount: seedProducts.filter((p) => p.categorySlug === c.slug && p.active).length,
@@ -35,12 +36,12 @@ function seedProductToProduct(p: (typeof seedProducts)[number]): Product {
   const cat = seedCategories.find((c) => c.slug === p.categorySlug);
   return {
     id: `prod-${p.slug}`,
-    name: p.name,
+    name: cleanCopy(p.name),
     slug: p.slug,
     sku: p.sku,
-    brand: p.brand,
-    description: p.description,
-    shortDescription: p.shortDescription,
+    brand: p.brand ? cleanCopy(p.brand) : p.brand,
+    description: cleanCopy(p.description),
+    shortDescription: cleanCopy(p.shortDescription),
     price: p.price,
     compareAtPrice: p.compareAtPrice ?? null,
     cost: p.cost ?? null,
@@ -52,24 +53,24 @@ function seedProductToProduct(p: (typeof seedProducts)[number]): Product {
     active: p.active,
     images: p.images,
     tags: p.tags,
-    specs: p.specs,
+    specs: cleanSpecs(p.specs),
     video: resolveVideo(p),
     categoryId: `cat-${p.categorySlug}`,
-    category: cat ? { id: `cat-${cat.slug}`, name: cat.name, slug: cat.slug } : null,
+    category: cat ? { id: `cat-${cat.slug}`, name: cleanCopy(cat.name), slug: cat.slug } : null,
   };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function dbProductToProduct(p: any): Product {
-  const specs = (p.specs as Record<string, string>) ?? {};
+  const specs = cleanSpecs((p.specs as Record<string, string>) ?? {});
   return {
     id: p.id,
-    name: p.name,
+    name: cleanCopy(p.name),
     slug: p.slug,
     sku: p.sku,
-    brand: p.brand,
-    description: p.description,
-    shortDescription: p.shortDescription,
+    brand: p.brand ? cleanCopy(p.brand) : p.brand,
+    description: cleanCopy(p.description),
+    shortDescription: p.shortDescription ? cleanCopy(p.shortDescription) : p.shortDescription,
     price: p.price,
     compareAtPrice: p.compareAtPrice,
     cost: p.cost,
@@ -85,7 +86,7 @@ function dbProductToProduct(p: any): Product {
     video: resolveVideo({ video: p.video, specs }),
     categoryId: p.categoryId,
     category: p.category
-      ? { id: p.category.id, name: p.category.name, slug: p.category.slug }
+      ? { id: p.category.id, name: cleanCopy(p.category.name), slug: p.category.slug }
       : null,
   };
 }

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /*
- * Brand colors — change these HSL/hex values to recolor the whole store.
+ * Brand colors - change these HSL/hex values to recolor the whole store.
  * The default is a professional water-blue palette.
  */
 :root {
