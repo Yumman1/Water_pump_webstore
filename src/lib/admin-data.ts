@@ -2,7 +2,7 @@
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { categories as seedCategories, products as seedProducts } from "@/data/seed-data";
 import type { Category, Product } from "@/lib/types";
-import { cleanCopy, cleanSpecs } from "@/lib/utils";
+import { cleanCopy, cleanSpecs, realImages } from "@/lib/utils";
 
 function seedProductsAsProducts(): Product[] {
   return seedProducts.map((p) => {
@@ -24,7 +24,7 @@ function seedProductsAsProducts(): Product[] {
       condition: p.condition ?? "NEW",
       featured: p.featured,
       active: p.active,
-      images: p.images,
+      images: realImages(p.images),
       tags: p.tags,
       specs: cleanSpecs(p.specs),
       video: p.video ?? p.specs.Video ?? p.specs.video ?? null,
@@ -54,7 +54,7 @@ function mapProduct(p: any): Product {
     condition: p.condition ?? "NEW",
     featured: p.featured,
     active: p.active,
-    images: p.images ?? [],
+    images: realImages(p.images),
     tags: p.tags ?? [],
     specs,
     video: p.video ?? specs.Video ?? specs.video ?? null,

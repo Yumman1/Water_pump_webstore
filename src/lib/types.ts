@@ -42,7 +42,10 @@ export type CartItem = {
   name: string;
   sku: string;
   price: number;
+  /** Still photo for the cart thumb (local cover preferred). */
   image: string;
+  /** When set, cart shows this looping cover video instead of a placeholder. */
+  video?: string | null;
   quantity: number;
   stock: number;
   underWarranty?: boolean;

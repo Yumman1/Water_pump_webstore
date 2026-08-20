@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
+import { productCoverMedia, realImages } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
 export function AddToCartButton({
@@ -26,13 +27,16 @@ export function AddToCartButton({
   const outOfStock = product.stock <= 0;
 
   function add() {
+    const cover = productCoverMedia(product);
     addItem({
       productId: product.id,
       slug: product.slug,
       name: product.name,
       sku: product.sku,
       price: product.price,
-      image: product.images[0] ?? "",
+      // Still photo when available; video products keep cover video separately.
+      image: realImages(product.images)[0] ?? (cover?.type === "image" ? cover.src : ""),
+      video: product.video ?? null,
       quantity,
       stock: product.stock,
     });

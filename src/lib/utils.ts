@@ -50,3 +50,27 @@ export function generateOrderNumber(): string {
   const stamp = Date.now().toString().slice(-6);
   return `ORD-${stamp}-${rand}`;
 }
+
+/** True for temporary stock/demo image hosts we never want as cart covers. */
+export function isPlaceholderImage(src: string | null | undefined): boolean {
+  if (!src) return true;
+  return /picsum\.photos|placeholder|via\.placeholder/i.test(src);
+}
+
+/** Drop placeholder URLs so product cards/cart never prefer them over real media. */
+export function realImages(images: string[] | null | undefined): string[] {
+  return (images ?? []).filter((src) => src && !isPlaceholderImage(src));
+}
+
+/**
+ * Cover media used on product cards and in the cart.
+ * Prefer looping video when present; otherwise the first real photo.
+ */
+export function productCoverMedia(product: {
+  video?: string | null;
+  images?: string[] | null;
+}): { type: "video" | "image"; src: string } | null {
+  if (product.video) return { type: "video", src: product.video };
+  const first = realImages(product.images)[0];
+  return first ? { type: "image", src: first } : null;
+}

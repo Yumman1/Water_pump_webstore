@@ -6,6 +6,7 @@ import { useCart } from "@/lib/cart-context";
 import { formatCurrency } from "@/lib/format";
 import { ButtonLink } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
+import { isPlaceholderImage } from "@/lib/utils";
 import type { InstallationType } from "@/lib/types";
 
 export default function CartPage() {
@@ -71,10 +72,24 @@ export default function CartPage() {
             {items.map((item) => {
               const list = item.price * item.quantity;
               const charged = item.underWarranty ? 0 : list;
+              const thumbImage = item.image && !isPlaceholderImage(item.image) ? item.image : "";
               return (
                 <div key={item.productId} className="flex gap-4 p-4">
                   <Link href={`/product/${item.slug}`} className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                    {item.image && <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover" />}
+                    {item.video ? (
+                      <video
+                        src={item.video}
+                        className="h-full w-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        aria-label={item.name}
+                      />
+                    ) : thumbImage ? (
+                      <Image src={thumbImage} alt={item.name} fill sizes="96px" className="object-cover" />
+                    ) : null}
                   </Link>
                   <div className="flex flex-1 flex-col">
                     <Link href={`/product/${item.slug}`} className="font-medium text-gray-900 hover:text-brand-700">

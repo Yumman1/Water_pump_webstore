@@ -9,7 +9,7 @@
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { categories as seedCategories, products as seedProducts } from "@/data/seed-data";
 import type { Category, Product, ProductQuery } from "@/lib/types";
-import { cleanCopy, cleanSpecs } from "@/lib/utils";
+import { cleanCopy, cleanSpecs, realImages } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Fallback: normalize the bundled seed data into UI shapes.
@@ -51,7 +51,7 @@ function seedProductToProduct(p: (typeof seedProducts)[number]): Product {
     condition: p.condition ?? "NEW",
     featured: p.featured,
     active: p.active,
-    images: p.images,
+    images: realImages(p.images),
     tags: p.tags,
     specs: cleanSpecs(p.specs),
     video: resolveVideo(p),
@@ -80,7 +80,7 @@ function dbProductToProduct(p: any): Product {
     condition: p.condition ?? "NEW",
     featured: p.featured,
     active: p.active,
-    images: p.images ?? [],
+    images: realImages(p.images),
     tags: p.tags ?? [],
     specs,
     video: resolveVideo({ video: p.video, specs }),

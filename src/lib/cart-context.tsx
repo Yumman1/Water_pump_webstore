@@ -5,7 +5,7 @@ import type { CartItem, InstallationType } from "@/lib/types";
 import { siteConfig } from "@/config/site";
 import type { PricingConfig } from "@/lib/pricing";
 
-const STORAGE_KEY = "cart:v2";
+const STORAGE_KEY = "cart:v3";
 
 type CartState = {
   items: CartItem[];
@@ -46,7 +46,17 @@ function reducer(state: CartState, action: Action): CartState {
         return {
           ...state,
           items: state.items.map((i) =>
-            i.productId === action.item.productId ? { ...i, quantity } : i
+            i.productId === action.item.productId
+              ? {
+                  ...i,
+                  quantity,
+                  // Refresh cover media in case product photos/videos were updated.
+                  image: action.item.image || i.image,
+                  video: action.item.video ?? i.video,
+                  stock: action.item.stock,
+                  price: action.item.price,
+                }
+              : i
           ),
         };
       }
@@ -122,7 +132,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem("cart:v1");
+      // cart:v3 stores cover video; older carts often held picsum placeholders.
+      const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {

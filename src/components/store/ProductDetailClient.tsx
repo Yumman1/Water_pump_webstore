@@ -6,15 +6,11 @@ import type { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
 import { AddToCartButton } from "./AddToCartButton";
 import { Icons } from "@/components/ui/icons";
-import { cn } from "@/lib/utils";
+import { cn, realImages } from "@/lib/utils";
 
 export function ProductDetailClient({ product }: { product: Product }) {
   // Prefer real photos; skip placeholder when a product video is the cover.
-  const images = product.images.length
-    ? product.images
-    : product.video
-      ? []
-      : ["https://picsum.photos/seed/placeholder/800/800"];
+  const images = realImages(product.images);
   // Gallery items: video first when present, then still images.
   const media: { type: "video" | "image"; src: string }[] = [
     ...(product.video ? [{ type: "video" as const, src: product.video }] : []),
@@ -47,16 +43,16 @@ export function ProductDetailClient({ product }: { product: Product }) {
               preload="metadata"
               aria-label={product.name}
             />
-          ) : (
+          ) : current ? (
             <Image
-              src={current?.src ?? images[0]}
+              src={current.src}
               alt={product.name}
               fill
               priority
               sizes="(max-width:1024px) 100vw, 50vw"
               className="object-cover"
             />
-          )}
+          ) : null}
           {discount > 0 && (
             <span className="absolute left-3 top-3 rounded-md bg-accent px-2 py-1 text-sm font-bold text-white">-{discount}%</span>
           )}

@@ -99,6 +99,15 @@ type ProductInput = {
 
 function product(p: ProductInput): SeedProduct {
   const specs = p.video ? { ...p.specs, Video: p.video } : p.specs;
+  // Prefer real photos; never invent picsum placeholders when a cover video exists.
+  let images: string[];
+  if (p.images !== undefined) {
+    images = p.images;
+  } else if (p.video) {
+    images = [];
+  } else {
+    images = [img(p.imageSeed), img(`${p.imageSeed}-b`)];
+  }
   return {
     name: p.name,
     slug: p.slug,
@@ -112,7 +121,7 @@ function product(p: ProductInput): SeedProduct {
     lowStockThreshold: 3,
     featured: p.featured ?? false,
     active: true,
-    images: p.images !== undefined ? p.images : [img(p.imageSeed), img(`${p.imageSeed}-b`)],
+    images,
     tags: p.tags,
     specs,
     video: p.video,
