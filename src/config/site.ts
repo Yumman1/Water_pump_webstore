@@ -84,7 +84,7 @@ export const siteConfig = {
       {
         title: "Copper Motors",
         description: "Industrial-grade motors ready for domestic, farm and factory duty.",
-        src: "/videos/copper-motors/1hp-full-load-copper-motor.mp4",
+        src: "/videos/copper-motors-industrial-grade.mp4",
         poster: "/logo.png",
       },
       {
