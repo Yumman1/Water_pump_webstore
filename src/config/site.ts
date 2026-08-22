@@ -85,7 +85,6 @@ export const siteConfig = {
         title: "Copper Motors",
         description: "Industrial-grade motors ready for domestic, farm and factory duty.",
         src: "/videos/copper-motors-industrial-grade.mp4",
-        poster: "/logo.png",
       },
       {
         title: "Monoblock Pressure Pumps",
