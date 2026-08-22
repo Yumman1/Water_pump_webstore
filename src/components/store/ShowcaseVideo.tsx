@@ -1,5 +1,3 @@
-"use client";
-
 type Clip = { title: string; description: string; src: string; poster?: string };
 
 /** Showcase card with a muted looping video as the cover. */
