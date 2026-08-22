@@ -3,14 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 
-// NextAuth calls `new URL(NEXTAUTH_URL)`. An unset *or empty* value crashes
-// static prerender on Vercel (ERR_INVALID_URL with input: "").
-if (!process.env.NEXTAUTH_URL?.trim()) {
-  process.env.NEXTAUTH_URL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
-}
-
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   pages: { signIn: "/admin/login" },
