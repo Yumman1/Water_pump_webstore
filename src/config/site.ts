@@ -57,6 +57,16 @@ export const siteConfig = {
     fee: 10000,
   },
 
+  // Shown on checkout when the customer selects Bank Transfer.
+  bankTransfer: {
+    bankName: "HBL / Askari / Meezan (confirm with Jawed before paying)",
+    accountTitle: "Jawed Pumps & Motors",
+    accountNumber: "Share order number on WhatsApp to receive exact account details",
+    iban: "",
+    instructions:
+      "Place your order, then WhatsApp or call us with your order number. We will share bank details and confirm payment before dispatch.",
+  },
+
   // Homepage promo bar (set text to "" to hide).
   announcement: "🚚 Free delivery on orders over Rs 50,000. Order now!",
 

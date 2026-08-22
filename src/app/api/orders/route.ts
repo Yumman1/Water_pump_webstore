@@ -29,7 +29,40 @@ const orderSchema = z.object({
     .min(1),
 });
 
+/** Simple in-memory rate limit for guest checkout (per serverless isolate). */
+const orderHits = new Map<string, { count: number; resetAt: number }>();
+const ORDER_RATE_LIMIT = 8;
+const ORDER_RATE_WINDOW_MS = 60_000;
+
+function clientKey(req: Request): string {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
+function allowOrder(req: Request): boolean {
+  const key = clientKey(req);
+  const now = Date.now();
+  const row = orderHits.get(key);
+  if (!row || row.resetAt < now) {
+    orderHits.set(key, { count: 1, resetAt: now + ORDER_RATE_WINDOW_MS });
+    return true;
+  }
+  if (row.count >= ORDER_RATE_LIMIT) return false;
+  row.count += 1;
+  return true;
+}
+
 export async function POST(req: Request) {
+  if (!allowOrder(req)) {
+    return NextResponse.json(
+      { error: "Too many orders from this network. Please wait a minute and try again." },
+      { status: 429 }
+    );
+  }
+
   let body: unknown;
   try {
     body = await req.json();

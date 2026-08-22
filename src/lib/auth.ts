@@ -14,6 +14,14 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        if (
+          (process.env.VERCEL || process.env.NODE_ENV === "production") &&
+          !process.env.NEXTAUTH_SECRET?.trim()
+        ) {
+          console.error("[auth] NEXTAUTH_SECRET must be set in production");
+          return null;
+        }
+
         const email = credentials?.email?.toLowerCase().trim();
         const password = credentials?.password;
         if (!email || !password) return null;
@@ -62,5 +70,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET ?? "dev-insecure-secret-change-me",
+  secret: process.env.NEXTAUTH_SECRET?.trim() || "dev-insecure-secret-change-me",
 };

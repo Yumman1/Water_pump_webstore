@@ -119,7 +119,7 @@ async function main() {
   });
   console.log("   ✓ Coupon WELCOME10 (10% off orders over Rs 10,000)");
 
-  // --- Sample customers & orders -------------------------------------------
+  // --- Sample customers & orders (idempotent) ------------------------------
   const sampleCustomers = [
     { name: "Ahmed Khan", email: "ahmed.khan@example.com", phone: "+92 301 1111111", city: "Lahore" },
     { name: "Sara Ali", email: "sara.ali@example.com", phone: "+92 302 2222222", city: "Karachi" },
@@ -130,6 +130,7 @@ async function main() {
   const statuses = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"] as const;
 
   let orderSeq = 0;
+  let createdOrders = 0;
   for (const c of sampleCustomers) {
     const customer = await prisma.customer.upsert({
       where: { email: c.email },
@@ -141,6 +142,10 @@ async function main() {
     const orderCount = 1 + (orderSeq % 2);
     for (let o = 0; o < orderCount; o++) {
       orderSeq++;
+      const orderNumber = `ORD-DEMO-${String(orderSeq).padStart(4, "0")}`;
+      const existing = await prisma.order.findUnique({ where: { orderNumber } });
+      if (existing) continue;
+
       const picks = allProducts
         .slice((orderSeq * 3) % allProducts.length, ((orderSeq * 3) % allProducts.length) + 2)
         .filter(Boolean);
@@ -151,7 +156,7 @@ async function main() {
 
       await prisma.order.create({
         data: {
-          orderNumber: `ORD-DEMO-${String(orderSeq).padStart(4, "0")}`,
+          orderNumber,
           customerName: c.name,
           customerEmail: c.email,
           customerPhone: c.phone,
@@ -178,9 +183,10 @@ async function main() {
           },
         },
       });
+      createdOrders++;
     }
   }
-  console.log(`   ✓ ${sampleCustomers.length} customers with ${orderSeq} demo orders`);
+  console.log(`   ✓ ${sampleCustomers.length} customers with ${createdOrders} new demo orders (${orderSeq} total slots)`);
 
   console.log("✅ Seed complete.");
 }

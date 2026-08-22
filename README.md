@@ -97,21 +97,28 @@ Set in `src/config/site.ts` → `currency` (default `Rs`, PKR). Change `symbol`,
 
    | Variable | Value |
    |---|---|
-   | `DATABASE_URL` | Your Postgres connection string (see below) |
+   | `DATABASE_URL` | Supabase Postgres URI (`sslmode=require`). If Marketplace only added `POSTGRES_URL`, copy that value into `DATABASE_URL` too. |
    | `NEXTAUTH_SECRET` | `openssl rand -base64 32` |
    | `NEXTAUTH_URL` | `https://your-store.vercel.app` |
-   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Your admin login |
+   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Your admin login (must match seeded user) |
+   | `RESEND_API_KEY` / `EMAIL_FROM` | Order emails |
+   | `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` | Order WhatsApp alerts |
+   | `OWNER_NOTIFY_EMAIL` / `OWNER_NOTIFY_WHATSAPP` | Fallback owner contacts |
 
 4. **Deploy.** The build runs `prisma generate` automatically.
-5. After the first deploy, initialise the database (one time):
+5. Database schema + seed for this project are already applied on Supabase when using the Jawed production DB. For a fresh database:
    ```bash
    # locally, with the production DATABASE_URL in your .env
    npm run db:push
    npm run db:seed
    ```
 
-> You can deploy **without** `DATABASE_URL` first to preview the storefront in
-> demo mode, then add the database and redeploy.
+Default seeded admin (change after first login): `admin@example.com` / `admin1234`
+
+Checkout coupon: `WELCOME10` (10% off product subtotals over Rs 10,000).
+
+> **WhatsApp note:** Meta often blocks free-form business-initiated messages until you
+> use an approved template. Email via Resend works immediately once the API key is set.
 
 ### Getting a free PostgreSQL database
 - **Supabase** — create a project → Settings → Database → Connection string (URI).
