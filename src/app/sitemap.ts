@@ -3,7 +3,9 @@ import { getAllProductSlugs, getCategories } from "@/lib/data";
 import { services } from "@/data/services";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  const base =
+    process.env.NEXTAUTH_URL?.trim() ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
   const [slugs, categories] = await Promise.all([getAllProductSlugs(), getCategories()]);
 
   const staticRoutes = ["", "/shop", "/deals", "/services", "/about", "/contact", "/shipping"].map(
