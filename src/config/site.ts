@@ -76,6 +76,7 @@ export const siteConfig = {
 
   // Homepage video showcase. Prefer your own clips under /public.
   // Add or swap clips freely as new product lines launch.
+  // Videos autoplay muted on loop; poster is optional (first frame of the video is the cover).
   showcase: {
     enabled: true,
     heading: "See Us in Action",
@@ -98,7 +99,7 @@ export const siteConfig = {
         src: "/products/2hp-monoblock-pressure-pump-jawed-steel-impeller/video.mp4",
         poster: "/products/2hp-monoblock-pressure-pump-jawed-steel-impeller/cover.jpg",
       },
-    ],
+    ] as { title: string; description: string; src: string; poster?: string }[],
   },
 
   // Deal pop-up shown once per visit when the site loads. Set enabled:false to hide.
