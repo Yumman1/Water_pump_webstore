@@ -79,25 +79,19 @@ export default async function HomePage() {
             View all →
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {categories.slice(0, 12).map((c, i) => (
-            <Reveal key={c.id} delay={(i % 4) * 60}>
+            <Reveal key={c.id} delay={(i % 6) * 60}>
             <Link
               href={`/category/${c.slug}`}
-              className="card-hover group flex h-full flex-col overflow-hidden rounded-xl border bg-white"
+              className="card-hover group flex h-full flex-col items-center gap-3 rounded-xl border bg-white p-4 text-center"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+              <div className="relative h-20 w-20 overflow-hidden rounded-full bg-gray-100">
                 {c.image && (
-                  <Image
-                    src={c.image}
-                    alt={c.name}
-                    fill
-                    sizes="(max-width:640px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
+                  <Image src={c.image} alt={c.name} fill sizes="80px" className="object-cover transition-transform group-hover:scale-110" />
                 )}
               </div>
-              <div className="p-4 text-center">
+              <div>
                 <p className="text-sm font-semibold text-gray-900">{c.name}</p>
                 <p className="text-xs text-gray-400">{c.productCount ?? 0} products</p>
               </div>
