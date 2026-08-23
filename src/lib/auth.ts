@@ -1,7 +1,12 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { resolveAuthSecret } from "@/lib/auth-secret";
 import { prisma, isDbConfigured } from "@/lib/prisma";
+
+const authSecret =
+  resolveAuthSecret() ||
+  (process.env.NODE_ENV !== "production" ? "dev-insecure-secret-change-me" : undefined);
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -14,10 +19,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (
-          (process.env.VERCEL || process.env.NODE_ENV === "production") &&
-          !process.env.NEXTAUTH_SECRET?.trim()
-        ) {
+        if ((process.env.VERCEL || process.env.NODE_ENV === "production") && !authSecret) {
           console.error("[auth] NEXTAUTH_SECRET must be set in production");
           return null;
         }
@@ -70,5 +72,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET?.trim() || "dev-insecure-secret-change-me",
+  secret: authSecret,
 };
