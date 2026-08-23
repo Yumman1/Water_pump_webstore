@@ -107,18 +107,6 @@ export const siteConfig = {
         description: "Warehouse-ready motors for homes, farms and light industry across Pakistan.",
         src: "/videos/copper-motors-industrial-grade-2.mp4",
       },
-      {
-        title: "Monoblock Pressure Pumps",
-        description: "Pressure boosting solutions for homes, buildings and light commercial use.",
-        src: "/products/1hp-monoblock-pressure-pump-jawed/video.mp4",
-        poster: "/products/1hp-monoblock-pressure-pump-jawed/cover.jpg",
-      },
-      {
-        title: "Heavy Duty Pumping",
-        description: "Built for tougher water lifting and continuous industrial demand.",
-        src: "/products/2hp-monoblock-pressure-pump-jawed-steel-impeller/video.mp4",
-        poster: "/products/2hp-monoblock-pressure-pump-jawed-steel-impeller/cover.jpg",
-      },
     ] as { title: string; description: string; src: string; poster?: string }[],
   },
 

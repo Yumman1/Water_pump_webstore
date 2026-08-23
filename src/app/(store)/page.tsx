@@ -79,19 +79,25 @@ export default async function HomePage() {
             View all →
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {categories.slice(0, 12).map((c, i) => (
-            <Reveal key={c.id} delay={(i % 6) * 60}>
+            <Reveal key={c.id} delay={(i % 4) * 60}>
             <Link
               href={`/category/${c.slug}`}
-              className="card-hover group flex h-full flex-col items-center gap-3 rounded-xl border bg-white p-4 text-center"
+              className="card-hover group flex h-full flex-col overflow-hidden rounded-xl border bg-white"
             >
-              <div className="relative h-20 w-20 overflow-hidden rounded-full bg-gray-100">
+              <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                 {c.image && (
-                  <Image src={c.image} alt={c.name} fill sizes="80px" className="object-cover transition-transform group-hover:scale-110" />
+                  <Image
+                    src={c.image}
+                    alt={c.name}
+                    fill
+                    sizes="(max-width:640px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                 )}
               </div>
-              <div>
+              <div className="p-4 text-center">
                 <p className="text-sm font-semibold text-gray-900">{c.name}</p>
                 <p className="text-xs text-gray-400">{c.productCount ?? 0} products</p>
               </div>
@@ -125,7 +131,7 @@ export default async function HomePage() {
               <h2 className="text-2xl font-bold text-gray-900">{siteConfig.showcase.heading}</h2>
               <p className="text-gray-500">{siteConfig.showcase.subheading}</p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {siteConfig.showcase.clips.map((clip, i) => (
                 <Reveal key={clip.title} delay={i * 90}>
                   <ShowcaseVideo clip={clip} />
