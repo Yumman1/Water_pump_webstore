@@ -4,9 +4,12 @@ import bcrypt from "bcryptjs";
 import { resolveAuthSecret } from "@/lib/auth-secret";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 
-const authSecret =
-  resolveAuthSecret() ||
-  (process.env.NODE_ENV !== "production" ? "dev-insecure-secret-change-me" : undefined);
+function getAuthSecret(): string {
+  return (
+    resolveAuthSecret() ||
+    (process.env.NODE_ENV !== "production" ? "dev-insecure-secret-change-me" : "")
+  );
+}
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -19,7 +22,8 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if ((process.env.VERCEL || process.env.NODE_ENV === "production") && !authSecret) {
+        const secret = getAuthSecret();
+        if ((process.env.VERCEL || process.env.NODE_ENV === "production") && !secret) {
           console.error("[auth] NEXTAUTH_SECRET must be set in production");
           return null;
         }
@@ -72,5 +76,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: authSecret,
+  secret: getAuthSecret() || undefined,
 };
