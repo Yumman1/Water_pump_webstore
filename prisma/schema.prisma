@@ -200,6 +200,14 @@ model StoreSettings {
   shippingFlatRate       Float    @default(500)
   freeShippingThreshold  Float    @default(50000)
   installationFee        Float    @default(10000)
+  promoEnabled           Boolean  @default(true)
+  promoBadge             String?
+  promoHeading           String?
+  promoMessage           String?
+  promoCouponCode        String?
+  promoCtaLabel          String?
+  promoCtaHref           String?
+  promoImage             String?
   updatedAt              DateTime @updatedAt
 }
 

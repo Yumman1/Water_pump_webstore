@@ -97,25 +97,27 @@ Set in `src/config/site.ts` → `currency` (default `Rs`, PKR). Change `symbol`,
 
    | Variable | Value |
    |---|---|
-   | `DATABASE_URL` | Supabase Postgres URI (`sslmode=require`). If Marketplace only added `POSTGRES_URL`, copy that value into `DATABASE_URL` too. |
+   | `DATABASE_URL` | Supabase **pooled** Postgres URI (port 6543, `?pgbouncer=true`). **Must be set for Production.** If Marketplace injected `POSTGRES_URL` only, copy it into `DATABASE_URL` too. |
    | `NEXTAUTH_SECRET` | `openssl rand -base64 32` |
    | `NEXTAUTH_URL` | `https://your-store.vercel.app` |
-   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Your admin login (must match seeded user) |
-   | `RESEND_API_KEY` / `EMAIL_FROM` | Order emails |
+   | `RESEND_API_KEY` / `EMAIL_FROM` | Order & contact-form emails |
    | `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` | Order WhatsApp alerts |
    | `OWNER_NOTIFY_EMAIL` / `OWNER_NOTIFY_WHATSAPP` | Fallback owner contacts |
+   | `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | Admin image uploads (Storage bucket `store-assets`, public) |
 
-4. **Deploy.** The build runs `prisma generate` automatically.
-5. Database schema + seed for this project are already applied on Supabase when using the Jawed production DB. For a fresh database:
+4. **Deploy**, then **Redeploy** again after any env change (existing deployments do not pick up new variables).
+5. Apply schema + seed (resets admin password to `admin@example.com` / `admin1234`):
    ```bash
-   # locally, with the production DATABASE_URL in your .env
    npm run db:push
    npm run db:seed
    ```
+6. Verify production DB: open `https://your-store.vercel.app/api/health/db` — expect `{"configured":true,"connected":true}`.
 
-Default seeded admin (change after first login): `admin@example.com` / `admin1234`
+**Admin login:** `admin@example.com` / `admin1234` (run `npm run db:seed` to reset password).
 
-Checkout coupon: `WELCOME10` (10% off product subtotals over Rs 10,000).
+Manage coupons at `/admin/coupons` and the homepage promo popup under **Admin → Settings**.
+
+Checkout coupon: `WELCOME10` (10% off product subtotals over Rs 10,000) — editable in admin.
 
 > **WhatsApp note:** Meta often blocks free-form business-initiated messages until you
 > use an approved template. Email via Resend works immediately once the API key is set.
@@ -177,9 +179,8 @@ prisma/
 ---
 
 ## 🔒 Notes on security
-- Change `ADMIN_PASSWORD` and set a strong `NEXTAUTH_SECRET` before going live.
-- The default demo admin login only works in **demo mode** (no `DATABASE_URL`).
-  Once a database is connected, only real user accounts can sign in.
+- Set a strong `NEXTAUTH_SECRET` before going live.
+- Admin account is `admin@example.com` — change the password in the database after first login if desired (`npm run db:seed` resets it to `admin1234`).
 
 ---
 

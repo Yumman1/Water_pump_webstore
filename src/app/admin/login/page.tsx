@@ -56,8 +56,8 @@ function LoginForm() {
             </Button>
           </form>
           <p className="mt-4 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
-            Demo credentials (from your <code>.env</code>): <br />
-            <span className="font-medium">admin@example.com</span> / <span className="font-medium">admin1234</span>
+            Admin login: <span className="font-medium">admin@example.com</span> /{" "}
+            <span className="font-medium">admin1234</span>
           </p>
         </div>
       </div>

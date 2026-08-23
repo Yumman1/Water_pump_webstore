@@ -7,8 +7,32 @@ import { Icons } from "@/components/ui/icons";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+
   const inputClass =
     "h-11 w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500";
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Could not send message");
+      setSent(true);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="container py-12">
@@ -17,20 +41,28 @@ export default function ContactPage() {
         <p className="mt-2 text-gray-600">Have a water pump problem or need help choosing the right product? Get in touch.</p>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
-          {/* Info */}
           <div className="space-y-4">
             <div className="flex items-start gap-3 rounded-xl border bg-white p-5">
               <Icons.phone className="mt-0.5 h-5 w-5 text-brand-600" />
               <div>
                 <p className="font-semibold text-gray-900">Phone</p>
-                <a href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`} className="text-gray-600 hover:text-brand-600">{siteConfig.contact.phone}</a>
+                <a href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`} className="text-gray-600 hover:text-brand-600">
+                  {siteConfig.contact.phone}
+                </a>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-xl border bg-white p-5">
               <Icons.whatsapp className="mt-0.5 h-5 w-5 text-green-500" />
               <div>
                 <p className="font-semibold text-gray-900">WhatsApp</p>
-                <a href={`https://wa.me/${siteConfig.contact.whatsapp.replace(/[^0-9]/g, "").replace(/^0/, "92")}`} target="_blank" rel="noreferrer" className="text-gray-600 hover:text-brand-600">{siteConfig.contact.whatsapp}</a>
+                <a
+                  href={`https://wa.me/${siteConfig.contact.whatsapp.replace(/[^0-9]/g, "").replace(/^0/, "92")}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-600 hover:text-brand-600"
+                >
+                  {siteConfig.contact.whatsapp}
+                </a>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-xl border bg-white p-5">
@@ -59,7 +91,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Form */}
           <div className="rounded-xl border bg-white p-6">
             {sent ? (
               <div className="flex h-full flex-col items-center justify-center py-10 text-center">
@@ -70,26 +101,40 @@ export default function ContactPage() {
                 <p className="mt-1 text-gray-500">We&apos;ll get back to you as soon as possible.</p>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
-                className="space-y-4"
-              >
+              <form onSubmit={onSubmit} className="space-y-4">
                 <div>
                   <label className="mb-1 block text-sm font-medium text-gray-700">Name</label>
-                  <input required className={inputClass} />
+                  <input
+                    required
+                    className={inputClass}
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  />
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
-                  <input required type="email" className={inputClass} />
+                  <input
+                    required
+                    type="email"
+                    className={inputClass}
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  />
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-gray-700">Message</label>
-                  <textarea required rows={4} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none" />
+                  <textarea
+                    required
+                    rows={4}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  />
                 </div>
-                <Button type="submit" size="lg" className="w-full">Send Message</Button>
+                {error && <p className="text-sm text-red-600">{error}</p>}
+                <Button type="submit" size="lg" className="w-full" disabled={busy}>
+                  {busy ? "Sending…" : "Send Message"}
+                </Button>
               </form>
             )}
           </div>

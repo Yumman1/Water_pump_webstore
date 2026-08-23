@@ -5,22 +5,24 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { categories, products } from "../src/data/seed-data";
+import { siteConfig } from "../src/config/site";
 
 const prisma = new PrismaClient();
+
+const ADMIN_EMAIL = "admin@example.com";
+const ADMIN_PASSWORD = "admin1234";
 
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // --- Admin user -----------------------------------------------------------
-  const adminEmail = (process.env.ADMIN_EMAIL ?? "admin@example.com").toLowerCase();
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "admin1234";
-  const passwordHash = await bcrypt.hash(adminPassword, 10);
+  // --- Admin user (canonical credentials) -----------------------------------
+  const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
   await prisma.user.upsert({
-    where: { email: adminEmail },
+    where: { email: ADMIN_EMAIL },
     update: { passwordHash, role: "ADMIN", name: "Administrator" },
-    create: { email: adminEmail, name: "Administrator", passwordHash, role: "ADMIN" },
+    create: { email: ADMIN_EMAIL, name: "Administrator", passwordHash, role: "ADMIN" },
   });
-  console.log(`   ✓ Admin user: ${adminEmail} / ${adminPassword}`);
+  console.log(`   ✓ Admin user: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
 
   // --- Categories -----------------------------------------------------------
   const categoryIdBySlug = new Map<string, string>();
@@ -97,16 +99,34 @@ async function main() {
   console.log(`   ✓ ${products.length} products`);
 
   // --- Store settings (default) --------------------------------------------
+  const promo = siteConfig.promoPopup;
   await prisma.storeSettings.upsert({
     where: { id: 1 },
-    update: {},
+    update: {
+      promoEnabled: promo.enabled,
+      promoBadge: promo.badge ?? null,
+      promoHeading: promo.heading,
+      promoMessage: promo.message,
+      promoCouponCode: promo.couponCode ?? null,
+      promoCtaLabel: promo.ctaLabel,
+      promoCtaHref: promo.ctaHref,
+      promoImage: promo.image,
+    },
     create: {
       id: 1,
-      ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? adminEmail,
+      ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? ADMIN_EMAIL,
       ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? null,
       shippingFlatRate: 500,
       freeShippingThreshold: 50000,
       installationFee: 10000,
+      promoEnabled: promo.enabled,
+      promoBadge: promo.badge ?? null,
+      promoHeading: promo.heading,
+      promoMessage: promo.message,
+      promoCouponCode: promo.couponCode ?? null,
+      promoCtaLabel: promo.ctaLabel,
+      promoCtaHref: promo.ctaHref,
+      promoImage: promo.image,
     },
   });
   console.log("   ✓ Store settings");

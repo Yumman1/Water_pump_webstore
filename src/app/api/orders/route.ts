@@ -137,13 +137,29 @@ export async function POST(req: Request) {
   }
 
   try {
-    const productIds = data.items.map((i) => i.productId);
+    /** Resolve legacy demo cart IDs (`prod-{slug}`) to live DB products. */
+    async function resolveProductId(productId: string): Promise<string> {
+      if (!productId.startsWith("prod-")) return productId;
+      const slug = productId.slice("prod-".length);
+      const bySlug = await prisma.product.findUnique({ where: { slug } });
+      if (!bySlug) throw new Error(`Product "${slug}" is no longer available.`);
+      return bySlug.id;
+    }
+
+    const resolvedItems = await Promise.all(
+      data.items.map(async (i) => ({
+        ...i,
+        productId: await resolveProductId(i.productId),
+      }))
+    );
+
+    const productIds = resolvedItems.map((i) => i.productId);
     const products = await prisma.product.findMany({ where: { id: { in: productIds } } });
     if (products.length !== productIds.length) {
       return NextResponse.json({ error: "One or more products are unavailable." }, { status: 400 });
     }
 
-    const lineItems = data.items.map((i) => {
+    const lineItems = resolvedItems.map((i) => {
       const p = products.find((x) => x.id === i.productId)!;
       if (p.stock < i.quantity) {
         throw new Error(`Insufficient stock for ${p.name}.`);

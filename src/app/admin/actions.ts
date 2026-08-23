@@ -221,6 +221,71 @@ export async function saveSettings(fd: FormData) {
   redirect("/admin/settings?saved=1");
 }
 
+export async function savePromoSettings(fd: FormData) {
+  await requireAdmin();
+  const data = {
+    promoEnabled: bool(fd, "promoEnabled"),
+    promoBadge: str(fd, "promoBadge") || null,
+    promoHeading: str(fd, "promoHeading") || null,
+    promoMessage: str(fd, "promoMessage") || null,
+    promoCouponCode: str(fd, "promoCouponCode") || null,
+    promoCtaLabel: str(fd, "promoCtaLabel") || null,
+    promoCtaHref: str(fd, "promoCtaHref") || null,
+    promoImage: str(fd, "promoImage") || null,
+  };
+  await prisma.storeSettings.upsert({
+    where: { id: 1 },
+    update: data,
+    create: { id: 1, ...data },
+  });
+  revalidatePath("/");
+  revalidatePath("/admin/settings");
+  redirect("/admin/settings?promoSaved=1");
+}
+
+// ---------------------------------------------------------------------------
+// Coupons
+// ---------------------------------------------------------------------------
+export async function saveCoupon(id: string | null, fd: FormData) {
+  await requireAdmin();
+  const code = str(fd, "code").toUpperCase();
+  const type = str(fd, "type") === "FIXED" ? "FIXED" : "PERCENTAGE";
+  const expiresRaw = str(fd, "expiresAt");
+  const usageLimitRaw = str(fd, "usageLimit");
+
+  const data = {
+    code,
+    type: type as "PERCENTAGE" | "FIXED",
+    value: num(fd, "value"),
+    minSubtotal: Math.max(0, num(fd, "minSubtotal")),
+    active: bool(fd, "active"),
+    expiresAt: expiresRaw ? new Date(expiresRaw) : null,
+    usageLimit: usageLimitRaw ? Math.round(num(fd, "usageLimit")) : null,
+  };
+
+  if (id) {
+    await prisma.coupon.update({ where: { id }, data });
+  } else {
+    await prisma.coupon.create({ data });
+  }
+  revalidatePath("/admin/coupons");
+  redirect("/admin/coupons");
+}
+
+export async function toggleCouponActive(id: string) {
+  await requireAdmin();
+  const coupon = await prisma.coupon.findUnique({ where: { id } });
+  if (!coupon) throw new Error("Coupon not found.");
+  await prisma.coupon.update({ where: { id }, data: { active: !coupon.active } });
+  revalidatePath("/admin/coupons");
+}
+
+export async function deleteCoupon(id: string) {
+  await requireAdmin();
+  await prisma.coupon.delete({ where: { id } });
+  revalidatePath("/admin/coupons");
+}
+
 // ---------------------------------------------------------------------------
 // Categories
 // ---------------------------------------------------------------------------

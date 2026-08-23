@@ -1,9 +1,11 @@
 import { getStoreSettings } from "@/lib/notify";
 import { isDbConfigured } from "@/lib/prisma";
-import { saveSettings } from "@/app/admin/actions";
+import { saveSettings, savePromoSettings } from "@/app/admin/actions";
+import { getPromoPopupConfig } from "@/lib/promo";
 import { PageHeader } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export const dynamic = "force-dynamic";
 
@@ -24,10 +26,19 @@ function ProviderStatus({ label, ok, hint }: { label: string; ok: boolean; hint:
   );
 }
 
-export default async function SettingsPage({ searchParams }: { searchParams: { saved?: string } }) {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: { saved?: string; promoSaved?: string };
+}) {
   const settings = await getStoreSettings();
+  const promo = await getPromoPopupConfig();
   const emailOk = Boolean(process.env.RESEND_API_KEY || process.env.SMTP_HOST);
   const whatsappOk = Boolean(process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID);
+  const uploadOk = Boolean(
+    (process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 
   return (
     <div className="max-w-3xl">
@@ -36,6 +47,12 @@ export default async function SettingsPage({ searchParams }: { searchParams: { s
       {searchParams.saved && (
         <div className="mb-4 flex items-center gap-2 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
           <Icons.check className="h-4 w-4" /> Settings saved.
+        </div>
+      )}
+
+      {searchParams.promoSaved && (
+        <div className="mb-4 flex items-center gap-2 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
+          <Icons.check className="h-4 w-4" /> Promo popup saved.
         </div>
       )}
 
@@ -123,6 +140,61 @@ export default async function SettingsPage({ searchParams }: { searchParams: { s
         {!isDbConfigured && <p className="mt-2 text-sm text-amber-600">Connect a database to save settings.</p>}
       </form>
 
+      <form action={savePromoSettings} className="mt-8 space-y-6">
+        <div className="space-y-4 rounded-xl border bg-white p-6">
+          <h2 className="font-semibold text-gray-900">Homepage promo popup</h2>
+          <p className="text-sm text-gray-500">
+            Shown once per visit when customers land on the store. Link a coupon code to checkout.
+          </p>
+          <label className="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="promoEnabled" defaultChecked={promo.enabled} className="h-4 w-4" />
+            Show promo popup on homepage
+          </label>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Badge (optional)</label>
+            <input name="promoBadge" defaultValue={promo.badge ?? ""} className={inputClass} placeholder="Limited Time Offer" />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Heading</label>
+            <input name="promoHeading" defaultValue={promo.heading} className={inputClass} />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Message</label>
+            <textarea
+              name="promoMessage"
+              rows={3}
+              defaultValue={promo.message}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
+            />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Coupon code</label>
+              <input name="promoCouponCode" defaultValue={promo.couponCode ?? ""} className={inputClass} placeholder="WELCOME10" />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">CTA button label</label>
+              <input name="promoCtaLabel" defaultValue={promo.ctaLabel} className={inputClass} />
+            </div>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">CTA link</label>
+            <input name="promoCtaHref" defaultValue={promo.ctaHref} className={inputClass} placeholder="/deals" />
+          </div>
+          <ImageUploadField
+            name="promoImage"
+            label="Popup image"
+            hint="Upload or paste a URL. Shown on the left side of the popup on desktop."
+            defaultValue={promo.image}
+            folder="promo"
+          />
+        </div>
+        <Button type="submit" size="lg" disabled={!isDbConfigured}>
+          Save Promo Popup
+        </Button>
+        {!isDbConfigured && <p className="text-sm text-amber-600">Connect a database to save promo settings.</p>}
+      </form>
+
       {/* Provider status */}
       <div className="mt-8 space-y-3 rounded-xl border bg-white p-6">
         <h2 className="font-semibold text-gray-900">Delivery channels</h2>
@@ -132,6 +204,11 @@ export default async function SettingsPage({ searchParams }: { searchParams: { s
         </p>
         <ProviderStatus label="Email" ok={emailOk} hint="Set RESEND_API_KEY (recommended) or SMTP_HOST/PORT/USER/PASS." />
         <ProviderStatus label="WhatsApp" ok={whatsappOk} hint="Set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID (Meta WhatsApp Cloud API)." />
+        <ProviderStatus
+          label="Image uploads"
+          ok={uploadOk}
+          hint="Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. Create a public bucket named store-assets in Supabase Storage."
+        />
       </div>
     </div>
   );

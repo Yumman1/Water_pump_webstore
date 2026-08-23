@@ -8,7 +8,9 @@ const resolvedDatabaseUrl =
   process.env.DATABASE_URL?.trim() ||
   process.env.POSTGRES_PRISMA_URL?.trim() ||
   process.env.POSTGRES_URL?.trim() ||
+  process.env.POSTGRES_URL_NON_POOLING?.trim() ||
   process.env.DATABASE_URL_UNPOOLED?.trim() ||
+  process.env.SUPABASE_DATABASE_URL?.trim() ||
   "";
 
 if (resolvedDatabaseUrl && !process.env.DATABASE_URL?.trim()) {

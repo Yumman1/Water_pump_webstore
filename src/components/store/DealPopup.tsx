@@ -3,19 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { siteConfig } from "@/config/site";
+import type { PromoPopupConfig } from "@/lib/promo";
 import { Icons } from "@/components/ui/icons";
 
 const STORAGE_KEY = "promo-popup-dismissed";
 
-export function DealPopup() {
-  const promo = siteConfig.promoPopup;
+export function DealPopup({ promo }: { promo: PromoPopupConfig }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!promo.enabled) return;
-    // Show once per browser session.
     if (sessionStorage.getItem(STORAGE_KEY)) return;
     const t = setTimeout(() => setOpen(true), 1200);
     return () => clearTimeout(t);
@@ -42,10 +40,8 @@ export function DealPopup() {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={close} aria-hidden />
 
-      {/* Modal */}
       <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
         <button
           onClick={close}
@@ -56,12 +52,10 @@ export function DealPopup() {
         </button>
 
         <div className="grid sm:grid-cols-2">
-          {/* Image */}
           <div className="relative hidden aspect-square sm:block">
             <Image src={promo.image} alt="" fill sizes="50vw" className="object-cover" />
           </div>
 
-          {/* Content */}
           <div className="p-6 text-center sm:p-7 sm:text-left">
             {promo.badge && (
               <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent">

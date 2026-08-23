@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Category, Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { brands } from "@/config/menu";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 const inputClass =
   "h-10 w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500";
@@ -71,15 +72,14 @@ export function ProductForm({
 
         <div className="space-y-4 rounded-xl border bg-white p-6">
           <h2 className="font-semibold text-gray-900">Media & Details</h2>
-          <Field label="Image URLs" hint="One URL per line (or comma-separated). First image is the main photo. Local paths like /products/slug/cover.jpg work.">
-            <textarea
-              name="images"
-              rows={3}
-              defaultValue={p?.images.join("\n")}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
-              placeholder="/products/my-pump/cover.jpg"
-            />
-          </Field>
+          <ImageUploadField
+            name="images"
+            label="Product images"
+            hint="One URL per line. First image is the main photo. Upload or paste URLs."
+            defaultValue={p?.images.join("\n") ?? ""}
+            folder="products"
+            multiline
+          />
           <Field label="Video URL" hint="Optional looping cover video (shown on cards and product page). Example: /products/my-pump/video.mp4">
             <input name="video" defaultValue={p?.video ?? ""} className={inputClass} placeholder="/products/.../video.mp4" />
           </Field>
