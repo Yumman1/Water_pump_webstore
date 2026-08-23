@@ -125,7 +125,7 @@ export default async function HomePage() {
               <h2 className="text-2xl font-bold text-gray-900">{siteConfig.showcase.heading}</h2>
               <p className="text-gray-500">{siteConfig.showcase.subheading}</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {siteConfig.showcase.clips.map((clip, i) => (
                 <Reveal key={clip.title} delay={i * 90}>
                   <ShowcaseVideo clip={clip} />

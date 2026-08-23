@@ -98,6 +98,16 @@ export const siteConfig = {
         src: "/videos/copper-motors-industrial-grade.mp4",
       },
       {
+        title: "Copper Motors — Production",
+        description: "Built for reliability — genuine copper winding and heavy-duty construction.",
+        src: "/videos/copper-motors-industrial-grade-1.mp4",
+      },
+      {
+        title: "Copper Motors — In Stock",
+        description: "Warehouse-ready motors for homes, farms and light industry across Pakistan.",
+        src: "/videos/copper-motors-industrial-grade-2.mp4",
+      },
+      {
         title: "Monoblock Pressure Pumps",
         description: "Pressure boosting solutions for homes, buildings and light commercial use.",
         src: "/products/1hp-monoblock-pressure-pump-jawed/video.mp4",
