@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 import { getCategories } from "@/lib/data";
 import { ProductListing, type NavLink } from "@/components/store/ProductListing";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Shop All Products" };
+export const metadata: Metadata = pageMetadata({
+  title: "Shop Jawed Pumps, Motors & Complete Sets",
+  description:
+    "Browse the full Jawed Pumps catalog — copper motors, monoblock pressure pumps, bearing pumps and matched sets. Genuine stock with nationwide delivery across Pakistan.",
+  path: "/shop",
+});
 export const revalidate = 60;
 
 export default async function ShopPage({

@@ -4,8 +4,14 @@ import Image from "next/image";
 import { services } from "@/data/services";
 import { siteConfig } from "@/config/site";
 import { ButtonLink } from "@/components/ui/button";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Our Services" };
+export const metadata: Metadata = pageMetadata({
+  title: "Jawed Pumps Installation & Water Services",
+  description:
+    "Fountain setup, swimming pool maintenance and deep well boring from Jawed Pumps & Motors. Expert water pump services across Pakistan.",
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

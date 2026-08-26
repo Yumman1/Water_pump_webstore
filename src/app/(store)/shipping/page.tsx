@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 import { formatCurrency } from "@/lib/format";
 import { getPricingConfig } from "@/lib/pricing";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Shipping & Returns" };
+export const metadata: Metadata = pageMetadata({
+  title: "Shipping & Returns — Jawed Pumps Pakistan",
+  description:
+    "Nationwide delivery on Jawed pumps and motors across Pakistan. Free shipping on large orders, cash on delivery available.",
+  path: "/shipping",
+});
 export const dynamic = "force-dynamic";
 
 export default async function ShippingPage() {

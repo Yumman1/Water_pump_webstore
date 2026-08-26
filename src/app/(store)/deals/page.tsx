@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import { getDealsProducts } from "@/lib/data";
 import { ProductGrid } from "@/components/store/ProductGrid";
 import { Icons } from "@/components/ui/icons";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Special Offers & Deals" };
+export const metadata: Metadata = pageMetadata({
+  title: "Jawed Pumps Deals & Special Offers",
+  description:
+    "Save on genuine Jawed pumps and motors. Special offers on copper motors, pressure pumps and complete sets with nationwide delivery.",
+  path: "/deals",
+});
 export const revalidate = 60;
 
 export default async function DealsPage() {

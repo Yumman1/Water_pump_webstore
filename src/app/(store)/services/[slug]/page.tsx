@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getService, services } from "@/data/services";
 import { ServiceRequestForm } from "@/components/store/ServiceRequestForm";
 import { Icons } from "@/components/ui/icons";
+import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
@@ -16,7 +17,13 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const service = getService(params.slug);
-  return { title: service ? service.title : "Service" };
+  if (!service) return { title: "Service" };
+  return pageMetadata({
+    title: `${service.title} | Jawed Pumps Services`,
+    description: service.short,
+    path: `/services/${service.slug}`,
+    image: service.image,
+  });
 }
 
 export default function ServiceDetailPage({ params }: { params: { slug: string } }) {

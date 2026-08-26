@@ -6,6 +6,11 @@ const authUrl =
 const authSecret =
   process.env.NEXTAUTH_SECRET?.trim() || process.env.AUTH_SECRET?.trim() || "";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+  process.env.NEXTAUTH_URL?.trim() ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
+
 // Ensure NextAuth never sees an empty NEXTAUTH_URL during build/prerender.
 if (!process.env.NEXTAUTH_URL?.trim()) {
   process.env.NEXTAUTH_URL = authUrl;
@@ -13,12 +18,16 @@ if (!process.env.NEXTAUTH_URL?.trim()) {
 if (authSecret && !process.env.NEXTAUTH_SECRET?.trim()) {
   process.env.NEXTAUTH_SECRET = authSecret;
 }
+if (siteUrl && !process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
+  process.env.NEXT_PUBLIC_SITE_URL = siteUrl.replace(/\/$/, "");
+}
 
 const nextConfig = {
   reactStrictMode: true,
   env: {
     NEXTAUTH_URL: authUrl,
     ...(authSecret ? { NEXTAUTH_SECRET: authSecret } : {}),
+    ...(siteUrl ? { NEXT_PUBLIC_SITE_URL: siteUrl.replace(/\/$/, "") } : {}),
   },
   images: {
     remotePatterns: [

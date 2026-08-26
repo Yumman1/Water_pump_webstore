@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getCategories, getFeaturedProducts } from "@/lib/data";
 import { siteConfig } from "@/config/site";
+import { pageMetadata } from "@/lib/seo";
 import { ButtonLink } from "@/components/ui/button";
 import { ProductGrid } from "@/components/store/ProductGrid";
 import { Icons, type IconName } from "@/components/ui/icons";
@@ -12,6 +14,12 @@ import { Reveal } from "@/components/store/Reveal";
 import { Certifications } from "@/components/store/Certifications";
 
 export const revalidate = 60;
+
+export const metadata: Metadata = pageMetadata({
+  title: siteConfig.seo.homeTitle,
+  description: siteConfig.seo.homeDescription,
+  path: "/",
+});
 
 export default async function HomePage() {
   const [categories, featured] = await Promise.all([getCategories(), getFeaturedProducts(8)]);
@@ -67,6 +75,22 @@ export default async function HomePage() {
       </section>
 
       <Certifications className="border-b bg-gray-50 py-12" />
+
+      {/* SEO-rich intro — visible, readable, keyword-natural */}
+      <section className="border-b bg-white py-10">
+        <div className="container max-w-3xl text-center">
+          <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
+            Genuine Jawed Pumps &amp; Motors — Online Across Pakistan
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+            {siteConfig.legalName} is your official source for{" "}
+            <strong>Jawed copper motors</strong>, <strong>monoblock pressure pumps</strong>,{" "}
+            <strong>bearing pumps</strong> and matched motor-pump sets. Trusted by homes, farms and
+            industry since {siteConfig.seo.foundingDate}, with nationwide delivery, cash on delivery
+            and expert support on every water lifting challenge.
+          </p>
+        </div>
+      </section>
 
       {/* Categories */}
       <section className="container py-12">

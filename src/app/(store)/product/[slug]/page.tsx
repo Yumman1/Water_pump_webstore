@@ -4,6 +4,13 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data";
 import { ProductDetailClient } from "@/components/store/ProductDetailClient";
 import { ProductGrid } from "@/components/store/ProductGrid";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { siteConfig } from "@/config/site";
+import {
+  breadcrumbJsonLd,
+  pageMetadata,
+  productJsonLd,
+} from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -14,10 +21,17 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Product not found" };
-  return {
-    title: product.name,
-    description: product.shortDescription ?? product.description.slice(0, 150),
-  };
+
+  const description =
+    product.shortDescription ??
+    `${product.name} — genuine Jawed ${product.category?.name ?? "water pump"} with nationwide delivery across Pakistan.`;
+
+  return pageMetadata({
+    title: `${product.name} | Jawed Pumps Pakistan`,
+    description,
+    path: `/product/${product.slug}`,
+    image: product.images[0] ?? product.video ?? siteConfig.seo.ogImage,
+  });
 }
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
@@ -29,8 +43,18 @@ export default async function ProductPage({ params }: { params: { slug: string }
     ([k]) => k.toLowerCase() !== "video"
   );
 
+  const breadcrumbs = [
+    { name: "Home", path: "/" },
+    { name: "Shop", path: "/shop" },
+    ...(product.category
+      ? [{ name: product.category.name, path: `/category/${product.category.slug}` }]
+      : []),
+    { name: product.name, path: `/product/${product.slug}` },
+  ];
+
   return (
     <div className="container py-8">
+      <JsonLd data={[productJsonLd(product), breadcrumbJsonLd(breadcrumbs)]} />
       {/* Breadcrumb */}
       <nav className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
         <Link href="/" className="hover:text-brand-600">Home</Link>

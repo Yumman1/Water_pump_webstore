@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCategories, getCategoryBySlug } from "@/lib/data";
 import { ProductListing, type NavLink } from "@/components/store/ProductListing";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { categoryJsonLd, pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -11,7 +13,16 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const category = await getCategoryBySlug(params.slug);
-  return { title: category ? category.name : "Category" };
+  if (!category) return { title: "Category" };
+
+  return pageMetadata({
+    title: `${category.name} | Jawed Pumps Pakistan`,
+    description:
+      category.description ??
+      `Shop ${category.name} from Jawed Pumps & Motors. Genuine products, expert support and nationwide delivery across Pakistan.`,
+    path: `/category/${category.slug}`,
+    image: category.image ?? undefined,
+  });
 }
 
 export default async function CategoryPage({
@@ -38,12 +49,15 @@ export default async function CategoryPage({
   ];
 
   return (
-    <ProductListing
+    <>
+      <JsonLd data={categoryJsonLd(category)} />
+      <ProductListing
       title={category.name}
       description={category.description ?? undefined}
       query={{ categorySlug: category.slug, condition: "NEW" }}
       navLinks={navLinks}
       searchParams={searchParams}
     />
+    </>
   );
 }

@@ -99,7 +99,9 @@ Set in `src/config/site.ts` → `currency` (default `Rs`, PKR). Change `symbol`,
    |---|---|
    | `DATABASE_URL` | Supabase **pooled** Postgres URI (port 6543, `?pgbouncer=true`). **Must be set for Production.** If Marketplace injected `POSTGRES_URL` only, copy it into `DATABASE_URL` too. |
    | `NEXTAUTH_SECRET` | `openssl rand -base64 32` |
-   | `NEXTAUTH_URL` | `https://your-store.vercel.app` |
+   | `NEXTAUTH_URL` | `https://www.jawedpumps.com` (production canonical domain) |
+   | `NEXT_PUBLIC_SITE_URL` | Same as `NEXTAUTH_URL` — used for sitemap, canonical URLs & JSON-LD |
+   | `GOOGLE_SITE_VERIFICATION` | Meta tag content from [Google Search Console](https://search.google.com/search-console) |
    | `RESEND_API_KEY` / `EMAIL_FROM` | Order & contact-form emails |
    | `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` | Order WhatsApp alerts |
    | `OWNER_NOTIFY_EMAIL` / `OWNER_NOTIFY_WHATSAPP` | Fallback owner contacts |
@@ -112,6 +114,13 @@ Set in `src/config/site.ts` → `currency` (default `Rs`, PKR). Change `symbol`,
    npm run db:seed
    ```
 6. Verify production DB: open `https://your-store.vercel.app/api/health/db` — expect `{"configured":true,"connected":true}`.
+
+### SEO checklist (after deploy)
+
+1. In **Google Search Console**, add property `https://www.jawedpumps.com`, copy the verification code into Vercel env `GOOGLE_SITE_VERIFICATION`, redeploy.
+2. Submit sitemap: `https://www.jawedpumps.com/sitemap.xml`
+3. Claim **Google Business Profile** for your Karachi / branch locations and link to this site.
+4. Replace placeholder social URLs in `src/config/site.ts` with your real Facebook / Instagram pages (feeds `sameAs` in structured data).
 
 **Admin login:** `admin@example.com` / `admin1234` (run `npm run db:seed` to reset password).
 

@@ -1,21 +1,42 @@
 import type { MetadataRoute } from "next";
 import { getAllProductSlugs, getCategories } from "@/lib/data";
 import { services } from "@/data/services";
+import { getSiteUrl } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base =
-    process.env.NEXTAUTH_URL?.trim() ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  const base = getSiteUrl();
+  const now = new Date();
   const [slugs, categories] = await Promise.all([getAllProductSlugs(), getCategories()]);
 
-  const staticRoutes = ["", "/shop", "/deals", "/services", "/about", "/contact", "/shipping"].map(
-    (path) => ({ url: `${base}${path}`, lastModified: new Date() })
-  );
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: base, lastModified: now, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/shop`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/deals`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/services`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/shipping`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+  ];
 
   return [
     ...staticRoutes,
-    ...categories.map((c) => ({ url: `${base}/category/${c.slug}`, lastModified: new Date() })),
-    ...services.map((s) => ({ url: `${base}/services/${s.slug}`, lastModified: new Date() })),
-    ...slugs.map((slug) => ({ url: `${base}/product/${slug}`, lastModified: new Date() })),
+    ...categories.map((c) => ({
+      url: `${base}/category/${c.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.85,
+    })),
+    ...services.map((s) => ({
+      url: `${base}/services/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...slugs.map((slug) => ({
+      url: `${base}/product/${slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
   ];
 }

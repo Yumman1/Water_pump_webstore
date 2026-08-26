@@ -1,11 +1,14 @@
 import type { MetadataRoute } from "next";
+import { getSiteUrl } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
-  const base =
-    process.env.NEXTAUTH_URL?.trim() ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  const base = getSiteUrl();
   return {
-    rules: { userAgent: "*", allow: "/" },
-    sitemap: `${base.replace(/\/$/, "")}/sitemap.xml`,
+    rules: [
+      { userAgent: "*", allow: "/" },
+      { userAgent: "*", disallow: ["/admin/", "/api/", "/checkout", "/cart"] },
+    ],
+    sitemap: `${base}/sitemap.xml`,
+    host: base,
   };
 }

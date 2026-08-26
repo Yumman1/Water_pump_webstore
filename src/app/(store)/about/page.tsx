@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { Icons, type IconName } from "@/components/ui/icons";
 import { Certifications } from "@/components/store/Certifications";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "About Us" };
+export const metadata: Metadata = pageMetadata({
+  title: "About Jawed Pumps & Motors — Serving Pakistan Since 1980",
+  description: `Learn about ${siteConfig.legalName}. Four decades of industrial-grade water pump solutions for homes, farms and industry across Pakistan.`,
+  path: "/about",
+});
 
 const highlights: { title: string; description: string; icon: IconName }[] = [
   {
