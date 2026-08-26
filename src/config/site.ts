@@ -74,7 +74,7 @@ export const siteConfig = {
   hero: {
     heading: "SERVING THE BEST SINCE 1980",
     subheading:
-      "A trusted B2B name now serving every water pump need, from homes and farms to industry. Genuine stock, expert guidance and nationwide delivery.",
+      "A trusted B2B name now serving every water pump need, from homes and farms to industries. Genuine stock, expert guidance, and nationwide delivery.",
     ctaLabel: "Shop All Products",
     ctaHref: "/shop",
     // Background image for the hero (used as the video poster / fallback).
