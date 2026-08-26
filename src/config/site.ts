@@ -27,12 +27,12 @@ export const siteConfig = {
   },
 
   contact: {
-    phone: "0304-1088901",
-    whatsapp: "0304-1088901",
+    phone: "03053770002",
+    whatsapp: "03053770002",
     email: "jawedmotors@outlook.com",
-    address: "F-28 Main Suparco Road-13, Industrial Estate, Karachi (Head Office)",
+    address: "Industrial Estate, Karachi (Head Office)",
     manufacturing: "Gujranwala, Punjab (Manufacturing unit)",
-    mapUrl: "https://maps.google.com/?q=F-28+Main+Suparco+Road+Industrial+Estate+Karachi",
+    mapUrl: "https://maps.google.com/?q=Industrial+Estate+Karachi",
     hours: "Mon to Sat, 9:00 AM to 8:00 PM",
   },
 

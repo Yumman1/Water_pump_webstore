@@ -169,7 +169,7 @@ export default function CheckoutPage() {
                   value={form.customerPhone}
                   onChange={(e) => update("customerPhone", e.target.value)}
                   className={inputClass}
-                  placeholder="0304-1088901"
+                  placeholder="03053770002"
                 />
               </div>
               <div>

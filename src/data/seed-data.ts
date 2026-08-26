@@ -45,8 +45,35 @@ export type SeedProduct = {
 
 const img = (seed: string) => `https://picsum.photos/seed/${seed}/800/800`;
 
-const PRICE_NOTE =
-  "Contact us for the current price. Rates may vary with stock and configuration.";
+/** PKR retail prices keyed by product slug. */
+const PRODUCT_PRICES: Record<string, number> = {
+  "0-5hp-copper-motor": 10500,
+  "1hp-j-copper-motor": 13000,
+  "1hp-s-copper-motor-heavy-duty": 14000,
+  "1hp-full-load-heavy-duty-copper-motor": 19500,
+  "0-5hp-monoblock-pressure-pump-jawed": 10500,
+  "1hp-monoblock-pressure-pump-jawed": 15500,
+  "2hp-monoblock-pressure-pump-jawed-steel-impeller": 28500,
+  "2hp-monoblock-pressure-pump-premium-steel-impeller": 33500,
+  "0-5hp-monoblock-pressure-pump-premium": 11000,
+  "1hp-monoblock-pressure-pump-premium": 16500,
+  "2hp-bearing-pump-premium-gd50000": 25000,
+  "2hp-bearing-pump-jawed-gd50000": 24500,
+  "1hp-bearing-pump-gd25000": 16500,
+  "1hp-bearing-pump-gd26000": 17000,
+  "1hp-bearing-pump-gd22000": 15000,
+  "1hp-bearing-pump-gd7000": 15500,
+  "1hp-bearing-cut-size-pump-gd45000": 13500,
+  "0-5hp-inchi-bearing-jawed-pump": 9500,
+  "set-0-5hp-copper-inchi-bearing": 20000,
+  "set-1hp-j-gd45000": 26500,
+  "set-1hp-j-gd7000": 28500,
+  "set-1hp-j-gd22000": 28000,
+  "set-1hp-s-gd25000": 30500,
+  "set-1hp-s-gd26000": 31000,
+  "set-1hp-full-load-jawed-gd50000": 44000,
+  "set-1hp-full-load-premium-gd50000": 44500,
+};
 
 export const categories: SeedCategory[] = [
   {
@@ -115,8 +142,8 @@ function product(p: ProductInput): SeedProduct {
     brand: p.brand,
     categorySlug: p.categorySlug,
     shortDescription: p.shortDescription,
-    description: `${p.description}\n\n${PRICE_NOTE}`,
-    price: 0,
+    description: p.description,
+    price: PRODUCT_PRICES[p.slug] ?? 0,
     stock: p.stock ?? 20,
     lowStockThreshold: 3,
     featured: p.featured ?? false,

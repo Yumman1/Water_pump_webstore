@@ -75,7 +75,7 @@ export default function AboutPage() {
           <div className="mt-10 space-y-4 leading-relaxed text-gray-600">
             <p>
               Proudly manufactured in the industrial hub of Gujranwala and distributed through our Karachi
-              headquarters (F-28 Main Suparco Road-13), we bridge the gap between world-class engineering and
+              headquarters ({siteConfig.contact.address}), we bridge the gap between world-class engineering and
               everyday utility. Whether you are powering a large-scale farm, an industrial facility, or securing
               reliable water pressure for your home, Jawed delivers. With nationwide delivery, easy
               cash-on-delivery options, and expert after-sales support, getting the right water solution has never been
