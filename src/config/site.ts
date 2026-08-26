@@ -167,6 +167,11 @@ export const siteConfig = {
       "Jawed Pumps & Motors",
     ],
   },
+
+  /** Third-party analytics (override IDs via env vars when needed). */
+  analytics: {
+    tiktokPixelId: "DA7J23JC77U208UL92BG",
+  },
 };
 
 export type SiteConfig = typeof siteConfig;
