@@ -12,7 +12,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "db:reset": "prisma db push --force-reset && npm run db:seed"
+    "db:reset": "prisma db push --force-reset && npm run db:seed",
+    "favicons": "node scripts/generate-favicons.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -39,7 +40,9 @@
     "eslint-config-next": "14.2.15",
     "postcss": "^8.4.47",
     "prisma": "^5.22.0",
+    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.13",
+    "to-ico": "^1.1.5",
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
