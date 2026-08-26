@@ -1,53 +1,54 @@
 /**
- * Generates search-engine-friendly favicons from the source brand image.
- * Run: node scripts/generate-favicons.mjs
+ * Generates favicons from public/brand/favicon-source.png
+ * Run: npm run favicons
  */
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import toIco from "to-ico";
 
-const root = path.resolve(import.meta.dirname, "..");
-const source = path.join(root, "src/app/icon.jpg");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(__dirname, "..");
+const source = path.join(root, "public/brand/favicon-source.png");
 
 if (!fs.existsSync(source)) {
-  console.error("Source icon not found:", source);
+  console.error("Missing source image:", source);
+  console.error("Add a square PNG/JPG at public/brand/favicon-source.png first.");
   process.exit(1);
 }
 
-const sizes = [16, 32, 48, 192, 512];
-const pngBuffers = await Promise.all(
-  sizes.map((size) =>
-    sharp(source)
-      .resize(size, size, { fit: "contain", background: { r: 253, g: 248, b: 240, alpha: 1 } })
-      .png()
-      .toBuffer()
-  )
-);
+const BG = { r: 253, g: 248, b: 240, alpha: 1 };
 
-const icoBuffer = await toIco(pngBuffers.slice(0, 3));
+async function square(size) {
+  return sharp(source)
+    .resize(size, size, { fit: "contain", background: BG, kernel: sharp.kernel.lanczos3 })
+    .png()
+    .toBuffer();
+}
+
+const png16 = await square(16);
+const png32 = await square(32);
+const png48 = await square(48);
+const png180 = await square(180);
+const png192 = await square(192);
+const png512 = await square(512);
+
+const icoBuffer = await toIco([png16, png32, png48]);
 
 const outputs = [
   [path.join(root, "public/favicon.ico"), icoBuffer],
   [path.join(root, "src/app/favicon.ico"), icoBuffer],
-  [path.join(root, "public/icon-48.png"), pngBuffers[2]],
-  [path.join(root, "public/icon-192.png"), pngBuffers[3]],
-  [path.join(root, "src/app/icon.png"), pngBuffers[2]],
-  [path.join(root, "src/app/apple-icon.png"), pngBuffers[3]],
+  [path.join(root, "public/icon-48.png"), png48],
+  [path.join(root, "public/icon-192.png"), png192],
+  [path.join(root, "src/app/icon.png"), png512],
+  [path.join(root, "src/app/apple-icon.png"), png180],
 ];
 
 for (const [file, buf] of outputs) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, buf);
   console.log("wrote", path.relative(root, file));
-}
-
-// Remove legacy jpg app icons (Next prefers ico/png).
-for (const legacy of ["src/app/icon.jpg", "src/app/apple-icon.jpg", "public/favicon.jpg"]) {
-  const p = path.join(root, legacy);
-  if (fs.existsSync(p)) {
-    fs.unlinkSync(p);
-    console.log("removed", legacy);
-  }
 }
 
 console.log("Done.");

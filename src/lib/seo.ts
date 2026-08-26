@@ -60,15 +60,8 @@ export function buildRootMetadata(): Metadata {
         "max-video-preview": -1,
       },
     },
-    icons: {
-      icon: [
-        { url: "/favicon.ico", sizes: "any" },
-        { url: "/icon-48.png", type: "image/png", sizes: "48x48" },
-        { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-      ],
-      shortcut: "/favicon.ico",
-      apple: [{ url: "/apple-icon.png", sizes: "192x192", type: "image/png" }],
-    },
+    // Favicon files live in src/app/ (favicon.ico, icon.png, apple-icon.png).
+    // Avoid duplicate <link rel="icon"> tags that confuse browsers.
     openGraph: {
       type: "website",
       locale: siteConfig.seo.locale,
