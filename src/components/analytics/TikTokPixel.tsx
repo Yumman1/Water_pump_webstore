@@ -5,15 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { getTikTokPixelId } from "@/lib/analytics";
 
-declare global {
-  interface Window {
-    ttq?: {
-      page: () => void;
-      track: (...args: unknown[]) => void;
-    };
-  }
-}
-
 /** TikTok Pixel — loads once, re-fires ttq.page() on client-side route changes. */
 export function TikTokPixel() {
   const pixelId = getTikTokPixelId();

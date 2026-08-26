@@ -6,6 +6,8 @@ import { useCart } from "@/lib/cart-context";
 import { formatCurrency } from "@/lib/format";
 import { siteConfig } from "@/config/site";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { trackTikTokPurchase } from "@/lib/analytics";
+import { CheckoutAnalytics } from "@/components/analytics/CheckoutAnalytics";
 
 type PaymentMethod = "COD" | "BANK_TRANSFER";
 
@@ -120,6 +122,19 @@ export default function CheckoutPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Something went wrong");
+
+      trackTikTokPurchase({
+        orderId: data.orderNumber,
+        value: Number(data.total ?? payableTotal),
+        contents: items.map((i) => ({
+          content_id: i.slug,
+          content_type: "product" as const,
+          content_name: i.name,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+      });
+
       clear();
       const params = new URLSearchParams({ order: data.orderNumber });
       if (data.installationType) params.set("install", data.installationType);
@@ -147,6 +162,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="container py-8">
+      <CheckoutAnalytics />
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Checkout</h1>
       <form onSubmit={submit} className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="space-y-6">

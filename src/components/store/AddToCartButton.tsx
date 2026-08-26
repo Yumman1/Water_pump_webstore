@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
+import { trackTikTokAddToCart } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { productCoverMedia, realImages } from "@/lib/utils";
@@ -39,6 +40,13 @@ export function AddToCartButton({
       video: product.video ?? null,
       quantity,
       stock: product.stock,
+    });
+    trackTikTokAddToCart({
+      content_id: product.slug,
+      content_type: "product",
+      content_name: product.name,
+      quantity,
+      price: product.price,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
