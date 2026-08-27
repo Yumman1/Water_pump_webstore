@@ -5,8 +5,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import pngToIco from "png-to-ico";
 import sharp from "sharp";
-import toIco from "to-ico";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -23,22 +23,21 @@ const BG = { r: 253, g: 248, b: 240, alpha: 1 };
 async function square(size) {
   return sharp(source)
     .resize(size, size, { fit: "contain", background: BG, kernel: sharp.kernel.lanczos3 })
+    .ensureAlpha()
     .png()
     .toBuffer();
 }
 
-const png16 = await square(16);
-const png32 = await square(32);
 const png48 = await square(48);
 const png180 = await square(180);
 const png192 = await square(192);
 const png512 = await square(512);
 
-const icoBuffer = await toIco([png16, png32, png48]);
+// BMP-based ICO for legacy /favicon.ico requests (to-ico PNG-in-ICO breaks many browsers).
+const icoBuffer = await pngToIco(source);
 
 const outputs = [
   [path.join(root, "public/favicon.ico"), icoBuffer],
-  [path.join(root, "src/app/favicon.ico"), icoBuffer],
   [path.join(root, "public/icon-48.png"), png48],
   [path.join(root, "public/icon-192.png"), png192],
   [path.join(root, "src/app/icon.png"), png512],
@@ -51,4 +50,4 @@ for (const [file, buf] of outputs) {
   console.log("wrote", path.relative(root, file));
 }
 
-console.log("Done.");
+console.log("Done. (No src/app/favicon.ico — avoids broken ICO in <head>.)");
