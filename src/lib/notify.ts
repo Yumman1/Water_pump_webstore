@@ -9,6 +9,7 @@
  *          or  SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS  (any SMTP, e.g. Gmail)
  *   WhatsApp:  WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID . Meta WhatsApp Cloud API
  */
+import nodemailer from "nodemailer";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 import { formatCurrency } from "@/lib/format";
@@ -80,13 +81,9 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
     }
   }
 
-  // 2) SMTP via nodemailer (dynamically imported so it's optional)
+  // 2) SMTP via nodemailer (Outlook, Gmail, etc.)
   if (process.env.SMTP_HOST) {
     try {
-      // Variable specifier keeps this an optional runtime dependency.
-      const specifier = "nodemailer";
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nodemailer: any = await import(specifier);
       const transport = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT ?? 587),
