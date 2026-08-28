@@ -93,8 +93,8 @@ export const siteConfig = {
     subheading: "Real products, warehouse stock and water solutions in motion.",
     clips: [
       {
-        title: "Copper Motors",
-        description: "Industrial-grade motors ready for domestic, farm and factory duty.",
+        title: "High Grade Copper",
+        description: "Industrial-grade motors built for homes, farms, factories and every pumping need.",
         src: "/videos/copper-motors-industrial-grade.mp4",
       },
       {
