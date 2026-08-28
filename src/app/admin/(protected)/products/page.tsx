@@ -1,11 +1,11 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getAdminProducts, getDashboardStats } from "@/lib/admin-data";
 import { formatCurrency } from "@/lib/format";
 import { PageHeader, EmptyState } from "@/components/admin/ui";
 import { ButtonLink } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/admin/ConfirmButton";
 import { VisibilityToggle } from "@/components/admin/VisibilityToggle";
+import { AdminProductThumb } from "@/components/admin/AdminProductThumb";
 import { deleteProduct, toggleProductActive } from "@/app/admin/actions";
 import { cn } from "@/lib/utils";
 
@@ -54,9 +54,7 @@ export default async function AdminProductsPage() {
                   <tr key={p.id} className={cn("hover:bg-gray-50", !p.active && "bg-gray-50/80")}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                          {p.images[0] && <Image src={p.images[0]} alt="" fill sizes="40px" className="object-cover" />}
-                        </div>
+                        <AdminProductThumb product={p} />
                         <div className="min-w-0">
                           <span className="line-clamp-1 font-medium text-gray-900">{p.name}</span>
                           {!p.active && (

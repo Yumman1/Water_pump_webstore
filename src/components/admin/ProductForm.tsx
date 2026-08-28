@@ -3,6 +3,7 @@ import type { Category, Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { brands } from "@/config/menu";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { ProductMediaPreview } from "@/components/admin/ProductMediaPreview";
 
 const inputClass =
   "h-10 w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500";
@@ -72,10 +73,11 @@ export function ProductForm({
 
         <div className="space-y-4 rounded-xl border bg-white p-6">
           <h2 className="font-semibold text-gray-900">Media & Details</h2>
+          {p && <ProductMediaPreview product={p} />}
           <ImageUploadField
             name="images"
             label="Product images"
-            hint="One URL per line. First image is the main photo. Upload or paste URLs."
+            hint="One URL per line. First image is the main photo. Products with only a video (e.g. copper motors) use the video as the cover on the shop."
             defaultValue={p?.images.join("\n") ?? ""}
             folder="products"
             multiline

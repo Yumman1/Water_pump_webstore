@@ -1,10 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { getAdminProducts } from "@/lib/admin-data";
 import { isDbConfigured } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/format";
 import { PageHeader, StatCard } from "@/components/admin/ui";
 import { StockControl } from "@/components/admin/StockControl";
+import { AdminProductThumb } from "@/components/admin/AdminProductThumb";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -53,9 +53,7 @@ export default async function InventoryPage() {
                 <tr key={p.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                        {p.images[0] && <Image src={p.images[0]} alt="" fill sizes="40px" className="object-cover" />}
-                      </div>
+                      <AdminProductThumb product={p} />
                       <Link href={`/admin/products/${p.id}`} className="line-clamp-1 font-medium text-gray-900 hover:text-brand-700">
                         {p.name}
                       </Link>
