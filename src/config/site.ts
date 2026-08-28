@@ -98,13 +98,13 @@ export const siteConfig = {
         src: "/videos/copper-motors-industrial-grade.mp4",
       },
       {
-        title: "Copper Motors — Production",
-        description: "Built for reliability — genuine copper winding and heavy-duty construction.",
+        title: "Production",
+        description: "Built for reliability by experts — genuine copper winding and heavy-duty industrial-grade equipment.",
         src: "/videos/copper-motors-industrial-grade-1.mp4",
       },
       {
-        title: "Copper Motors — In Stock",
-        description: "Warehouse-ready motors for homes, farms and light industry across Pakistan.",
+        title: "Tested",
+        description: "Every motor is tested before it enters inventory, so our quality standards are never compromised.",
         src: "/videos/copper-motors-industrial-grade-2.mp4",
       },
     ] as { title: string; description: string; src: string; poster?: string }[],
