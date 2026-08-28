@@ -77,8 +77,8 @@ export const siteConfig = {
       "A trusted B2B name now serving every water pump need, from homes and farms to industries. Genuine stock, expert guidance, and nationwide delivery.",
     ctaLabel: "Shop All Products",
     ctaHref: "/shop",
-    // Background image for the hero (used as the video poster / fallback).
-    image: "https://picsum.photos/seed/pump-hero/1600/900",
+    // Fallback image only when hero.video is empty. Not used as a video poster.
+    image: "",
     // OPTIONAL background video (muted, looping). Set to "" to use just the image.
     // Replace with your own short, compressed clip (MP4, ideally < 5 MB, ~10-20s).
     video: "/hero.mp4",
@@ -119,7 +119,7 @@ export const siteConfig = {
     couponCode: "WELCOME10",
     ctaLabel: "Shop the Deals",
     ctaHref: "/deals",
-    image: "https://picsum.photos/seed/promo-deal/700/500",
+    image: "/images/promo-popup.jpg",
   },
 
   // Trust badges shown across the storefront.

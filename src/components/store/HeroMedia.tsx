@@ -27,7 +27,6 @@ export function HeroMedia() {
           muted
           playsInline
           preload="auto"
-          poster={image}
           onTimeUpdate={(e) => {
             const v = e.currentTarget;
             if (v.duration && v.currentTime >= v.duration - 0.15) {
@@ -40,9 +39,9 @@ export function HeroMedia() {
         >
           <source src={video} type="video/mp4" />
         </video>
-      ) : (
+      ) : image ? (
         <Image src={image} alt="" fill priority className="hero-zoom object-cover" />
-      )}
+      ) : null}
     </div>
   );
 }
