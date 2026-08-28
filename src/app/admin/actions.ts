@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin-auth";
 import { slugify } from "@/lib/utils";
-import { notifyDispatch } from "@/lib/notify";
+import { notifyDispatch, notifyCancellation } from "@/lib/notify";
 
 async function requireAdmin() {
   const user = await getAdminUser();
@@ -192,6 +192,94 @@ export async function dispatchOrder(id: string) {
   }
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${id}`);
+}
+
+function orderNotifyPayload(order: {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  address: string;
+  city: string;
+  total: number;
+  paymentMethod: string;
+  installationType?: string | null;
+  installationFee?: number | null;
+  replacementSerial?: string | null;
+  items: {
+    name: string;
+    quantity: number;
+    price: number;
+    listPrice?: number | null;
+    underWarranty?: boolean;
+  }[];
+}) {
+  return {
+    orderNumber: order.orderNumber,
+    customerName: order.customerName,
+    customerEmail: order.customerEmail,
+    customerPhone: order.customerPhone,
+    address: order.address,
+    city: order.city,
+    total: order.total,
+    paymentMethod: order.paymentMethod,
+    installationType: order.installationType,
+    installationFee: order.installationFee,
+    replacementSerial: order.replacementSerial,
+    items: order.items.map((i) => ({
+      name: i.name,
+      quantity: i.quantity,
+      price: i.price,
+      listPrice: i.listPrice,
+      underWarranty: i.underWarranty,
+    })),
+  };
+}
+
+/** Cancel an order, restore stock, and notify the customer. */
+export async function cancelOrder(id: string) {
+  await requireAdmin();
+  const order = await prisma.order.findUnique({ where: { id }, include: { items: true } });
+  if (!order) throw new Error("Order not found.");
+  if (order.status === "CANCELLED") throw new Error("This order is already cancelled.");
+
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({ where: { id }, data: { status: "CANCELLED" } });
+    for (const item of order.items) {
+      if (!item.productId) continue;
+      const product = await tx.product.findUnique({ where: { id: item.productId } });
+      if (!product) continue;
+      const newStock = product.stock + item.quantity;
+      await tx.product.update({ where: { id: item.productId }, data: { stock: newStock } });
+      await tx.inventoryLog.create({
+        data: {
+          productId: item.productId,
+          change: item.quantity,
+          reason: `Cancelled order ${order.orderNumber}`,
+          newStock,
+        },
+      });
+    }
+  });
+
+  try {
+    await notifyCancellation(orderNotifyPayload(order));
+  } catch (e) {
+    console.warn("[cancel] notification failed:", (e as Error).message);
+  }
+
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${id}`);
+  revalidatePath("/admin/inventory");
+}
+
+/** Permanently delete an order record (does not send notifications). */
+export async function deleteOrder(id: string) {
+  await requireAdmin();
+  await prisma.order.delete({ where: { id } });
+  revalidatePath("/admin/orders");
+  revalidatePath("/admin");
+  redirect("/admin/orders");
 }
 
 // ---------------------------------------------------------------------------

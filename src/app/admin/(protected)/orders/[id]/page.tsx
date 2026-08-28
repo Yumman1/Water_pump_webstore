@@ -2,11 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAdminOrder } from "@/lib/admin-data";
 import { isDbConfigured } from "@/lib/prisma";
-import { updateOrder, dispatchOrder } from "@/app/admin/actions";
+import { updateOrder, dispatchOrder, cancelOrder, deleteOrder } from "@/app/admin/actions";
 import { formatCurrency, formatDateTime } from "@/lib/format";
 import { getPricingConfig } from "@/lib/pricing";
 import { PageHeader, StatusBadge } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
+import { CancelOrderButton } from "@/components/admin/CancelOrderButton";
+import { ConfirmButton } from "@/components/admin/ConfirmButton";
 import { Icons } from "@/components/ui/icons";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +22,8 @@ export default async function OrderDetailPage({ params }: { params: { id: string
 
   const action = updateOrder.bind(null, order.id);
   const dispatch = dispatchOrder.bind(null, order.id);
+  const cancel = cancelOrder.bind(null, order.id);
+  const remove = deleteOrder.bind(null, order.id);
   const canDispatch = !["SHIPPED", "DELIVERED", "CANCELLED"].includes(order.status);
 
   return (
@@ -158,6 +162,24 @@ export default async function OrderDetailPage({ params }: { params: { id: string
             )}
           </div>
 
+          {/* Cancel */}
+          <div className="rounded-xl border border-orange-200 bg-orange-50/40 p-5">
+            <h2 className="font-semibold text-gray-900">Cancel Order</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Marks the order as cancelled, restores stock, and sends the customer a cancellation notice by email and
+              WhatsApp.
+            </p>
+            {order.status === "CANCELLED" ? (
+              <p className="mt-3 flex items-center gap-2 text-sm font-medium text-orange-800">
+                <Icons.close className="h-4 w-4" /> Order cancelled
+              </p>
+            ) : (
+              <div className="mt-3">
+                <CancelOrderButton action={cancel} disabled={!isDbConfigured} />
+              </div>
+            )}
+          </div>
+
           <form action={action} className="space-y-4 rounded-xl border bg-white p-5">
             <h2 className="font-semibold text-gray-900">Update Status</h2>
             <div>
@@ -181,6 +203,23 @@ export default async function OrderDetailPage({ params }: { params: { id: string
             </div>
             <Button type="submit" className="w-full" disabled={!isDbConfigured}>Save</Button>
           </form>
+
+          <div className="rounded-xl border border-red-200 bg-red-50/40 p-5">
+            <h2 className="font-semibold text-gray-900">Delete Order</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Permanently removes this order from the admin. No email or WhatsApp is sent. Use cancel first if the
+              customer should be notified.
+            </p>
+            <div className="mt-3">
+              <ConfirmButton
+                action={remove}
+                label="Delete Order Permanently"
+                confirmText={`Permanently delete order ${order.orderNumber}? This cannot be undone.`}
+                className="w-full justify-center px-3 py-2"
+                disabled={!isDbConfigured}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

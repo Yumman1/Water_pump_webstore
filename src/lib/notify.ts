@@ -310,3 +310,35 @@ export async function notifyDispatch(order: OrderLike): Promise<void> {
 
   await Promise.allSettled(tasks);
 }
+
+/** Fire when an order is cancelled: notify the customer by email and WhatsApp. */
+export async function notifyCancellation(order: OrderLike): Promise<void> {
+  const tasks: Promise<void>[] = [];
+
+  if (order.customerEmail) {
+    tasks.push(
+      sendEmail({
+        to: order.customerEmail,
+        subject: `Order cancelled: ${order.orderNumber}`,
+        html: emailShell(
+          "Your order has been cancelled",
+          `<p style="color:#374151">Hi ${order.customerName}, your order <b>${order.orderNumber}</b> at ${siteConfig.name} has been <b>cancelled</b>.</p>
+           <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
+           <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>
+           <p style="color:#374151;margin-top:12px">If you have any questions or did not request this cancellation, please contact us at ${siteConfig.contact.phone} or ${siteConfig.contact.email}.</p>`
+        ),
+      })
+    );
+  }
+
+  if (order.customerPhone) {
+    tasks.push(
+      sendWhatsApp({
+        to: order.customerPhone,
+        text: `Hi ${order.customerName}, your order *${order.orderNumber}* at ${siteConfig.name} has been *cancelled*.\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\n\nIf you have questions, call ${siteConfig.contact.phone} or email ${siteConfig.contact.email}.`,
+      })
+    );
+  }
+
+  await Promise.allSettled(tasks);
+}

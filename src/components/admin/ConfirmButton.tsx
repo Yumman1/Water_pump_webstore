@@ -11,12 +11,14 @@ export function ConfirmButton({
   label,
   className,
   iconOnly = false,
+  disabled = false,
 }: {
   action: () => Promise<void>;
   confirmText?: string;
   label?: string;
   className?: string;
   iconOnly?: boolean;
+  disabled?: boolean;
 }) {
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export function ConfirmButton({
     <>
       <button
         onClick={onClick}
-        disabled={pending}
+        disabled={pending || disabled}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50",
           iconOnly ? "h-9 w-9 justify-center" : "px-3 py-1.5",
