@@ -1,11 +1,12 @@
 import { getStoreSettings } from "@/lib/notify";
 import { isDbConfigured } from "@/lib/prisma";
-import { saveSettings, savePromoSettings } from "@/app/admin/actions";
+import { saveSettings, savePromoSettings, testNotificationChannels } from "@/app/admin/actions";
 import { getPromoPopupConfig } from "@/lib/promo";
 import { PageHeader } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { TestNotificationsButton } from "@/components/admin/TestNotificationsButton";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,7 @@ export default async function SettingsPage({
 }) {
   const settings = await getStoreSettings();
   const promo = await getPromoPopupConfig();
+  const testNotify = testNotificationChannels;
   const emailOk = Boolean(process.env.RESEND_API_KEY || process.env.SMTP_HOST);
   const whatsappOk = Boolean(process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID);
   const uploadOk = Boolean(
@@ -202,13 +204,21 @@ export default async function SettingsPage({
           Messages are sent through these providers, configured with environment variables (see README).
           Until connected, messages are logged to the server console.
         </p>
-        <ProviderStatus label="Email" ok={emailOk} hint="Set RESEND_API_KEY (recommended) or SMTP_HOST/PORT/USER/PASS." />
-        <ProviderStatus label="WhatsApp" ok={whatsappOk} hint="Set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID (Meta WhatsApp Cloud API)." />
+        <ProviderStatus label="Email" ok={emailOk} hint="Outlook: SMTP_HOST=smtp.office365.com, SMTP_USER=jawedmotors@outlook.com, SMTP_PASS=app password. See docs/NOTIFICATIONS_SETUP.md." />
+        <ProviderStatus label="WhatsApp" ok={whatsappOk} hint="Set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID (Meta WhatsApp Cloud API). See docs/NOTIFICATIONS_SETUP.md." />
         <ProviderStatus
           label="Image uploads"
           ok={uploadOk}
           hint="Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. Create a public bucket named store-assets in Supabase Storage."
         />
+        <div className="border-t pt-4">
+          <p className="mb-2 text-sm text-gray-600">
+            Sends a test message to <strong>{settings.ownerNotifyEmail || "owner email"}</strong>
+            {settings.ownerNotifyWhatsapp ? ` and ${settings.ownerNotifyWhatsapp}` : ""}. Customer order emails
+            and WhatsApp always use the address and phone from each order at checkout.
+          </p>
+          <TestNotificationsButton action={testNotify} disabled={!emailOk && !whatsappOk} />
+        </div>
       </div>
     </div>
   );

@@ -114,8 +114,8 @@ async function main() {
     },
     create: {
       id: 1,
-      ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? ADMIN_EMAIL,
-      ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? null,
+      ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? "jawedmotors@outlook.com",
+      ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? "03053770002",
       shippingFlatRate: 500,
       freeShippingThreshold: 50000,
       installationFee: 10000,

@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin-auth";
 import { slugify } from "@/lib/utils";
-import { notifyDispatch, notifyCancellation } from "@/lib/notify";
+import { notifyDispatch, notifyCancellation, getStoreSettings, sendEmail, sendWhatsApp } from "@/lib/notify";
+import { siteConfig } from "@/config/site";
 
 async function requireAdmin() {
   const user = await getAdminUser();
@@ -280,6 +281,38 @@ export async function deleteOrder(id: string) {
   revalidatePath("/admin/orders");
   revalidatePath("/admin");
   redirect("/admin/orders");
+}
+
+/** Send a test email + WhatsApp to owner contacts (Admin → Settings). */
+export async function testNotificationChannels() {
+  await requireAdmin();
+  const settings = await getStoreSettings();
+  const email = settings.ownerNotifyEmail;
+  const phone = settings.ownerNotifyWhatsapp;
+  if (!email && !phone) {
+    throw new Error("Set owner email or WhatsApp in Settings first.");
+  }
+
+  const tasks: Promise<void>[] = [];
+  if (email) {
+    tasks.push(
+      sendEmail({
+        to: email,
+        subject: "Test: Jawed Pumps notifications are working",
+        html: `<p>If you received this, email is configured correctly for order alerts and customer cancellations.</p>`,
+      })
+    );
+  }
+  if (phone) {
+    tasks.push(
+      sendWhatsApp({
+        to: phone,
+        text: `✅ Test from ${siteConfig.name}: WhatsApp notifications are configured. Customer order updates will go to the phone number on each order.`,
+      })
+    );
+  }
+  await Promise.allSettled(tasks);
+  revalidatePath("/admin/settings");
 }
 
 // ---------------------------------------------------------------------------
