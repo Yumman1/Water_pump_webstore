@@ -99,7 +99,7 @@ export const siteConfig = {
       },
       {
         title: "Production",
-        description: "Built for reliability by experts — genuine copper winding and heavy-duty industrial-grade equipment.",
+        description: "Built for reliability by an expert team with genuine copper winding and heavy-duty industrial-grade equipment.",
         src: "/videos/copper-motors-industrial-grade-1.mp4",
       },
       {
