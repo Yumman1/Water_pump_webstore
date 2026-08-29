@@ -77,18 +77,13 @@ export default function AboutPage() {
                 <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">Leadership</p>
                 <h2 className="mt-2 text-2xl font-bold text-gray-900">Usman Jawed</h2>
                 <p className="mt-1 text-sm font-medium text-gray-500">Chief Executive Officer</p>
-                <div className="mt-4 space-y-3 text-gray-600 leading-relaxed">
-                  <p>
-                    Usman Jawed leads {siteConfig.legalName} with years of hands-on experience across
-                    manufacturing, product selection, and after-sales support in Pakistan&apos;s water pump and
-                    motor industry.
-                  </p>
-                  <p>
-                    Building on a legacy that began in 1980, he is focused on bringing genuine,
-                    industrial-grade solutions to homes, farms, and businesses nationwide—combining trusted
-                    engineering with the service and reliability customers expect from the Jawed name.
-                  </p>
-                </div>
+                <p className="mt-4 text-gray-600 leading-relaxed">
+                  Usman Jawed leads {siteConfig.legalName} with years of experience in manufacturing,
+                  product selection, and after-sales support across Pakistan&apos;s water pump and motor
+                  industry. He builds on a legacy that began in 1980, bringing genuine industrial solutions
+                  to homes, farms, and businesses with the service and reliability the Jawed name is known
+                  for.
+                </p>
               </div>
             </div>
           </section>
