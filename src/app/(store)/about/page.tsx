@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { siteConfig } from "@/config/site";
 import { Icons, type IconName } from "@/components/ui/icons";
 import { Certifications } from "@/components/store/Certifications";
@@ -59,6 +60,38 @@ export default function AboutPage() {
               solutions that stand the test of time.
             </p>
           </div>
+
+          <section className="mt-10 overflow-hidden rounded-2xl border bg-white shadow-sm">
+            <div className="grid gap-0 md:grid-cols-[minmax(240px,320px)_1fr]">
+              <div className="relative aspect-[4/5] min-h-[280px] bg-gray-100 md:aspect-auto md:min-h-full">
+                <Image
+                  src="/images/ceo-usman-jawed.jpg"
+                  alt="Usman Jawed, Chief Executive Officer of Jawed Pumps & Motors"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 320px"
+                  className="object-cover object-top"
+                  priority
+                />
+              </div>
+              <div className="flex flex-col justify-center p-6 sm:p-8">
+                <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">Leadership</p>
+                <h2 className="mt-2 text-2xl font-bold text-gray-900">Usman Jawed</h2>
+                <p className="mt-1 text-sm font-medium text-gray-500">Chief Executive Officer</p>
+                <div className="mt-4 space-y-3 text-gray-600 leading-relaxed">
+                  <p>
+                    Usman Jawed leads {siteConfig.legalName} with years of hands-on experience across
+                    manufacturing, product selection, and after-sales support in Pakistan&apos;s water pump and
+                    motor industry.
+                  </p>
+                  <p>
+                    Building on a legacy that began in 1980, he is focused on bringing genuine,
+                    industrial-grade solutions to homes, farms, and businesses nationwide—combining trusted
+                    engineering with the service and reliability customers expect from the Jawed name.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
             {highlights.map((f) => {
