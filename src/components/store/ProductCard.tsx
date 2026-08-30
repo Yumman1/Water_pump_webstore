@@ -1,9 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
 import { AddToCartButton } from "./AddToCartButton";
-import { ProductCardMedia } from "./ProductCardMedia";
-import { cn } from "@/lib/utils";
+import { cn, productCoverMedia } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: Product }) {
   const discount =
@@ -11,11 +11,31 @@ export function ProductCard({ product }: { product: Product }) {
       ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
       : 0;
   const lowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
+  const cover = productCoverMedia(product);
 
   return (
     <div className="card-hover group flex flex-col overflow-hidden rounded-xl border bg-white">
       <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-gray-100">
-        <ProductCardMedia product={product} alt={product.name} />
+        {cover?.type === "video" ? (
+          <video
+            src={cover.src}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={product.name}
+          />
+        ) : cover ? (
+          <Image
+            src={cover.src}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : null}
         <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
           {discount > 0 && (
             <span className="rounded-md bg-red-600 px-2 py-0.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm">
