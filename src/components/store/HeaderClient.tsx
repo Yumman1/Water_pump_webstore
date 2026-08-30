@@ -41,7 +41,7 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
     const q = query.trim();
-    router.push(q ? `/shop?search=${encodeURIComponent(q)}` : "/shop");
+    router.push(q ? `/shop/browse?search=${encodeURIComponent(q)}` : "/shop");
     setMobileOpen(false);
   }
 

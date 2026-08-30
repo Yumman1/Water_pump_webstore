@@ -17,6 +17,7 @@ export async function ProductListing({
   navLinks,
   navTitle = "Categories",
   searchParams,
+  browsePath,
 }: {
   title: string;
   description?: string;
@@ -24,6 +25,8 @@ export async function ProductListing({
   navLinks?: NavLink[];
   navTitle?: string;
   searchParams: { [key: string]: string | string[] | undefined };
+  /** Base path for sort/search/pagination links (defaults to current path). */
+  browsePath?: string;
 }) {
   const search = typeof searchParams.search === "string" ? searchParams.search : undefined;
   const sort = (typeof searchParams.sort === "string" ? searchParams.sort : "newest") as ProductQuery["sort"];
@@ -83,7 +86,7 @@ export async function ProductListing({
                 </>
               )}
             </p>
-            <ShopSort />
+            <ShopSort browsePath={browsePath} />
           </div>
 
           {/* Mobile nav chips */}
@@ -105,7 +108,7 @@ export async function ProductListing({
           )}
 
           <ProductGrid products={products} />
-          <Pagination page={page} totalPages={totalPages} baseParams={{ search, sort: sort ?? undefined }} />
+          <Pagination page={page} totalPages={totalPages} baseParams={{ search, sort: sort ?? undefined }} browsePath={browsePath} />
         </div>
       </div>
     </div>

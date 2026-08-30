@@ -5,10 +5,12 @@ export function Pagination({
   page,
   totalPages,
   baseParams,
+  browsePath,
 }: {
   page: number;
   totalPages: number;
   baseParams: Record<string, string | undefined>;
+  browsePath?: string;
 }) {
   if (totalPages <= 1) return null;
 
@@ -18,10 +20,17 @@ export function Pagination({
       if (v) params.set(k, v);
     });
     params.set("page", String(p));
-    return `?${params.toString()}`;
+    const qs = params.toString();
+    const base = browsePath ?? "";
+    return base ? `${base}?${qs}` : `?${qs}`;
   };
 
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  // Windowed page numbers — avoid O(n) DOM nodes on large catalogs.
+  const windowSize = 5;
+  let start = Math.max(1, page - Math.floor(windowSize / 2));
+  const end = Math.min(totalPages, start + windowSize - 1);
+  start = Math.max(1, end - windowSize + 1);
+  const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   return (
     <nav className="mt-8 flex items-center justify-center gap-1">
@@ -29,6 +38,14 @@ export function Pagination({
         <Link href={makeHref(page - 1)} className="rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50">
           Prev
         </Link>
+      )}
+      {start > 1 && (
+        <>
+          <Link href={makeHref(1)} className="min-w-[2.25rem] rounded-md border px-3 py-1.5 text-center text-sm hover:bg-gray-50">
+            1
+          </Link>
+          {start > 2 && <span className="px-1 text-gray-400">…</span>}
+        </>
       )}
       {pages.map((p) => (
         <Link
@@ -42,6 +59,17 @@ export function Pagination({
           {p}
         </Link>
       ))}
+      {end < totalPages && (
+        <>
+          {end < totalPages - 1 && <span className="px-1 text-gray-400">…</span>}
+          <Link
+            href={makeHref(totalPages)}
+            className="min-w-[2.25rem] rounded-md border px-3 py-1.5 text-center text-sm hover:bg-gray-50"
+          >
+            {totalPages}
+          </Link>
+        </>
+      )}
       {page < totalPages && (
         <Link href={makeHref(page + 1)} className="rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50">
           Next

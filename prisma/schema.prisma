@@ -105,6 +105,9 @@ model Product {
 
   @@index([categoryId])
   @@index([featured])
+  @@index([active, condition, createdAt(sort: Desc)])
+  @@index([active, price])
+  @@index([active, brand])
 }
 
 // Records every stock movement for auditability.

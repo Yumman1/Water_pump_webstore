@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const SORTS = [
   { value: "newest", label: "Newest" },
@@ -9,16 +9,19 @@ const SORTS = [
   { value: "name-asc", label: "Name: A to Z" },
 ];
 
-export function ShopSort() {
+export function ShopSort({ browsePath }: { browsePath?: string }) {
   const router = useRouter();
+  const pathname = usePathname();
   const params = useSearchParams();
   const current = params.get("sort") ?? "newest";
+  const base = browsePath ?? pathname;
 
   function onChange(value: string) {
     const next = new URLSearchParams(params.toString());
     next.set("sort", value);
     next.delete("page");
-    router.push(`?${next.toString()}`);
+    const qs = next.toString();
+    router.push(qs ? `${base}?${qs}` : base);
   }
 
   return (

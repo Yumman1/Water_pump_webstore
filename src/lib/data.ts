@@ -6,10 +6,14 @@
  * back to the bundled demo catalog so the storefront always renders. This is
  * what lets you deploy to Vercel first and connect a database later.
  */
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { categories as seedCategories, products as seedProducts } from "@/data/seed-data";
 import type { Category, Product, ProductQuery } from "@/lib/types";
 import { cleanCopy, cleanSpecs, realImages } from "@/lib/utils";
+
+const CACHE_REVALIDATE = 60;
 
 // ---------------------------------------------------------------------------
 // Fallback: normalize the bundled seed data into UI shapes.
@@ -60,35 +64,74 @@ function seedProductToProduct(p: (typeof seedProducts)[number]): Product {
   };
 }
 
+/** Slim listing row — omits heavy description/specs/cost fields. */
+const listProductSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  sku: true,
+  brand: true,
+  shortDescription: true,
+  price: true,
+  compareAtPrice: true,
+  stock: true,
+  lowStockThreshold: true,
+  condition: true,
+  featured: true,
+  active: true,
+  images: true,
+  tags: true,
+  specs: true,
+  categoryId: true,
+  category: { select: { id: true, name: true, slug: true } },
+} as const;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function dbProductToProduct(p: any): Product {
-  const specs = cleanSpecs((p.specs as Record<string, string>) ?? {});
+function dbProductToProduct(p: any, full = false): Product {
+  const rawSpecs = (p.specs as Record<string, string> | null | undefined) ?? {};
+  const specs = full ? cleanSpecs(rawSpecs) : {};
   return {
     id: p.id,
     name: cleanCopy(p.name),
     slug: p.slug,
     sku: p.sku,
     brand: p.brand ? cleanCopy(p.brand) : p.brand,
-    description: cleanCopy(p.description),
+    description: full && p.description ? cleanCopy(p.description) : "",
     shortDescription: p.shortDescription ? cleanCopy(p.shortDescription) : p.shortDescription,
     price: p.price,
     compareAtPrice: p.compareAtPrice,
-    cost: p.cost,
+    cost: full ? p.cost : null,
     stock: p.stock,
     lowStockThreshold: p.lowStockThreshold,
-    weightKg: p.weightKg,
+    weightKg: full ? p.weightKg : null,
     condition: p.condition ?? "NEW",
     featured: p.featured,
     active: p.active,
     images: realImages(p.images),
     tags: p.tags ?? [],
     specs,
-    video: resolveVideo({ video: p.video, specs }),
+    video: resolveVideo({ video: p.video, specs: rawSpecs }),
     categoryId: p.categoryId,
     category: p.category
       ? { id: p.category.id, name: cleanCopy(p.category.name), slug: p.category.slug }
       : null,
   };
+}
+
+function normalizeProductQuery(query: ProductQuery = {}): Required<
+  Pick<ProductQuery, "sort" | "page" | "pageSize">
+> &
+  ProductQuery {
+  return {
+    sort: query.sort ?? "newest",
+    page: query.page ?? 1,
+    pageSize: query.pageSize ?? 12,
+    ...query,
+  };
+}
+
+function productsCacheKey(query: ProductQuery): string {
+  return JSON.stringify(normalizeProductQuery(query));
 }
 
 /** Should we attempt the DB, or go straight to demo data? */
@@ -97,10 +140,10 @@ async function useDb(): Promise<boolean> {
 }
 
 // ---------------------------------------------------------------------------
-// Public API
+// Uncached fetchers (used inside unstable_cache)
 // ---------------------------------------------------------------------------
 
-export async function getCategories(): Promise<Category[]> {
+async function fetchCategoriesUncached(): Promise<Category[]> {
   if (await useDb()) {
     try {
       const cats = await prisma.category.findMany({
@@ -123,27 +166,23 @@ export async function getCategories(): Promise<Category[]> {
   return seedCategories.map(seedCategoryToCategory).sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const all = await getCategories();
-  return all.find((c) => c.slug === slug) ?? null;
-}
-
-export async function getProducts(
+async function fetchProductsUncached(
   query: ProductQuery = {}
 ): Promise<{ products: Product[]; total: number }> {
+  const normalized = normalizeProductQuery(query);
   const {
     categorySlug,
     search,
-    sort = "newest",
+    sort,
     featured,
     condition,
     brand,
     onSale,
     minPrice,
     maxPrice,
-    page = 1,
-    pageSize = 12,
-  } = query;
+    page,
+    pageSize,
+  } = normalized;
 
   if (await useDb()) {
     try {
@@ -181,13 +220,13 @@ export async function getProducts(
         prisma.product.findMany({
           where,
           orderBy,
-          include: { category: true },
+          select: listProductSelect,
           skip: (page - 1) * pageSize,
           take: pageSize,
         }),
         prisma.product.count({ where }),
       ]);
-      return { products: rows.map(dbProductToProduct), total };
+      return { products: rows.map((r) => dbProductToProduct(r, false)), total };
     } catch (e) {
       console.warn("[data] getProducts DB error, using demo data:", (e as Error).message);
     }
@@ -231,6 +270,35 @@ export async function getProducts(
   return { products: list.slice(start, start + pageSize), total };
 }
 
+const getCategoriesCached = unstable_cache(fetchCategoriesUncached, ["store-categories"], {
+  revalidate: CACHE_REVALIDATE,
+  tags: ["categories"],
+});
+
+function getProductsCached(query: ProductQuery) {
+  const key = productsCacheKey(query);
+  return unstable_cache(() => fetchProductsUncached(query), ["store-products", key], {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["products"],
+  })();
+}
+
+// ---------------------------------------------------------------------------
+// Public API (per-request dedupe + cross-request cache)
+// ---------------------------------------------------------------------------
+
+export const getCategories = cache(async (): Promise<Category[]> => getCategoriesCached());
+
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  const all = await getCategories();
+  return all.find((c) => c.slug === slug) ?? null;
+}
+
+export const getProducts = cache(
+  async (query: ProductQuery = {}): Promise<{ products: Product[]; total: number }> =>
+    getProductsCached(query)
+);
+
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (await useDb()) {
     try {
@@ -238,7 +306,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
         where: { slug },
         include: { category: true },
       });
-      return p ? dbProductToProduct(p) : null;
+      return p ? dbProductToProduct(p, true) : null;
     } catch (e) {
       console.warn("[data] getProductBySlug DB error, using demo data:", (e as Error).message);
     }

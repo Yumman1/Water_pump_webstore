@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin-auth";
@@ -14,6 +14,13 @@ async function requireAdmin() {
   if (!isDbConfigured) {
     throw new Error("No database connected. Set DATABASE_URL and run migrations to enable editing.");
   }
+}
+
+function revalidateStoreCatalog() {
+  revalidateTag("products");
+  revalidateTag("categories");
+  revalidatePath("/shop");
+  revalidatePath("/shop/browse");
 }
 
 function str(fd: FormData, key: string): string {
@@ -99,7 +106,7 @@ export async function saveProduct(id: string | null, fd: FormData) {
     await prisma.product.create({ data });
   }
   revalidatePath("/admin/products");
-  revalidatePath("/shop");
+  revalidateStoreCatalog();
   revalidatePath(`/product/${slug}`);
   redirect("/admin/products");
 }
@@ -113,7 +120,7 @@ export async function toggleProductActive(id: string) {
     data: { active: !product.active },
   });
   revalidatePath("/admin/products");
-  revalidatePath("/shop");
+  revalidateStoreCatalog();
   revalidatePath(`/product/${product.slug}`);
 }
 
@@ -121,6 +128,7 @@ export async function deleteProduct(id: string) {
   await requireAdmin();
   await prisma.product.delete({ where: { id } });
   revalidatePath("/admin/products");
+  revalidateStoreCatalog();
 }
 
 export async function adjustStock(productId: string, change: number, reason: string) {
@@ -134,6 +142,7 @@ export async function adjustStock(productId: string, change: number, reason: str
   });
   revalidatePath("/admin/inventory");
   revalidatePath("/admin/products");
+  revalidateStoreCatalog();
 }
 
 export async function setStock(productId: string, newStock: number, reason: string) {
@@ -148,6 +157,7 @@ export async function setStock(productId: string, newStock: number, reason: stri
   });
   revalidatePath("/admin/inventory");
   revalidatePath("/admin/products");
+  revalidateStoreCatalog();
 }
 
 // ---------------------------------------------------------------------------
@@ -426,6 +436,7 @@ export async function saveCategory(id: string | null, fd: FormData) {
     await prisma.category.create({ data });
   }
   revalidatePath("/admin/categories");
+  revalidateStoreCatalog();
   redirect("/admin/categories");
 }
 
@@ -433,4 +444,5 @@ export async function deleteCategory(id: string) {
   await requireAdmin();
   await prisma.category.delete({ where: { id } });
   revalidatePath("/admin/categories");
+  revalidateStoreCatalog();
 }

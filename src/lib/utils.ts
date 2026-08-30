@@ -74,3 +74,19 @@ export function productCoverMedia(product: {
   const first = realImages(product.images)[0];
   return first ? { type: "image", src: first } : null;
 }
+
+/** Static poster for listing grids (avoids autoplay video). */
+export function productPosterSrc(product: {
+  slug: string;
+  images?: string[] | null;
+  video?: string | null;
+  category?: { slug?: string } | null;
+}): string {
+  const first = realImages(product.images)[0];
+  if (first) return first;
+  if (product.slug) return `/products/${product.slug}/cover.jpg`;
+  if (product.category?.slug === "copper-motors") {
+    return "/products/set-0-5hp-copper-inchi-bearing/cover.jpg";
+  }
+  return "/logo.png";
+}
