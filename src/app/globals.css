@@ -18,7 +18,19 @@
   --brand-800: #065788;
   --brand-900: #0b4a71;
 
-  --accent: #ff7a1a;
+  /* Accent (logo orange #e89030) — change --accent-500 to recolor CTAs, badges, deals pill */
+  --accent-50: #fdf6ee;
+  --accent-100: #fbedde;
+  --accent-200: #f8dbbd;
+  --accent-300: #f4ca9c;
+  --accent-400: #eeaf6a;
+  --accent-500: #e89030;
+  --accent-600: #cc7f2a;
+  --accent-700: #b06d24;
+  --accent-800: #945c1f;
+  --accent-900: #794b19;
+  --accent-light: #eca455;
+  --accent: var(--accent-500);
   --accent-foreground: #ffffff;
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -118,12 +130,12 @@ input[type="number"] {
   100% { background-position: -200% center; }
 }
 @keyframes softPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 122, 26, 0.45); }
-  50% { box-shadow: 0 0 0 6px rgba(255, 122, 26, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 144, 48, 0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(232, 144, 48, 0); }
 }
 .special-pill {
   position: relative;
-  background-image: linear-gradient(110deg, var(--accent) 0%, #ff9d4d 45%, var(--accent) 55%, var(--accent) 100%);
+  background-image: linear-gradient(110deg, var(--accent) 0%, var(--accent-light) 45%, var(--accent) 55%, var(--accent) 100%);
   background-size: 200% auto;
   animation: shine 3.5s linear infinite, softPulse 2.4s ease-in-out infinite;
   color: #fff;

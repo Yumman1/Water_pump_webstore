@@ -18,7 +18,7 @@ export default async function DealsPage() {
   return (
     <div>
       {/* Promo hero */}
-      <section className="bg-gradient-to-r from-accent to-orange-500 text-white">
+      <section className="bg-gradient-to-r from-accent to-accent-600 text-white">
         <div className="container py-12 text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1 text-sm font-semibold">
             <Icons.tag className="h-4 w-4" /> Limited Time

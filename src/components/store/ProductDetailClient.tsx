@@ -103,7 +103,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
           {product.stock <= 0 ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-3 py-1 text-sm font-medium text-red-600">Out of stock</span>
           ) : lowStock ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1 text-sm font-medium text-orange-600">
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent-50 px-3 py-1 text-sm font-medium text-accent-700">
               <Icons.warning className="h-4 w-4" /> Only {product.stock} left in stock
             </span>
           ) : (

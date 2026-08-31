@@ -72,7 +72,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
-        <p className={cn("mt-1 text-xs", lowStock ? "font-medium text-orange-600" : "text-gray-400")}>
+        <p className={cn("mt-1 text-xs", lowStock ? "font-medium text-accent-700" : "text-gray-400")}>
           {product.stock <= 0 ? "" : lowStock ? `Only ${product.stock} left` : "In stock"}
         </p>
 
