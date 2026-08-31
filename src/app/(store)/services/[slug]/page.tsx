@@ -43,8 +43,11 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
 
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <div>
-          <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-gray-100">
-            <Image src={service.image} alt={service.title} fill priority sizes="(max-width:1024px) 100vw, 60vw" className="object-cover" />
+          <div
+            className="relative mx-auto w-full max-w-xl overflow-hidden rounded-xl bg-gray-100 sm:max-w-2xl"
+            style={{ aspectRatio: service.imageAspect ?? "16/9" }}
+          >
+            <Image src={service.image} alt={service.title} fill priority sizes="(max-width:1024px) 100vw, 672px" className="object-cover" />
           </div>
           <div className="mt-5">
             <h1 className="text-3xl font-bold text-gray-900">{service.title}</h1>

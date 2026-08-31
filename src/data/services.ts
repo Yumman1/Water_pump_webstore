@@ -18,6 +18,8 @@ export type Service = {
   availableAtCheckout?: boolean;
   /** Step-by-step shown on the service detail page for checkout services. */
   checkoutSteps?: string[];
+  /** CSS aspect-ratio for hero/card image (default detail: 16/9, listing: 4/3). */
+  imageAspect?: string;
 };
 
 const installFee = siteConfig.installation.fee;
@@ -27,6 +29,7 @@ export const services: Service[] = [
     slug: "pump-installation-removal",
     title: "Pump Installation & Removal",
     image: "/services/pump-installation-removal.jpg",
+    imageAspect: "3/4",
     short: "Professional install and removal of motors and pumps — add this service when you checkout.",
     description:
       "When you buy a motor or pump from Jawed, you can add installation and removal directly in your cart before checkout. " +
