@@ -20,7 +20,7 @@ export default function ServicesPage() {
         <div className="container py-12 text-center">
           <h1 className="text-3xl font-extrabold sm:text-4xl">Our Services</h1>
           <p className="mx-auto mt-2 max-w-2xl text-brand-100">
-            Professional pump installation at checkout, deep well boring and expert support — delivered by
+            Professional pump installation at checkout, deep well boring and expert support, delivered by
             experienced, trusted professionals.
           </p>
         </div>

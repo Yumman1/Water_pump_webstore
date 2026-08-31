@@ -24,7 +24,7 @@ export async function generateMetadata({
 
   const description =
     product.shortDescription ??
-    `${product.name} — genuine Jawed ${product.category?.name ?? "water pump"} with nationwide delivery across Pakistan.`;
+    `${product.name}, genuine Jawed ${product.category?.name ?? "water pump"} with nationwide delivery across Pakistan.`;
 
   return pageMetadata({
     title: `${product.name} | Jawed Pumps Pakistan`,

@@ -74,7 +74,7 @@ export const siteConfig = {
   hero: {
     heading: "SERVING THE BEST SINCE 1980",
     subheading:
-      "Genuine Jawed motors and pumps, factory-backed quality, and expert support on every order — delivered anywhere in Pakistan.",
+      "Genuine Jawed motors and pumps with factory backed quality and expert support on every order, delivered anywhere in Pakistan.",
     ctaLabel: "Shop All Products",
     ctaHref: "/shop",
     // Fallback image only when hero.video is empty. Not used as a video poster.
@@ -136,9 +136,9 @@ export const siteConfig = {
     defaultTitle: "Jawed Pumps & Motors | Official Water Pump Store Pakistan",
     defaultDescription:
       "Buy genuine Jawed pumps, copper motors, monoblock pressure pumps and bearing pumps online. Serving homes, farms and industry across Pakistan since 1980. Nationwide delivery & cash on delivery.",
-    homeTitle: "Jawed Pumps & Motors — Genuine Water Pumps Since 1980",
+    homeTitle: "Jawed Pumps & Motors | Genuine Water Pumps Since 1980",
     homeDescription:
-      "Official Jawed Pumps online store. Shop copper motors, monoblock pressure pumps, bearing pumps and complete motor-pump sets with expert support and delivery across Pakistan.",
+      "Official Jawed Pumps online store. Shop copper motors, monoblock pressure pumps, bearing pumps and complete motor pump sets with expert support and delivery across Pakistan.",
     locale: "en_PK",
     foundingDate: "1980",
     ogImage: "/logo.png",

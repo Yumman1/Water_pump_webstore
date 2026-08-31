@@ -19,6 +19,7 @@ export function cleanCopy(input: string | null | undefined): string {
   s = s.replace(/ — ([A-Z])/g, ". $1");
   s = s.replace(/ — /g, ", ");
   s = s.replace(/—/g, ",");
+  s = s.replace(/(\w)-(\w)/g, "$1 $2");
   s = s.replace(/,\s*,+/g, ",");
   s = s.replace(/\.\s*,/g, ".");
   s = s.replace(/,\s*\./g, ".");

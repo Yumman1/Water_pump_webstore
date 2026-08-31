@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Shop Jawed Pumps, Motors & Complete Sets",
   description:
-    "Browse the full Jawed Pumps catalog — copper motors, monoblock pressure pumps, bearing pumps and matched sets.",
+    "Browse the full Jawed Pumps catalog: copper motors, monoblock pressure pumps, bearing pumps and matched sets.",
   path: "/shop",
 });
 

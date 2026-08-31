@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   const to = settings.ownerNotifyEmail ?? siteConfig.contact.email;
 
   const html = `
-    <h2>Service request — ${serviceTitle}</h2>
+    <h2>Service request: ${serviceTitle}</h2>
     <p><strong>Name:</strong> ${name}</p>
     <p><strong>Phone:</strong> ${phone}</p>
     ${city ? `<p><strong>City:</strong> ${city}</p>` : ""}

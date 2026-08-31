@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   const to = settings.ownerNotifyEmail ?? siteConfig.contact.email;
 
   const html = `
-    <h2>New contact message — ${siteConfig.name}</h2>
+    <h2>New contact message: ${siteConfig.name}</h2>
     <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
     <p><strong>Message:</strong></p>
     <p>${message.replace(/\n/g, "<br>")}</p>

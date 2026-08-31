@@ -81,7 +81,7 @@ export function buildRootMetadata(): Metadata {
           url: ogImageUrl(),
           width: 1200,
           height: 630,
-          alt: `${siteConfig.legalName} — water pumps and motors`,
+          alt: `${siteConfig.legalName}, water pumps and motors`,
         },
       ],
     },

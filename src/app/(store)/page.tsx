@@ -80,7 +80,7 @@ export default async function HomePage() {
       <section className="border-b bg-white py-10">
         <div className="container max-w-3xl text-center">
           <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
-            Genuine Jawed Pumps &amp; Motors — Online Across Pakistan
+            Genuine Jawed Pumps &amp; Motors, Online Across Pakistan
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
             {siteConfig.legalName} is your official source for{" "}

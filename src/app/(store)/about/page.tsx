@@ -6,7 +6,7 @@ import { Certifications } from "@/components/store/Certifications";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "About Jawed Pumps & Motors — Serving Pakistan Since 1980",
+  title: "About Jawed Pumps & Motors | Serving Pakistan Since 1980",
   description: `Learn about ${siteConfig.legalName}. Four decades of industrial-grade water pump solutions for homes, farms and industry across Pakistan.`,
   path: "/about",
 });

@@ -4,7 +4,7 @@ import { getPricingConfig } from "@/lib/pricing";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Shipping & Returns — Jawed Pumps Pakistan",
+  title: "Shipping & Returns | Jawed Pumps Pakistan",
   description:
     "Nationwide delivery on Jawed pumps and motors across Pakistan. Free shipping on large orders, cash on delivery available.",
   path: "/shipping",
