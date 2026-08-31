@@ -166,11 +166,11 @@ export default async function HomePage() {
           <div className="mb-6 flex items-end justify-between">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Our Services</h2>
-              <p className="text-gray-500">Support for installation, maintenance and every water pump challenge</p>
+              <p className="text-gray-500">Pump installation at checkout, deep well boring and expert support</p>
             </div>
             <Link href="/services" className="text-sm font-medium text-brand-600 hover:text-brand-700">View all →</Link>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-2">
             {services.map((s) => (
               <Link
                 key={s.slug}

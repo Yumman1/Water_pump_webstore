@@ -9,7 +9,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "Jawed Pumps Installation & Water Services",
   description:
-    "Fountain setup, swimming pool maintenance and deep well boring from Jawed Pumps & Motors. Expert water pump services across Pakistan.",
+    "Pump installation and removal at checkout, plus deep well boring from Jawed Pumps & Motors. Expert water pump services across Pakistan.",
   path: "/services",
 });
 
@@ -20,8 +20,8 @@ export default function ServicesPage() {
         <div className="container py-12 text-center">
           <h1 className="text-3xl font-extrabold sm:text-4xl">Our Services</h1>
           <p className="mx-auto mt-2 max-w-2xl text-brand-100">
-            Beyond selling products, we offer installation support, maintenance and complete water solutions,
-            delivered by experienced, trusted professionals.
+            Professional pump installation at checkout, deep well boring and expert support — delivered by
+            experienced, trusted professionals.
           </p>
         </div>
       </section>
@@ -46,7 +46,9 @@ export default function ServicesPage() {
                     <span className="font-semibold text-brand-700">{s.priceFrom}</span>
                   </p>
                 )}
-                <span className="mt-3 text-sm font-semibold text-brand-600">Learn more &amp; request →</span>
+                <span className="mt-3 text-sm font-semibold text-brand-600">
+                  {s.availableAtCheckout ? "How it works at checkout →" : "Learn more & request →"}
+                </span>
               </div>
             </Link>
           ))}

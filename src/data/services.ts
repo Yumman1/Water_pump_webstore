@@ -1,10 +1,11 @@
 /**
  * SERVICES - edit to match the services your business offers.
  * Images live under /public/services/.
- * Each service gets its own page at /services/[slug] with a request form.
- *
- * Installation & removal is offered at checkout (not as a standalone service page).
+ * Each service gets its own page at /services/[slug].
+ * Set `availableAtCheckout: true` when the service is selected on the cart (not via request form).
  */
+import { siteConfig } from "@/config/site";
+
 export type Service = {
   slug: string;
   title: string;
@@ -13,40 +14,41 @@ export type Service = {
   description: string;
   features: string[];
   priceFrom?: string;
+  /** Booked during checkout on the cart page — no standalone request form. */
+  availableAtCheckout?: boolean;
+  /** Step-by-step shown on the service detail page for checkout services. */
+  checkoutSteps?: string[];
 };
+
+const installFee = siteConfig.installation.fee;
 
 export const services: Service[] = [
   {
-    slug: "fountain-setup",
-    title: "Fountain Setup",
-    image: "/services/fountain-setup.png",
-    short: "Design and installation of decorative water fountains.",
+    slug: "pump-installation-removal",
+    title: "Pump Installation & Removal",
+    image: "/services/pump-installation-removal.jpg",
+    short: "Professional install and removal of motors and pumps — add this service when you checkout.",
     description:
-      "Transform your garden, lawn or lobby with a custom water fountain. We handle design, pump selection, plumbing, nozzles and lighting for a stunning result.",
+      "When you buy a motor or pump from Jawed, you can add installation and removal directly in your cart before checkout. " +
+      "Our team installs your new unit and removes the old one. Choose the option that matches your warranty status; " +
+      "fees are shown clearly in your order summary before you pay.",
     features: [
-      "Custom fountain design",
-      "Pump & nozzle selection",
-      "Plumbing & water recirculation",
-      "LED lighting integration",
-      "Maintenance guidance",
+      "No installation & removal — delivery only (install yourself)",
+      `Under warranty — fee waived (normally Rs ${installFee.toLocaleString("en-PK")}); provide the serial number of the unit being replaced`,
+      `Without warranty — Rs ${installFee.toLocaleString("en-PK")} for Jawed or other-brand motors and pumps`,
+      "Previous motor may be bought back; value assessed by our team and deducted from your total",
+      "Installation details confirmed on your order — we contact you after checkout to schedule",
     ],
-    priceFrom: "Rs 10,000",
-  },
-  {
-    slug: "swimming-pool-maintenance",
-    title: "Swimming Pool Maintenance",
-    image: "/services/swimming-pool-maintenance.png",
-    short: "Keep your pool clean, safe and crystal clear year-round.",
-    description:
-      "Complete swimming pool care including cleaning, water balancing, filtration and pump servicing. One-time cleanups or regular maintenance contracts available.",
-    features: [
-      "Pool cleaning & vacuuming",
-      "Water testing & chemical balancing",
-      "Filter & pump servicing",
-      "Tile & surface cleaning",
-      "Scheduled maintenance plans",
+    priceFrom: `From Rs ${installFee.toLocaleString("en-PK")} (free under warranty)`,
+    availableAtCheckout: true,
+    checkoutSteps: [
+      "Browse the shop and add the motor, pump or complete set you need to your cart.",
+      "On the cart page, scroll to **Installation & removal** and pick one of three options: delivery only, under warranty, or without warranty.",
+      "If you choose **under warranty**, enter the serial number of the unit being replaced (required before checkout).",
+      "Check the **Installation & removal** line in your order summary — the fee is Rs 0 under warranty or the standard fee for non-warranty installs.",
+      "Proceed to checkout, enter delivery details and payment method (COD or bank transfer). Your installation choice is saved on the order.",
+      "After we receive your order, our team contacts you to confirm timing and any buy-back assessment for your old unit.",
     ],
-    priceFrom: "Rs 5,000",
   },
   {
     slug: "deep-well-boring",

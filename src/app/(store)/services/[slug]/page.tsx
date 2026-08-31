@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getService, services } from "@/data/services";
 import { ServiceRequestForm } from "@/components/store/ServiceRequestForm";
+import { ServiceCheckoutPanel } from "@/components/store/ServiceCheckoutPanel";
 import { Icons } from "@/components/ui/icons";
 import { pageMetadata } from "@/lib/seo";
 
@@ -75,6 +76,17 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
             </ul>
           </div>
 
+          {service.availableAtCheckout && (
+            <div className="mt-8 rounded-xl border border-brand-200 bg-brand-50/50 p-5 lg:hidden">
+              <h2 className="text-lg font-bold text-gray-900">How to book at checkout</h2>
+              <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-gray-700">
+                {(service.checkoutSteps ?? []).map((step) => (
+                  <li key={step}>{step.replace(/\*\*(.+?)\*\*/g, "$1")}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+
           <div className="mt-8">
             <h2 className="mb-4 text-lg font-bold text-gray-900">Other services</h2>
             <div className="flex flex-wrap gap-2">
@@ -90,7 +102,11 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <ServiceRequestForm serviceTitle={service.title} />
+          {service.availableAtCheckout ? (
+            <ServiceCheckoutPanel service={service} />
+          ) : (
+            <ServiceRequestForm serviceTitle={service.title} />
+          )}
         </div>
       </div>
     </div>
