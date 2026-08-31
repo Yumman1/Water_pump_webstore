@@ -74,7 +74,7 @@ export const siteConfig = {
   hero: {
     heading: "SERVING THE BEST SINCE 1980",
     subheading:
-      "A trusted B2B name now serving every water pump need, from homes and farms to industries. Genuine stock, expert guidance, and nationwide delivery.",
+      "Genuine Jawed motors and pumps, factory-backed quality, and expert support on every order — delivered anywhere in Pakistan.",
     ctaLabel: "Shop All Products",
     ctaHref: "/shop",
     // Fallback image only when hero.video is empty. Not used as a video poster.
