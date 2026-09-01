@@ -46,11 +46,11 @@ export const services: Service[] = [
     availableAtCheckout: true,
     checkoutSteps: [
       "Browse the shop and add the motor, pump or complete set you need to your cart.",
-      "On the cart page, scroll to **Installation & removal** and pick one of three options: delivery only, under warranty, or without warranty.",
-      "If you choose **under warranty**, enter the serial number of the unit being replaced (required before checkout).",
-      "Check the **Installation & removal** line in your order summary. The fee is Rs 0 under warranty or the standard fee for non warranty installs.",
-      "Proceed to checkout, enter delivery details and payment method (COD or bank transfer). Your installation choice is saved on the order.",
-      "After we receive your order, our team contacts you to confirm timing and any buy back assessment for your old unit.",
+      "At checkout, select **Karachi** as your city if you want installation and removal. Other cities get delivery only.",
+      "If you selected **Karachi**, choose one of three installation options: delivery only, under warranty, or without warranty.",
+      "If you choose **under warranty**, enter the serial number of the unit being replaced (required before placing the order).",
+      "Outside Karachi, warranty replacements ship free. Non-warranty orders use the delivery fee for your selected city.",
+      "Proceed to checkout, enter your details and payment method (COD or bank transfer). Our team contacts you after the order to schedule.",
     ],
   },
   {

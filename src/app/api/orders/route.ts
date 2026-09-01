@@ -5,7 +5,9 @@ import { siteConfig } from "@/config/site";
 import { generateOrderNumber } from "@/lib/utils";
 import { notifyNewOrder } from "@/lib/notify";
 import { products as seedProducts } from "@/data/seed-data";
-import { computeShippingFee, getPricingConfig } from "@/lib/pricing";
+import { getPricingConfig } from "@/lib/pricing";
+import { getDeliveryCities } from "@/lib/delivery-cities";
+import { computeCheckoutTotals, isServiceCity } from "@/lib/delivery";
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
@@ -76,18 +78,23 @@ export async function POST(req: Request) {
   }
   const data = parsed.data;
   const pricing = await getPricingConfig();
+  const deliveryCities = await getDeliveryCities();
 
-  if (data.installationType === "WARRANTY" && !data.replacementSerial?.trim()) {
+  if (!isServiceCity(data.city, siteConfig.delivery.serviceCity) && data.installationType !== "NONE") {
+    return NextResponse.json(
+      { error: `Installation and removal is only available in ${siteConfig.delivery.serviceCity}.` },
+      { status: 400 }
+    );
+  }
+
+  const lineItemsPreview = data.items.map((i) => ({ underWarranty: !!i.underWarranty }));
+
+  if (isServiceCity(data.city, siteConfig.delivery.serviceCity) && data.installationType === "WARRANTY" && !data.replacementSerial?.trim()) {
     return NextResponse.json(
       { error: "Serial number is required for warranty installation & removal." },
       { status: 400 }
     );
   }
-
-  const installationType = data.installationType;
-  const installationFee = installationType === "PAID" ? pricing.installationFee : 0;
-  const replacementSerial =
-    installationType === "WARRANTY" ? data.replacementSerial!.trim() : null;
 
   // --- Demo mode: no database configured -----------------------------------
   if (!isDbConfigured) {
@@ -105,7 +112,19 @@ export async function POST(req: Request) {
       };
     });
     const subtotal = demoItems.reduce((s, i) => s + i.price * i.quantity, 0);
-    const shipping = computeShippingFee(subtotal + installationFee, pricing);
+    const totals = computeCheckoutTotals({
+      city: data.city,
+      productsSubtotal: subtotal,
+      installationType: data.installationType,
+      items: lineItemsPreview,
+      pricing,
+      deliveryCities,
+    });
+    const installationType = totals.effectiveInstallationType;
+    const installationFee = totals.installationFee;
+    const shipping = totals.shipping;
+    const replacementSerial =
+      installationType === "WARRANTY" ? data.replacementSerial?.trim() ?? null : null;
     const tax = Math.round(subtotal * siteConfig.taxRate);
     const total = Math.max(0, subtotal) + shipping + tax + installationFee;
 
@@ -136,8 +155,7 @@ export async function POST(req: Request) {
     });
   }
 
-  try {
-    /** Resolve legacy demo cart IDs (`prod-{slug}`) to live DB products. */
+  try {    /** Resolve legacy demo cart IDs (`prod-{slug}`) to live DB products. */
     async function resolveProductId(productId: string): Promise<string> {
       if (!productId.startsWith("prod-")) return productId;
       const slug = productId.slice("prod-".length);
@@ -195,9 +213,22 @@ export async function POST(req: Request) {
       }
     }
 
-    const shipping = computeShippingFee(Math.max(0, subtotal - discount) + installationFee, pricing);
+    const productsSubtotal = Math.max(0, subtotal - discount);
+    const totals = computeCheckoutTotals({
+      city: data.city,
+      productsSubtotal,
+      installationType: data.installationType,
+      items: lineItemsPreview,
+      pricing,
+      deliveryCities,
+    });
+    const installationType = totals.effectiveInstallationType;
+    const installationFee = totals.installationFee;
+    const shipping = totals.shipping;
+    const replacementSerial =
+      installationType === "WARRANTY" ? data.replacementSerial?.trim() ?? null : null;
     const tax = Math.round(subtotal * siteConfig.taxRate);
-    const total = Math.max(0, subtotal - discount) + shipping + tax + installationFee;
+    const total = productsSubtotal + shipping + tax + installationFee;
     const orderNumber = generateOrderNumber();
 
     const order = await prisma.$transaction(async (tx) => {

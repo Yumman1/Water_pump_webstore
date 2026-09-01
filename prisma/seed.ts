@@ -131,6 +131,15 @@ async function main() {
   });
   console.log("   ✓ Store settings");
 
+  for (const [i, c] of siteConfig.delivery.outsideCities.entries()) {
+    await prisma.deliveryCity.upsert({
+      where: { name: c.name },
+      update: { fee: c.fee, sortOrder: i },
+      create: { name: c.name, fee: c.fee, sortOrder: i },
+    });
+  }
+  console.log(`   ✓ ${siteConfig.delivery.outsideCities.length} delivery cities`);
+
   // --- Coupon ---------------------------------------------------------------
   await prisma.coupon.upsert({
     where: { code: "WELCOME10" },

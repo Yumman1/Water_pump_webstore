@@ -52,9 +52,25 @@ export const siteConfig = {
   // GST / sales tax as a fraction (0.0 = disabled). Applied at checkout.
   taxRate: 0.0,
 
-  // Checkout installation & removal fee (PKR).
+  // Checkout installation & removal fee (PKR). Available in serviceCity only.
   installation: {
     fee: 10000,
+  },
+
+  /** City where install/removal is offered. Other cities use deliveryCities fees. */
+  delivery: {
+    serviceCity: "Karachi",
+    /** Demo/fallback fees when no DB. Manage live fees in Admin → Settings. */
+    outsideCities: [
+      { name: "Lahore", fee: 2500 },
+      { name: "Islamabad", fee: 3000 },
+      { name: "Rawalpindi", fee: 3000 },
+      { name: "Hyderabad", fee: 2000 },
+      { name: "Multan", fee: 2800 },
+      { name: "Faisalabad", fee: 2500 },
+      { name: "Peshawar", fee: 3500 },
+      { name: "Quetta", fee: 4000 },
+    ],
   },
 
   // Shown on checkout when the customer selects Bank Transfer.

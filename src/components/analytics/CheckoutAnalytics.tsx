@@ -18,17 +18,17 @@ function toTikTokContents(
 
 /** Fires InitiateCheckout once when the checkout page loads with cart items. */
 export function CheckoutAnalytics() {
-  const { items, total } = useCart();
+  const { items, productsSubtotal } = useCart();
   const tracked = useRef(false);
 
   useEffect(() => {
     if (tracked.current || items.length === 0) return;
     tracked.current = true;
     trackTikTokInitiateCheckout({
-      value: total,
+      value: productsSubtotal,
       contents: toTikTokContents(items),
     });
-  }, [items, total]);
+  }, [items, productsSubtotal]);
 
   return null;
 }

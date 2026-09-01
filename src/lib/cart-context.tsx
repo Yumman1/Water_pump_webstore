@@ -1,16 +1,15 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
-import type { CartItem, InstallationType } from "@/lib/types";
+import type { CartItem } from "@/lib/types";
 import { siteConfig } from "@/config/site";
 import type { PricingConfig } from "@/lib/pricing";
+import type { DeliveryCityOption } from "@/lib/delivery";
 
-const STORAGE_KEY = "cart:v3";
+const STORAGE_KEY = "cart:v4";
 
 type CartState = {
   items: CartItem[];
-  installationType: InstallationType;
-  replacementSerial: string;
 };
 
 type Action =
@@ -18,16 +17,10 @@ type Action =
   | { type: "REMOVE"; productId: string }
   | { type: "SET_QTY"; productId: string; quantity: number }
   | { type: "SET_WARRANTY"; productId: string; underWarranty: boolean }
-  | { type: "SET_INSTALLATION"; installationType: InstallationType }
-  | { type: "SET_SERIAL"; replacementSerial: string }
   | { type: "CLEAR" }
   | { type: "HYDRATE"; state: CartState };
 
-const initialState: CartState = {
-  items: [],
-  installationType: "NONE",
-  replacementSerial: "",
-};
+const initialState: CartState = { items: [] };
 
 function defaultPricing(): PricingConfig {
   return {
@@ -35,6 +28,10 @@ function defaultPricing(): PricingConfig {
     freeShippingThreshold: siteConfig.shipping.freeShippingThreshold,
     installationFee: siteConfig.installation.fee,
   };
+}
+
+function defaultDeliveryCities(): DeliveryCityOption[] {
+  return siteConfig.delivery.outsideCities.map((c) => ({ name: c.name, fee: c.fee }));
 }
 
 function reducer(state: CartState, action: Action): CartState {
@@ -50,7 +47,6 @@ function reducer(state: CartState, action: Action): CartState {
               ? {
                   ...i,
                   quantity,
-                  // Refresh cover media in case product photos/videos were updated.
                   image: action.item.image || i.image,
                   video: action.item.video ?? i.video,
                   stock: action.item.stock,
@@ -82,71 +78,53 @@ function reducer(state: CartState, action: Action): CartState {
           i.productId === action.productId ? { ...i, underWarranty: action.underWarranty } : i
         ),
       };
-    case "SET_INSTALLATION":
-      return {
-        ...state,
-        installationType: action.installationType,
-        replacementSerial: action.installationType === "WARRANTY" ? state.replacementSerial : "",
-      };
-    case "SET_SERIAL":
-      return { ...state, replacementSerial: action.replacementSerial };
     case "CLEAR":
       return { ...initialState };
     case "HYDRATE":
-      return {
-        items: action.state.items ?? [],
-        installationType: action.state.installationType ?? "NONE",
-        replacementSerial: action.state.replacementSerial ?? "",
-      };
+      return { items: action.state.items ?? [] };
     default:
       return state;
   }
 }
 
+export type CheckoutPricing = PricingConfig & {
+  serviceCity: string;
+  deliveryCities: DeliveryCityOption[];
+};
+
 type CartContextValue = {
   items: CartItem[];
-  installationType: InstallationType;
-  replacementSerial: string;
-  pricing: PricingConfig;
+  pricing: CheckoutPricing;
   addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
   setUnderWarranty: (productId: string, underWarranty: boolean) => void;
-  setInstallationType: (installationType: InstallationType) => void;
-  setReplacementSerial: (serial: string) => void;
   clear: () => void;
   count: number;
   subtotal: number;
   listSubtotal: number;
   productsSubtotal: number;
-  installationFee: number;
-  shipping: number;
-  total: number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [pricing, setPricing] = useState<PricingConfig>(defaultPricing);
+  const [pricing, setPricing] = useState<CheckoutPricing>({
+    ...defaultPricing(),
+    serviceCity: siteConfig.delivery.serviceCity,
+    deliveryCities: defaultDeliveryCities(),
+  });
 
   useEffect(() => {
     try {
-      // cart:v3 stores cover video; older carts often held picsum placeholders.
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem("cart:v3");
       if (!raw) return;
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        dispatch({ type: "HYDRATE", state: { ...initialState, items: parsed } });
+        dispatch({ type: "HYDRATE", state: { items: parsed } });
       } else if (parsed.items) {
-        dispatch({
-          type: "HYDRATE",
-          state: {
-            items: parsed.items,
-            installationType: parsed.installationType ?? "NONE",
-            replacementSerial: parsed.replacementSerial ?? "",
-          },
-        });
+        dispatch({ type: "HYDRATE", state: { items: parsed.items } });
       }
     } catch {
       /* ignore */
@@ -171,6 +149,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           shippingFlatRate: Number(data.shippingFlatRate) || defaultPricing().shippingFlatRate,
           freeShippingThreshold: Number(data.freeShippingThreshold) || defaultPricing().freeShippingThreshold,
           installationFee: Number(data.installationFee) || defaultPricing().installationFee,
+          serviceCity: data.serviceCity || siteConfig.delivery.serviceCity,
+          deliveryCities: Array.isArray(data.deliveryCities)
+            ? data.deliveryCities.map((c: DeliveryCityOption) => ({
+                id: c.id,
+                name: String(c.name),
+                fee: Number(c.fee) || 0,
+              }))
+            : defaultDeliveryCities(),
         });
       })
       .catch(() => {
@@ -188,37 +174,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       (sum, i) => sum + (i.underWarranty ? 0 : i.price * i.quantity),
       0
     );
-    const installationFee = state.installationType === "PAID" ? pricing.installationFee : 0;
-    const shipping =
-      productsSubtotal + installationFee === 0
-        ? 0
-        : productsSubtotal + installationFee >= pricing.freeShippingThreshold
-          ? 0
-          : pricing.shippingFlatRate;
-    const total = productsSubtotal + installationFee + shipping;
 
     return {
       items: state.items,
-      installationType: state.installationType,
-      replacementSerial: state.replacementSerial,
       pricing,
       addItem: (item) => dispatch({ type: "ADD", item }),
       removeItem: (productId) => dispatch({ type: "REMOVE", productId }),
       setQuantity: (productId, quantity) => dispatch({ type: "SET_QTY", productId, quantity }),
       setUnderWarranty: (productId, underWarranty) =>
         dispatch({ type: "SET_WARRANTY", productId, underWarranty }),
-      setInstallationType: (installationType) =>
-        dispatch({ type: "SET_INSTALLATION", installationType }),
-      setReplacementSerial: (replacementSerial) =>
-        dispatch({ type: "SET_SERIAL", replacementSerial }),
       clear: () => dispatch({ type: "CLEAR" }),
       count,
       subtotal: productsSubtotal,
       listSubtotal,
       productsSubtotal,
-      installationFee,
-      shipping,
-      total,
     };
   }, [state, pricing]);
 

@@ -214,6 +214,15 @@ model StoreSettings {
   updatedAt              DateTime @updatedAt
 }
 
+model DeliveryCity {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  fee       Float    @default(0)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Coupon {
   id           String       @id @default(cuid())
   code         String       @unique

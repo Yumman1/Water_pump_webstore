@@ -1,7 +1,11 @@
 import { getStoreSettings } from "@/lib/notify";
 import { isDbConfigured } from "@/lib/prisma";
-import { saveSettings, savePromoSettings, testNotificationChannels } from "@/app/admin/actions";
+import { saveSettings, savePromoSettings, testNotificationChannels, addDeliveryCity, deleteDeliveryCity } from "@/app/admin/actions";
 import { getPromoPopupConfig } from "@/lib/promo";
+import { getDeliveryCities } from "@/lib/delivery-cities";
+import { siteConfig } from "@/config/site";
+import { formatCurrency } from "@/lib/format";
+import { ConfirmButton } from "@/components/admin/ConfirmButton";
 import { PageHeader } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
@@ -30,10 +34,11 @@ function ProviderStatus({ label, ok, hint }: { label: string; ok: boolean; hint:
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: { saved?: string; promoSaved?: string };
+  searchParams: { saved?: string; promoSaved?: string; citiesSaved?: string };
 }) {
   const settings = await getStoreSettings();
   const promo = await getPromoPopupConfig();
+  const deliveryCities = await getDeliveryCities();
   const testNotify = testNotificationChannels;
   const emailOk = Boolean(process.env.RESEND_API_KEY || process.env.SMTP_HOST);
   const whatsappOk = Boolean(process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID);
@@ -52,9 +57,9 @@ export default async function SettingsPage({
         </div>
       )}
 
-      {searchParams.promoSaved && (
+      {searchParams.citiesSaved && (
         <div className="mb-4 flex items-center gap-2 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
-          <Icons.check className="h-4 w-4" /> Promo popup saved.
+          <Icons.check className="h-4 w-4" /> Delivery city saved.
         </div>
       )}
 
@@ -105,7 +110,7 @@ export default async function SettingsPage({
                 defaultValue={settings.shippingFlatRate}
                 className={inputClass}
               />
-              <p className="mt-1 text-xs text-gray-400">Flat delivery charge per order (when free-shipping threshold is not met).</p>
+              <p className="mt-1 text-xs text-gray-400">Used for {siteConfig.delivery.serviceCity} orders when the free-delivery threshold is not met.</p>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">Free delivery over (PKR)</label>
@@ -132,7 +137,7 @@ export default async function SettingsPage({
                 className={inputClass}
               />
               <p className="mt-1 text-xs text-gray-400">
-                Charged when the customer chooses installation without warranty. Under-warranty install stays free (this amount is shown struck through).
+                Charged in {siteConfig.delivery.serviceCity} when the customer chooses installation without warranty.
               </p>
             </div>
           </div>
@@ -141,6 +146,64 @@ export default async function SettingsPage({
         <Button type="submit" size="lg" disabled={!isDbConfigured}>Save Settings</Button>
         {!isDbConfigured && <p className="mt-2 text-sm text-amber-600">Connect a database to save settings.</p>}
       </form>
+
+      <div className="mt-8 space-y-4 rounded-xl border bg-white p-6">
+        <h2 className="font-semibold text-gray-900">Delivery cities (outside {siteConfig.delivery.serviceCity})</h2>
+        <p className="text-sm text-gray-500">
+          Customers pick a city at checkout. {siteConfig.delivery.serviceCity} gets installation options. Other cities
+          use these fees (warranty replacements are free delivery).
+        </p>
+        <p className="rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-900">
+          <strong>{siteConfig.delivery.serviceCity}</strong> is always on checkout for installation and removal. Do not
+          add it here.
+        </p>
+        {deliveryCities.length > 0 ? (
+          <div className="overflow-x-auto rounded-lg border">
+            <table className="w-full text-sm">
+              <thead className="border-b bg-gray-50 text-left text-xs uppercase text-gray-500">
+                <tr>
+                  <th className="px-4 py-2">City</th>
+                  <th className="px-4 py-2">Delivery fee</th>
+                  <th className="px-4 py-2 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {deliveryCities.map((c) => (
+                  <tr key={c.id ?? c.name}>
+                    <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
+                    <td className="px-4 py-3">{formatCurrency(c.fee)}</td>
+                    <td className="px-4 py-3 text-right">
+                      {c.id && isDbConfigured ? (
+                        <ConfirmButton
+                          action={deleteDeliveryCity.bind(null, c.id!)}
+                          label="Remove"
+                          confirmText={`Remove ${c.name}?`}
+                        />
+                      ) : (
+                        <span className="text-xs text-gray-400">Demo defaults</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">No outside cities configured yet.</p>
+        )}
+        <form action={addDeliveryCity} className="grid gap-3 border-t pt-4 sm:grid-cols-[1fr_160px_auto] sm:items-end">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">City name</label>
+            <input name="cityName" required placeholder="Lahore" className={inputClass} disabled={!isDbConfigured} />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Delivery fee (PKR)</label>
+            <input name="cityFee" type="number" min={0} step={1} required defaultValue={2500} className={inputClass} disabled={!isDbConfigured} />
+          </div>
+          <Button type="submit" disabled={!isDbConfigured}>Add city</Button>
+        </form>
+        {!isDbConfigured && <p className="text-sm text-amber-600">Connect a database to manage delivery cities.</p>}
+      </div>
 
       <form action={savePromoSettings} className="mt-8 space-y-6">
         <div className="space-y-4 rounded-xl border bg-white p-6">

@@ -377,6 +377,33 @@ export async function saveSettings(fd: FormData) {
   redirect("/admin/settings?saved=1");
 }
 
+export async function addDeliveryCity(fd: FormData) {
+  await requireAdmin();
+  const name = str(fd, "cityName");
+  const fee = Math.max(0, num(fd, "cityFee"));
+  if (!name) throw new Error("City name is required.");
+  if (name.trim().toLowerCase() === siteConfig.delivery.serviceCity.trim().toLowerCase()) {
+    throw new Error(`${siteConfig.delivery.serviceCity} is the installation service city and is always on checkout.`);
+  }
+  await prisma.deliveryCity.upsert({
+    where: { name: name.trim() },
+    update: { fee },
+    create: { name: name.trim(), fee },
+  });
+  revalidatePath("/admin/settings");
+  revalidatePath("/checkout");
+  revalidatePath("/api/pricing");
+  redirect("/admin/settings?citiesSaved=1");
+}
+
+export async function deleteDeliveryCity(id: string) {
+  await requireAdmin();
+  await prisma.deliveryCity.delete({ where: { id } });
+  revalidatePath("/admin/settings");
+  revalidatePath("/checkout");
+  revalidatePath("/api/pricing");
+}
+
 export async function savePromoSettings(fd: FormData) {
   await requireAdmin();
   const data = {
