@@ -75,19 +75,19 @@ export default function CheckoutPage() {
 
   const installOptions: { value: InstallationType; title: string; desc: string }[] = [
     {
+      value: "PAID",
+      title: "Installation & Removal",
+      desc: `${formatCurrency(pricing.installationFee)} for any motor or pump not under warranty (our brand or another).`,
+    },
+    {
       value: "NONE",
-      title: "No installation & removal",
+      title: "No Installation & Removal",
       desc: "We deliver the product only. You handle installation yourself.",
     },
     {
       value: "WARRANTY",
-      title: "Installation & removal under warranty",
+      title: "Installation & Removal Under Warranty",
       desc: `Fee waived (normally ${formatCurrency(pricing.installationFee)}). Enter the serial number of the unit being replaced.`,
-    },
-    {
-      value: "PAID",
-      title: "Installation & removal without warranty",
-      desc: `${formatCurrency(pricing.installationFee)} for any motor or pump not under warranty (our brand or another).`,
     },
   ];
 
@@ -209,10 +209,10 @@ export default function CheckoutPage() {
 
   const installLabel =
     checkoutTotals.effectiveInstallationType === "WARRANTY"
-      ? "Installation & removal under warranty"
+      ? "Installation & Removal Under Warranty"
       : checkoutTotals.effectiveInstallationType === "PAID"
-        ? "Installation & removal without warranty"
-        : "No installation & removal";
+        ? "Installation & Removal"
+        : "No Installation & Removal";
 
   const bank = siteConfig.bankTransfer;
   const allWarranty = items.length > 0 && items.every((i) => i.underWarranty);
