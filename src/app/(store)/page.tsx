@@ -170,7 +170,7 @@ export default async function HomePage() {
             </div>
             <Link href="/services" className="text-sm font-medium text-brand-600 hover:text-brand-700">View all →</Link>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {services.map((s) => (
               <Link
                 key={s.slug}
