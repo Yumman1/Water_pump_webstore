@@ -48,9 +48,8 @@ export default function CheckoutPage() {
   const karachiSelected = isServiceCity(form.city, pricing.serviceCity);
 
   useEffect(() => {
-    if (!karachiSelected && installationType !== "NONE") {
+    if (!karachiSelected && installationType === "PAID") {
       setInstallationType("NONE");
-      setReplacementSerial("");
     }
   }, [karachiSelected, installationType]);
 
@@ -60,12 +59,11 @@ export default function CheckoutPage() {
         city: form.city,
         productsSubtotal,
         installationType,
-        items,
         pricing,
         deliveryCities: pricing.deliveryCities,
         serviceCity: pricing.serviceCity,
       }),
-    [form.city, productsSubtotal, installationType, items, pricing]
+    [form.city, productsSubtotal, installationType, pricing]
   );
 
   const payableTotal = useMemo(() => {
@@ -87,9 +85,24 @@ export default function CheckoutPage() {
     {
       value: "WARRANTY",
       title: "Installation & Removal Under Warranty",
-      desc: `Fee waived (normally ${formatCurrency(pricing.installationFee)}). Enter the serial number of the unit being replaced.`,
+      desc: `Product and installation fees waived. Enter the serial number of the unit being replaced. Only delivery is charged.`,
     },
   ];
+
+  const outsideOptions: { value: InstallationType; title: string; desc: string }[] = [
+    {
+      value: "NONE",
+      title: "Standard delivery",
+      desc: "Product price plus the delivery fee for your city.",
+    },
+    {
+      value: "WARRANTY",
+      title: "Warranty claim",
+      desc: "Replacement under warranty. Product cost waived. Enter the serial number of the unit being replaced. Only delivery is charged.",
+    },
+  ];
+
+  const isWarrantyCheckout = checkoutTotals.isWarrantyCheckout;
 
   const canSubmit =
     form.city.trim().length > 0 &&
@@ -149,11 +162,11 @@ export default function CheckoutPage() {
       setError("Please select a delivery city.");
       return;
     }
-    if (karachiSelected && installationType === "WARRANTY" && !replacementSerial.trim()) {
-      setError("Please enter the serial number for warranty installation.");
+    if (installationType === "WARRANTY" && !replacementSerial.trim()) {
+      setError("Please enter the serial number for the warranty claim.");
       return;
     }
-    if (!karachiSelected && installationType !== "NONE") {
+    if (!karachiSelected && installationType === "PAID") {
       setError(`Installation is only available in ${pricing.serviceCity}.`);
       return;
     }
@@ -209,13 +222,14 @@ export default function CheckoutPage() {
 
   const installLabel =
     checkoutTotals.effectiveInstallationType === "WARRANTY"
-      ? "Installation & Removal Under Warranty"
+      ? karachiSelected
+        ? "Installation & Removal Under Warranty"
+        : "Warranty claim"
       : checkoutTotals.effectiveInstallationType === "PAID"
         ? "Installation & Removal"
         : "No Installation & Removal";
 
   const bank = siteConfig.bankTransfer;
-  const allWarranty = items.length > 0 && items.every((i) => i.underWarranty);
 
   return (
     <div className="container py-8">
@@ -261,9 +275,9 @@ export default function CheckoutPage() {
                 </select>
                 {form.city && !karachiSelected && (
                   <p className="mt-2 text-xs text-gray-500">
-                    {allWarranty
-                      ? "Warranty replacement: free delivery outside Karachi. Installation is not available."
-                      : `Delivery fee for ${form.city}: ${formatCurrency(checkoutTotals.shipping)}. Installation is not available outside ${pricing.serviceCity}.`}
+                    {isWarrantyCheckout
+                      ? `Warranty claim: product cost waived. Delivery fee for ${form.city}: ${formatCurrency(checkoutTotals.shipping)}.`
+                      : `Delivery fee for ${form.city}: ${formatCurrency(checkoutTotals.shipping)}. Installation is only available in ${pricing.serviceCity}.`}
                   </p>
                 )}
               </div>
@@ -273,6 +287,48 @@ export default function CheckoutPage() {
               </div>
             </div>
           </div>
+
+          {!karachiSelected && form.city && (
+            <div className="rounded-xl border bg-white p-6">
+              <h2 className="text-lg font-semibold text-gray-900">Delivery options</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Installation is only available in {pricing.serviceCity}. Choose standard delivery or a warranty claim.
+              </p>
+              <div className="mt-4 space-y-3">
+                {outsideOptions.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 ${
+                      installationType === opt.value ? "border-brand-600 bg-brand-50" : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="outside-delivery"
+                      checked={installationType === opt.value}
+                      onChange={() => setInstallationType(opt.value)}
+                      className="mt-1"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-900">{opt.title}</p>
+                      <p className="text-sm text-gray-500">{opt.desc}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              {installationType === "WARRANTY" && (
+                <div className="mt-4">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">Serial number of unit being replaced *</label>
+                  <input
+                    value={replacementSerial}
+                    onChange={(e) => setReplacementSerial(e.target.value)}
+                    className={inputClass}
+                    placeholder="Enter unit serial number"
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           {karachiSelected && (
             <div className="rounded-xl border bg-white p-6">
@@ -326,40 +382,43 @@ export default function CheckoutPage() {
               </ButtonLink>
             </div>
             <ul className="mt-4 divide-y text-sm">
-              {items.map((i) => (
+              {items.map((i) => {
+                const lineList = i.price * i.quantity;
+                const showWarrantyPrice = isWarrantyCheckout || i.underWarranty;
+                return (
                 <li key={i.productId} className="flex justify-between gap-2 py-3">
                   <span className="text-gray-700">
                     {i.name} × {i.quantity}
-                    {i.underWarranty ? (
+                    {showWarrantyPrice ? (
                       <span className="ml-2 rounded bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700">Warranty</span>
                     ) : null}
                   </span>
                   <span className="font-medium">
-                    {i.underWarranty ? (
+                    {showWarrantyPrice ? (
                       <>
-                        <span className="mr-1 text-gray-400 line-through">{formatCurrency(i.price * i.quantity)}</span>
+                        <span className="mr-1 text-gray-400 line-through">{formatCurrency(lineList)}</span>
                         {formatCurrency(0)}
                       </>
                     ) : (
-                      formatCurrency(i.price * i.quantity)
+                      formatCurrency(lineList)
                     )}
                   </span>
                 </li>
-              ))}
+              );})}
             </ul>
-            {karachiSelected && (
+            {(karachiSelected || isWarrantyCheckout) && installationType !== "NONE" && (
               <div className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-700">
                 <p>
-                  <span className="font-medium">Installation:</span> {installLabel}
-                  {checkoutTotals.effectiveInstallationType === "WARRANTY" ? (
+                  <span className="font-medium">{karachiSelected ? "Installation:" : "Option:"}</span> {installLabel}
+                  {karachiSelected && checkoutTotals.effectiveInstallationType === "WARRANTY" ? (
                     <>
                       {": "}
                       <span className="text-gray-400 line-through">{formatCurrency(pricing.installationFee)}</span>{" "}
                       {formatCurrency(0)}
                     </>
-                  ) : (
+                  ) : karachiSelected ? (
                     <>: {formatCurrency(checkoutTotals.installationFee)}</>
-                  )}
+                  ) : null}
                 </p>
                 {replacementSerial && (
                   <p className="mt-1">
@@ -406,10 +465,10 @@ export default function CheckoutPage() {
             <div className="flex justify-between">
               <dt className="text-gray-500">Products</dt>
               <dd>
-                {productsSubtotal < listSubtotal ? (
+                {isWarrantyCheckout || productsSubtotal < listSubtotal ? (
                   <>
                     <span className="mr-1 text-gray-400 line-through">{formatCurrency(listSubtotal)}</span>
-                    {formatCurrency(productsSubtotal)}
+                    {formatCurrency(checkoutTotals.productsCharge)}
                   </>
                 ) : (
                   formatCurrency(productsSubtotal)
@@ -462,7 +521,7 @@ export default function CheckoutPage() {
           </div>
 
           {error && <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>}
-          {!canSubmit && form.city && karachiSelected && installationType === "WARRANTY" && (
+          {!canSubmit && form.city && installationType === "WARRANTY" && (
             <p className="mt-3 text-sm text-red-600">Enter the replacement unit serial number to continue.</p>
           )}
 

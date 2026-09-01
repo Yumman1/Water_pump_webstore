@@ -46,10 +46,9 @@ export const services: Service[] = [
     availableAtCheckout: true,
     checkoutSteps: [
       "Browse the shop and add the motor, pump or complete set you need to your cart.",
-      "At checkout, select **Karachi** as your city if you want installation and removal. Other cities get delivery only.",
-      "If you selected **Karachi**, choose one of three installation options: delivery only, under warranty, or without warranty.",
-      "If you choose **under warranty**, enter the serial number of the unit being replaced (required before placing the order).",
-      "Outside Karachi, warranty replacements ship free. Non-warranty orders use the delivery fee for your selected city.",
+      "Outside Karachi, choose **standard delivery** or a **warranty claim** (serial number required; product cost waived, delivery fee only).",
+      "If you selected **Karachi**, choose one of three installation options: paid installation, delivery only, or under warranty.",
+      "For any **warranty claim**, enter the serial number of the unit being replaced (required before placing the order). Product and installation fees are waived; only delivery is charged.",
       "Proceed to checkout, enter your details and payment method (COD or bank transfer). Our team contacts you after the order to schedule.",
     ],
   },

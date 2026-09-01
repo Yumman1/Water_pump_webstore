@@ -35,34 +35,41 @@ export function computeCheckoutTotals(input: {
   city: string;
   productsSubtotal: number;
   installationType: InstallationType;
-  items: { underWarranty?: boolean }[];
   pricing: PricingConfig;
   deliveryCities: DeliveryCityOption[];
   serviceCity?: string;
 }): {
   installationFee: number;
   shipping: number;
+  productsCharge: number;
   total: number;
   installationAvailable: boolean;
   effectiveInstallationType: InstallationType;
+  isWarrantyCheckout: boolean;
 } {
   const serviceCity = input.serviceCity ?? getServiceCity();
   const installationAvailable = isServiceCity(input.city, serviceCity);
-  const effectiveInstallationType = installationAvailable ? input.installationType : "NONE";
+  const isWarrantyCheckout = input.installationType === "WARRANTY";
+
+  let effectiveInstallationType = input.installationType;
+  if (!installationAvailable && input.installationType === "PAID") {
+    effectiveInstallationType = "NONE";
+  }
+
+  const productsCharge = isWarrantyCheckout ? 0 : input.productsSubtotal;
 
   const installationFee =
     installationAvailable && effectiveInstallationType === "PAID" ? input.pricing.installationFee : 0;
 
-  const hasItems = input.items.length > 0;
-  const allWarranty = hasItems && input.items.every((i) => i.underWarranty);
-
   let shipping = 0;
   if (!input.city.trim()) {
     shipping = 0;
+  } else if (isWarrantyCheckout) {
+    shipping = installationAvailable
+      ? input.pricing.shippingFlatRate
+      : resolveOutsideCityFee(input.city, input.deliveryCities, input.pricing.shippingFlatRate);
   } else if (installationAvailable) {
-    shipping = computeShippingFee(input.productsSubtotal + installationFee, input.pricing);
-  } else if (allWarranty) {
-    shipping = 0;
+    shipping = computeShippingFee(productsCharge + installationFee, input.pricing);
   } else {
     shipping = resolveOutsideCityFee(input.city, input.deliveryCities, input.pricing.shippingFlatRate);
   }
@@ -70,8 +77,10 @@ export function computeCheckoutTotals(input: {
   return {
     installationFee,
     shipping,
-    total: input.productsSubtotal + installationFee + shipping,
+    productsCharge,
+    total: productsCharge + installationFee + shipping,
     installationAvailable,
-    effectiveInstallationType,
+    effectiveInstallationType: isWarrantyCheckout ? "WARRANTY" : effectiveInstallationType,
+    isWarrantyCheckout,
   };
 }

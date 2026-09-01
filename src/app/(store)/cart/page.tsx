@@ -130,8 +130,8 @@ export default function CartPage() {
             <p className="font-medium">Delivery and installation</p>
             <p className="mt-1 text-brand-800/90">
               Select your city at checkout. Installation and removal is available in {pricing.serviceCity} only.
-              Outside {pricing.serviceCity}, warranty replacements ship free; other orders use the delivery fee for
-              your city.
+              Outside {pricing.serviceCity}, choose standard delivery or a warranty claim (product cost waived, delivery
+              fee applies).
             </p>
           </div>
         </div>

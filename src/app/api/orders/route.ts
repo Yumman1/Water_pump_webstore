@@ -80,21 +80,21 @@ export async function POST(req: Request) {
   const pricing = await getPricingConfig();
   const deliveryCities = await getDeliveryCities();
 
-  if (!isServiceCity(data.city, siteConfig.delivery.serviceCity) && data.installationType !== "NONE") {
+  if (!isServiceCity(data.city, siteConfig.delivery.serviceCity) && data.installationType === "PAID") {
     return NextResponse.json(
       { error: `Installation and removal is only available in ${siteConfig.delivery.serviceCity}.` },
       { status: 400 }
     );
   }
 
-  const lineItemsPreview = data.items.map((i) => ({ underWarranty: !!i.underWarranty }));
-
-  if (isServiceCity(data.city, siteConfig.delivery.serviceCity) && data.installationType === "WARRANTY" && !data.replacementSerial?.trim()) {
+  if (data.installationType === "WARRANTY" && !data.replacementSerial?.trim()) {
     return NextResponse.json(
-      { error: "Serial number is required for warranty installation & removal." },
+      { error: "Serial number is required for warranty claims." },
       { status: 400 }
     );
   }
+
+  const isWarrantyCheckout = data.installationType === "WARRANTY";
 
   // --- Demo mode: no database configured -----------------------------------
   if (!isDbConfigured) {
@@ -102,13 +102,14 @@ export async function POST(req: Request) {
     const demoItems = data.items.map((i) => {
       const p = seedProducts.find((sp) => `prod-${sp.slug}` === i.productId);
       const listPrice = p?.price ?? 0;
-      const price = i.underWarranty ? 0 : listPrice;
+      const underWarranty = isWarrantyCheckout || !!i.underWarranty;
+      const price = underWarranty ? 0 : listPrice;
       return {
         name: p?.name ?? "Item",
         quantity: i.quantity,
         price,
         listPrice,
-        underWarranty: !!i.underWarranty,
+        underWarranty,
       };
     });
     const subtotal = demoItems.reduce((s, i) => s + i.price * i.quantity, 0);
@@ -116,7 +117,6 @@ export async function POST(req: Request) {
       city: data.city,
       productsSubtotal: subtotal,
       installationType: data.installationType,
-      items: lineItemsPreview,
       pricing,
       deliveryCities,
     });
@@ -125,8 +125,8 @@ export async function POST(req: Request) {
     const shipping = totals.shipping;
     const replacementSerial =
       installationType === "WARRANTY" ? data.replacementSerial?.trim() ?? null : null;
-    const tax = Math.round(subtotal * siteConfig.taxRate);
-    const total = Math.max(0, subtotal) + shipping + tax + installationFee;
+    const tax = Math.round(totals.productsCharge * siteConfig.taxRate);
+    const total = Math.max(0, totals.productsCharge) + shipping + tax + installationFee;
 
     await notifyNewOrder({
       orderNumber,
@@ -182,7 +182,7 @@ export async function POST(req: Request) {
       if (p.stock < i.quantity) {
         throw new Error(`Insufficient stock for ${p.name}.`);
       }
-      const underWarranty = !!i.underWarranty;
+      const underWarranty = isWarrantyCheckout || !!i.underWarranty;
       const listPrice = p.price;
       const price = underWarranty ? 0 : p.price;
       return {
@@ -199,7 +199,7 @@ export async function POST(req: Request) {
 
     let discount = 0;
     let appliedCoupon: string | undefined;
-    if (data.couponCode) {
+    if (data.couponCode && !isWarrantyCheckout) {
       const coupon = await prisma.coupon.findUnique({ where: { code: data.couponCode.toUpperCase() } });
       if (
         coupon &&
@@ -218,7 +218,6 @@ export async function POST(req: Request) {
       city: data.city,
       productsSubtotal,
       installationType: data.installationType,
-      items: lineItemsPreview,
       pricing,
       deliveryCities,
     });
@@ -227,8 +226,8 @@ export async function POST(req: Request) {
     const shipping = totals.shipping;
     const replacementSerial =
       installationType === "WARRANTY" ? data.replacementSerial?.trim() ?? null : null;
-    const tax = Math.round(subtotal * siteConfig.taxRate);
-    const total = productsSubtotal + shipping + tax + installationFee;
+    const tax = Math.round(totals.productsCharge * siteConfig.taxRate);
+    const total = totals.productsCharge + shipping + tax + installationFee;
     const orderNumber = generateOrderNumber();
 
     const order = await prisma.$transaction(async (tx) => {

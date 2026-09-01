@@ -164,7 +164,7 @@ type OrderLike = {
 };
 
 function installLabel(type?: string | null): string {
-  if (type === "WARRANTY") return "Installation & Removal Under Warranty";
+  if (type === "WARRANTY") return "Warranty claim";
   if (type === "PAID") return "Installation & Removal";
   if (type === "NONE") return "No Installation & Removal";
   return "";

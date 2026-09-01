@@ -202,7 +202,7 @@ model StoreSettings {
   notifyCustomerWhatsapp Boolean  @default(true)
   shippingFlatRate       Float    @default(500)
   freeShippingThreshold  Float    @default(50000)
-  installationFee        Float    @default(10000)
+  installationFee        Float    @default(5000)
   promoEnabled           Boolean  @default(true)
   promoBadge             String?
   promoHeading           String?
