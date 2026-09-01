@@ -45,7 +45,7 @@ export const siteConfig = {
 
   // Free-shipping threshold and flat shipping fee (in the store currency).
   shipping: {
-    flatRate: 500,
+    flatRate: 1000,
     freeShippingThreshold: 50000,
   },
 

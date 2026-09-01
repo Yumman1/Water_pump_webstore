@@ -200,7 +200,7 @@ model StoreSettings {
   ownerNotifyWhatsapp    String? // owner WhatsApp number for new-order alerts
   notifyCustomerEmail    Boolean  @default(true)
   notifyCustomerWhatsapp Boolean  @default(true)
-  shippingFlatRate       Float    @default(500)
+  shippingFlatRate       Float    @default(1000)
   freeShippingThreshold  Float    @default(50000)
   installationFee        Float    @default(5000)
   promoEnabled           Boolean  @default(true)

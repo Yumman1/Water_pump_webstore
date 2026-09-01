@@ -116,7 +116,7 @@ async function main() {
       id: 1,
       ownerNotifyEmail: process.env.OWNER_NOTIFY_EMAIL ?? "jawedmotors@outlook.com",
       ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? "03053770002",
-      shippingFlatRate: 500,
+      shippingFlatRate: 1000,
       freeShippingThreshold: 50000,
       installationFee: 5000,
       promoEnabled: promo.enabled,
@@ -180,7 +180,7 @@ async function main() {
         .filter(Boolean);
       const items = picks.length ? picks : allProducts.slice(0, 1);
       const subtotal = items.reduce((s, p) => s + p.price, 0);
-      const shipping = subtotal >= 50000 ? 0 : 500;
+      const shipping = subtotal >= 50000 ? 0 : 1000;
       const total = subtotal + shipping;
 
       await prisma.order.create({

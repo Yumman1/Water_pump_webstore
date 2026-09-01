@@ -39,7 +39,7 @@ for (const p of products) {
 }
 
 lines.push(
-  `INSERT INTO "StoreSettings" (id, "ownerNotifyEmail", "notifyCustomerEmail", "notifyCustomerWhatsapp", "shippingFlatRate", "freeShippingThreshold", "installationFee", "updatedAt") VALUES (1, 'jawedmotors@outlook.com', true, true, 500, 50000, 5000, '${now}') ON CONFLICT (id) DO UPDATE SET "ownerNotifyEmail" = COALESCE("StoreSettings"."ownerNotifyEmail", EXCLUDED."ownerNotifyEmail"), "updatedAt" = EXCLUDED."updatedAt";`
+  `INSERT INTO "StoreSettings" (id, "ownerNotifyEmail", "notifyCustomerEmail", "notifyCustomerWhatsapp", "shippingFlatRate", "freeShippingThreshold", "installationFee", "updatedAt") VALUES (1, 'jawedmotors@outlook.com', true, true, 1000, 50000, 5000, '${now}') ON CONFLICT (id) DO UPDATE SET "ownerNotifyEmail" = COALESCE("StoreSettings"."ownerNotifyEmail", EXCLUDED."ownerNotifyEmail"), "updatedAt" = EXCLUDED."updatedAt";`
 );
 lines.push(
   `INSERT INTO "Coupon" (id, code, type, value, "minSubtotal", active, "usageCount", "createdAt", "updatedAt") VALUES ('${cuid()}', 'WELCOME10', 'PERCENTAGE', 10, 10000, true, 0, '${now}', '${now}') ON CONFLICT (code) DO NOTHING;`
