@@ -85,7 +85,7 @@ export function ProductForm({
           <Field label="Video URL" hint="Optional looping cover video (shown on cards and product page). Example: /products/my-pump/video.mp4">
             <input name="video" defaultValue={p?.video ?? ""} className={inputClass} placeholder="/products/.../video.mp4" />
           </Field>
-          <Field label="Tags" hint="Comma-separated, e.g. monoblock, pressure, 1hp">
+          <Field label="Tags" hint="Comma-separated. Used for shop search and shown in admin. Example: monoblock, pressure, 1hp">
             <input name="tags" defaultValue={p?.tags.join(", ")} className={inputClass} />
           </Field>
           <Field label="Specifications" hint="One per line as 'Key: Value', e.g. Power: 1 HP">
@@ -162,9 +162,15 @@ export function ProductForm({
               <option value="USED">Used / Refurbished</option>
             </select>
           </Field>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="featured" defaultChecked={p?.featured} className="h-4 w-4" />
-            Featured on homepage
+          <label className="flex items-start gap-2 rounded-lg border border-gray-200 p-3 has-[:checked]:border-accent has-[:checked]:bg-accent/5">
+            <input type="checkbox" name="featured" defaultChecked={p?.featured} className="mt-0.5 h-4 w-4 accent-accent" />
+            <span>
+              <span className="block text-sm font-medium text-gray-900">Featured on homepage</span>
+              <span className="block text-xs text-gray-500">
+                Show in the Featured Products section (up to 8 on the homepage). You can also toggle this from the
+                products list.
+              </span>
+            </span>
           </label>
         </div>
 

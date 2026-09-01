@@ -19,6 +19,7 @@ async function requireAdmin() {
 function revalidateStoreCatalog() {
   revalidateTag("products");
   revalidateTag("categories");
+  revalidatePath("/");
   revalidatePath("/shop");
   revalidatePath("/shop/browse");
 }
@@ -118,6 +119,30 @@ export async function toggleProductActive(id: string) {
   await prisma.product.update({
     where: { id },
     data: { active: !product.active },
+  });
+  revalidatePath("/admin/products");
+  revalidateStoreCatalog();
+  revalidatePath(`/product/${product.slug}`);
+}
+
+export async function toggleProductFeatured(id: string) {
+  await requireAdmin();
+  const product = await prisma.product.findUnique({ where: { id } });
+  if (!product) throw new Error("Product not found.");
+  await prisma.product.update({
+    where: { id },
+    data: { featured: !product.featured },
+  });
+  revalidatePath("/admin/products");
+  revalidateStoreCatalog();
+  revalidatePath(`/product/${product.slug}`);
+}
+
+export async function updateProductTags(id: string, tagsRaw: string) {
+  await requireAdmin();
+  const product = await prisma.product.update({
+    where: { id },
+    data: { tags: parseList(tagsRaw) },
   });
   revalidatePath("/admin/products");
   revalidateStoreCatalog();
