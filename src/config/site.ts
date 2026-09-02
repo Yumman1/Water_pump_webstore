@@ -37,10 +37,9 @@ export const siteConfig = {
   },
 
   social: {
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
-    youtube: "https://youtube.com",
-    twitter: "https://twitter.com",
+    facebook: "https://www.facebook.com/profile.php?id=61593465285271",
+    instagram: "https://www.instagram.com/jawedpumps/",
+    tiktok: "https://www.tiktok.com/@jawedmotors",
   },
 
   // Free-shipping threshold and flat shipping fee (in the store currency).

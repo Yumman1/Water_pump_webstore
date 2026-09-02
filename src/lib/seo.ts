@@ -166,11 +166,7 @@ export function organizationJsonLd() {
         availableLanguage: ["English", "Urdu"],
       },
     ],
-    sameAs: [social.facebook, social.instagram, social.youtube, social.twitter].filter(
-      (u) =>
-        Boolean(u) &&
-        !["https://facebook.com", "https://instagram.com", "https://youtube.com", "https://twitter.com"].includes(u)
-    ),
+    sameAs: [social.facebook, social.instagram, social.tiktok].filter(Boolean),
   };
 }
 

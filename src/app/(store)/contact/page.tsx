@@ -4,6 +4,7 @@ import { useState } from "react";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
+import { SocialLinks } from "@/components/store/SocialLinks";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -88,6 +89,10 @@ export default function ContactPage() {
               >
                 View on map →
               </a>
+            </div>
+            <div className="rounded-xl border bg-white p-5">
+              <SocialLinks variant="contact" />
+              <p className="mt-3 text-sm text-gray-500">Follow Jawed Pumps for product updates, tips and offers.</p>
             </div>
           </div>
 

@@ -3,6 +3,7 @@ import { getCategories } from "@/lib/data";
 import { siteConfig } from "@/config/site";
 import { Icons } from "@/components/ui/icons";
 import { Logo } from "./Logo";
+import { SocialLinks } from "./SocialLinks";
 
 export async function SiteFooter() {
   const categories = await getCategories();
@@ -14,10 +15,7 @@ export async function SiteFooter() {
         <div>
           <Logo className="[&_img]:h-10 [&_img]:max-w-[180px] sm:[&_img]:h-11 sm:[&_img]:max-w-[220px]" />
           <p className="mt-3 text-sm leading-relaxed text-gray-400">{siteConfig.description}</p>
-          <div className="mt-4 flex gap-3">
-            <a href={siteConfig.social.facebook} className="text-gray-400 hover:text-white" aria-label="Facebook" target="_blank" rel="noreferrer">Facebook</a>
-            <a href={siteConfig.social.instagram} className="text-gray-400 hover:text-white" aria-label="Instagram" target="_blank" rel="noreferrer">Instagram</a>
-          </div>
+          <SocialLinks variant="footer" />
         </div>
 
         <div>
