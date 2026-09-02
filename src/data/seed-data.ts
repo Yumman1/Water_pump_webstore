@@ -115,6 +115,7 @@ type ProductInput = {
   shortDescription: string;
   description: string;
   featured?: boolean;
+  active?: boolean;
   tags: string[];
   specs: Record<string, string>;
   imageSeed: string;
@@ -147,7 +148,7 @@ function product(p: ProductInput): SeedProduct {
     stock: p.stock ?? 20,
     lowStockThreshold: 3,
     featured: p.featured ?? false,
-    active: true,
+    active: p.active ?? true,
     images,
     tags: p.tags,
     specs,
@@ -411,7 +412,7 @@ export const products: SeedProduct[] = [
     shortDescription: "2HP Premium double-belt bearing pump. 70 feet+ deep-well suction.",
     description:
       "The Premium GD50000 2HP bearing pump is a high capacity double belt unit for suction of in-line water and deep well duty. It delivers 70 feet and above water suction from deep wells, with steel plate construction for agricultural and industrial use. Double belt drive gives stable power transfer when matched with a full load heavy duty copper motor. Choose this pump for high demand irrigation, large farms and professional water transfer jobs. Covered by a 1 year warranty.",
-    featured: true,
+    featured: false,
     tags: ["bearing", "2hp", "gd50000", "premium", "steel-plate", "double-belt"],
     specs: {
       Power: "2 HP",
@@ -424,6 +425,7 @@ export const products: SeedProduct[] = [
       Warranty: "1 Year",
     },
     imageSeed: "bp-pr-gd50",
+    active: false,
   }),
   product({
     name: "2HP Bearing Pump Jawed GD50000 (Steel Plate)",
@@ -434,7 +436,8 @@ export const products: SeedProduct[] = [
     shortDescription: "2HP Jawed double-belt bearing pump. 70 feet+ deep-well suction.",
     description:
       "The Jawed GD50000 2HP bearing pump is a heavy duty double belt pump for suction of in-line water from deep wells. Water suction reaches 70 feet and above, backed by a tough steel plate body for agricultural and industrial transfer. Pair it with a 1HP full load heavy duty copper motor for a complete high capacity set. Built for continuous, high demand pumping where head and reliability are critical. Covered by a 1 year warranty.",
-    featured: true,
+    featured: false,
+    active: false,
     tags: ["bearing", "2hp", "gd50000", "jawed", "steel-plate", "double-belt"],
     specs: {
       Power: "2 HP",

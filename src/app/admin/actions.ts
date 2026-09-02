@@ -78,6 +78,8 @@ export async function saveProduct(id: string | null, fd: FormData) {
   const video = str(fd, "video");
   if (video) specs.Video = video;
 
+  const isActive = str(fd, "active") !== "false";
+
   const data = {
     name,
     slug,
@@ -93,8 +95,8 @@ export async function saveProduct(id: string | null, fd: FormData) {
     weightKg: str(fd, "weightKg") ? num(fd, "weightKg") : null,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     condition: (str(fd, "condition") === "USED" ? "USED" : "NEW") as any,
-    featured: bool(fd, "featured"),
-    active: str(fd, "active") !== "false",
+    featured: isActive && bool(fd, "featured"),
+    active: isActive,
     images: parseList(str(fd, "images")),
     tags: parseList(str(fd, "tags")),
     specs,
@@ -116,9 +118,14 @@ export async function toggleProductActive(id: string) {
   await requireAdmin();
   const product = await prisma.product.findUnique({ where: { id } });
   if (!product) throw new Error("Product not found.");
+  const nextActive = !product.active;
   await prisma.product.update({
     where: { id },
-    data: { active: !product.active },
+    data: {
+      active: nextActive,
+      // Hidden products must not remain flagged for the homepage featured grid.
+      ...(nextActive === false ? { featured: false } : {}),
+    },
   });
   revalidatePath("/admin/products");
   revalidateStoreCatalog();
@@ -129,9 +136,13 @@ export async function toggleProductFeatured(id: string) {
   await requireAdmin();
   const product = await prisma.product.findUnique({ where: { id } });
   if (!product) throw new Error("Product not found.");
+  const nextFeatured = !product.featured;
+  if (nextFeatured && !product.active) {
+    throw new Error("Cannot feature a hidden product. Set Visibility to Visible first.");
+  }
   await prisma.product.update({
     where: { id },
-    data: { featured: !product.featured },
+    data: { featured: nextFeatured },
   });
   revalidatePath("/admin/products");
   revalidateStoreCatalog();

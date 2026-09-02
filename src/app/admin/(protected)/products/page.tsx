@@ -17,7 +17,8 @@ const HOMEPAGE_FEATURED_LIMIT = 8;
 
 export default async function AdminProductsPage() {
   const [products, stats] = await Promise.all([getAdminProducts(), getDashboardStats()]);
-  const featuredProducts = products.filter((p) => p.featured);
+  const homepageFeatured = products.filter((p) => p.featured && p.active);
+  const featuredButHidden = products.filter((p) => p.featured && !p.active);
 
   return (
     <div>
@@ -41,17 +42,23 @@ export default async function AdminProductsPage() {
             <h2 className="text-sm font-semibold text-gray-900">Homepage featured products</h2>
             <p className="mt-1 text-xs text-gray-500">
               Toggle <strong className="font-medium text-gray-700">Featured</strong> below to add or remove products
-              from the homepage. Up to {HOMEPAGE_FEATURED_LIMIT} featured products are shown. Tags help with shop search
-              and can be edited inline.
+              from the homepage. Only <strong className="font-medium text-gray-700">visible</strong> featured products
+              appear on the site. Up to {HOMEPAGE_FEATURED_LIMIT} are shown.
             </p>
           </div>
           <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-700">
-            {featuredProducts.length} featured
+            {homepageFeatured.length} on homepage
           </span>
         </div>
-        {featuredProducts.length > 0 ? (
+        {featuredButHidden.length > 0 && (
+          <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+            {featuredButHidden.length} hidden product{featuredButHidden.length === 1 ? "" : "s"} still had Featured
+            enabled — they will not appear on the storefront. Featured is cleared automatically when you hide a product.
+          </p>
+        )}
+        {homepageFeatured.length > 0 ? (
           <ul className="mt-4 flex flex-wrap gap-2">
-            {featuredProducts.map((p) => (
+            {homepageFeatured.map((p) => (
               <li key={p.id}>
                 <Link
                   href={`/admin/products/${p.id}`}
@@ -66,10 +73,10 @@ export default async function AdminProductsPage() {
         ) : (
           <p className="mt-3 text-sm text-gray-500">No featured products yet. Turn on Featured for any product below.</p>
         )}
-        {featuredProducts.length > HOMEPAGE_FEATURED_LIMIT && (
+        {homepageFeatured.length > HOMEPAGE_FEATURED_LIMIT && (
           <p className="mt-3 text-xs font-medium text-amber-700">
-            You have {featuredProducts.length} featured products. Only the first {HOMEPAGE_FEATURED_LIMIT} appear on the
-            homepage.
+            You have {homepageFeatured.length} homepage featured products. Only the first {HOMEPAGE_FEATURED_LIMIT}{" "}
+            appear on the homepage.
           </p>
         )}
       </div>

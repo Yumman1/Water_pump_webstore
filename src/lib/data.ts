@@ -338,11 +338,14 @@ export async function getDealsProducts(limit = 24): Promise<Product[]> {
 export async function getAllProductSlugs(): Promise<string[]> {
   if (await useDb()) {
     try {
-      const rows = await prisma.product.findMany({ select: { slug: true } });
+      const rows = await prisma.product.findMany({
+        where: { active: true },
+        select: { slug: true },
+      });
       return rows.map((r) => r.slug);
     } catch {
       /* fall through */
     }
   }
-  return seedProducts.map((p) => p.slug);
+  return seedProducts.filter((p) => p.active).map((p) => p.slug);
 }
