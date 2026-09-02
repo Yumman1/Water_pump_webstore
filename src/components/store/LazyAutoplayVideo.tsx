@@ -40,6 +40,7 @@ export function LazyAutoplayVideo({
     <div ref={rootRef} className="relative h-full w-full">
       {inView ? (
         <video
+          key={src}
           src={src}
           poster={poster}
           className={className}

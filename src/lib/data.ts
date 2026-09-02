@@ -14,6 +14,8 @@ import type { Category, Product, ProductQuery } from "@/lib/types";
 import { cleanCopy, cleanSpecs, realImages } from "@/lib/utils";
 
 const CACHE_REVALIDATE = 60;
+/** Bump when product media/catalog changes outside admin (e.g. direct DB edits). */
+const PRODUCTS_CACHE_VERSION = "2";
 
 // ---------------------------------------------------------------------------
 // Fallback: normalize the bundled seed data into UI shapes.
@@ -277,7 +279,7 @@ const getCategoriesCached = unstable_cache(fetchCategoriesUncached, ["store-cate
 
 function getProductsCached(query: ProductQuery) {
   const key = productsCacheKey(query);
-  return unstable_cache(() => fetchProductsUncached(query), ["store-products", key], {
+  return unstable_cache(() => fetchProductsUncached(query), ["store-products", PRODUCTS_CACHE_VERSION, key], {
     revalidate: CACHE_REVALIDATE,
     tags: ["products"],
   })();
