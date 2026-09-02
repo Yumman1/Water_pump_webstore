@@ -1,18 +1,30 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { getCategories } from "@/lib/data";
 import { ProductListing, type NavLink } from "@/components/store/ProductListing";
 import { ProductListingSkeleton } from "@/components/store/ProductGridSkeleton";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata = pageMetadata({
-  title: "Shop Jawed Pumps, Motors & Complete Sets",
-  description:
-    "Browse the full Jawed Pumps catalog: copper motors, monoblock pressure pumps, bearing pumps and matched sets.",
-  path: "/shop",
-});
-
-/** Sort, search and pagination — dynamic but DB results are cached 60s. */
 export const revalidate = 60;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}): Promise<Metadata> {
+  const hasFilters =
+    Boolean(searchParams.search) ||
+    Boolean(searchParams.sort) ||
+    Boolean(searchParams.page);
+
+  return pageMetadata({
+    title: "Shop Jawed Pumps, Motors & Complete Sets | Karachi",
+    description:
+      "Browse the full Jawed Engineering Pumps catalog: copper winding motors, monoblock pressure pumps, bearing donkey pumps and matched sets. Javed water pump prices with nationwide delivery.",
+    path: "/shop/browse",
+    canonicalPath: hasFilters ? "/shop" : undefined,
+  });
+}
 
 export default async function ShopBrowsePage({
   searchParams,

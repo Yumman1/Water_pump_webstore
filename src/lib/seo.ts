@@ -102,22 +102,26 @@ export function pageMetadata({
   title,
   description,
   path,
+  canonicalPath,
   image,
   noIndex,
 }: {
   title: string;
   description: string;
   path: string;
+  /** Canonical URL path without query filters (defaults to `path`). */
+  canonicalPath?: string;
   image?: string;
   noIndex?: boolean;
 }): Metadata {
   const url = absoluteUrl(path);
+  const canonical = absoluteUrl(canonicalPath ?? path);
   const imageUrl = image ? absoluteUrl(image) : ogImageUrl();
 
   return {
-    title,
+    title: { absolute: title },
     description,
-    alternates: { canonical: url },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
@@ -226,10 +230,40 @@ export function webSiteJsonLd() {
   };
 }
 
+export function faqPageJsonLd(faqs: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
+export function itemListJsonLd(items: { name: string; url: string }[], listName: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: listName,
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      url: item.url,
+    })),
+  };
+}
+
 export function productJsonLd(product: Product) {
   const siteUrl = getSiteUrl();
-  const image =
-    product.images[0] ?? product.video ?? siteConfig.seo.ogImage;
+  const images = product.images.length
+    ? product.images.map((src) => absoluteUrl(src))
+    : [absoluteUrl(product.video ?? siteConfig.seo.ogImage)];
 
   return {
     "@context": "https://schema.org",
@@ -237,25 +271,23 @@ export function productJsonLd(product: Product) {
     name: product.name,
     description: product.shortDescription ?? product.description.slice(0, 500),
     sku: product.sku,
-    brand: product.brand
-      ? { "@type": "Brand", name: product.brand }
-      : { "@type": "Brand", name: "Jawed" },
-    image: absoluteUrl(image),
+    mpn: product.sku,
+    brand: { "@type": "Brand", name: product.brand ?? "Jawed" },
+    image: images,
     url: `${siteUrl}/product/${product.slug}`,
     offers: {
       "@type": "Offer",
       url: `${siteUrl}/product/${product.slug}`,
       priceCurrency: siteConfig.currency.code,
-      ...(product.price > 0 ? { price: product.price } : {}),
+      price: product.price,
       availability:
         product.stock > 0
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
       seller: { "@id": `${siteUrl}/#organization` },
     },
-    ...(product.category
-      ? { category: product.category.name }
-      : {}),
+    ...(product.category ? { category: product.category.name } : {}),
   };
 }
 

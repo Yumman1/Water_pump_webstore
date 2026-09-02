@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { brands, getBrandBySlug } from "@/config/menu";
 import { ProductListing, type NavLink } from "@/components/store/ProductListing";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -11,11 +12,25 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }): Promise<Metadata> {
   const brand = getBrandBySlug(params.slug);
-  return { title: brand ? `${brand.label} Pumps` : "Brand" };
+  if (!brand) return { title: "Brand" };
+
+  const hasFilters =
+    Boolean(searchParams.search) ||
+    Boolean(searchParams.sort) ||
+    Boolean(searchParams.page);
+
+  return pageMetadata({
+    title: `${brand.label} Water Pumps & Motors | Jawed Pumps Karachi`,
+    description: `Shop ${brand.label} water pumps and motors from Jawed Engineering Pumps. Genuine products, copper winding options and nationwide delivery across Pakistan.`,
+    path: `/brand/${brand.slug}`,
+    canonicalPath: hasFilters ? `/brand/${brand.slug}` : undefined,
+  });
 }
 
 export default function BrandPage({

@@ -8,13 +8,23 @@ import { AddToCartButton } from "./AddToCartButton";
 import { Icons } from "@/components/ui/icons";
 import { cn, realImages } from "@/lib/utils";
 
-export function ProductDetailClient({ product }: { product: Product }) {
+export function ProductDetailClient({
+  product,
+  imageAlts = [],
+}: {
+  product: Product;
+  imageAlts?: string[];
+}) {
   // Prefer real photos; skip placeholder when a product video is the cover.
   const images = realImages(product.images);
   // Gallery items: video first when present, then still images.
-  const media: { type: "video" | "image"; src: string }[] = [
-    ...(product.video ? [{ type: "video" as const, src: product.video }] : []),
-    ...images.map((src) => ({ type: "image" as const, src })),
+  const media: { type: "video" | "image"; src: string; alt?: string }[] = [
+    ...(product.video ? [{ type: "video" as const, src: product.video, alt: product.name }] : []),
+    ...images.map((src, i) => ({
+      type: "image" as const,
+      src,
+      alt: imageAlts[i] ?? product.name,
+    })),
   ];
   const [active, setActive] = useState(0);
   const [qty, setQty] = useState(1);
@@ -46,7 +56,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
           ) : current ? (
             <Image
               src={current.src}
-              alt={product.name}
+              alt={current.alt ?? product.name}
               fill
               priority
               sizes="(max-width:1024px) 100vw, 50vw"
@@ -71,7 +81,13 @@ export function ProductDetailClient({ product }: { product: Product }) {
                 {item.type === "video" ? (
                   <video src={item.src} className="h-full w-full object-cover" muted playsInline preload="metadata" />
                 ) : (
-                  <Image src={item.src} alt="" fill sizes="80px" className="object-cover" />
+                  <Image
+                    src={item.src}
+                    alt={item.alt ?? `${product.name} thumbnail`}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                  />
                 )}
               </button>
             ))}

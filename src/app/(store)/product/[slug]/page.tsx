@@ -8,9 +8,15 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/config/site";
 import {
   breadcrumbJsonLd,
+  localBusinessJsonLd,
   pageMetadata,
   productJsonLd,
 } from "@/lib/seo";
+import {
+  productImageAlt,
+  productPageDescription,
+  productPageTitle,
+} from "@/lib/seo-content";
 
 export const revalidate = 60;
 
@@ -22,13 +28,9 @@ export async function generateMetadata({
   const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Product not found" };
 
-  const description =
-    product.shortDescription ??
-    `${product.name}, genuine Jawed ${product.category?.name ?? "water pump"} with nationwide delivery across Pakistan.`;
-
   return pageMetadata({
-    title: `${product.name} | Jawed Pumps Pakistan`,
-    description,
+    title: productPageTitle(product),
+    description: productPageDescription(product),
     path: `/product/${product.slug}`,
     image: product.images[0] ?? product.video ?? siteConfig.seo.ogImage,
   });
@@ -52,14 +54,22 @@ export default async function ProductPage({ params }: { params: { slug: string }
     { name: product.name, path: `/product/${product.slug}` },
   ];
 
+  const imageAlts = product.images.map((_, i) => productImageAlt(product, i));
+
   return (
-    <div className="container py-8">
-      <JsonLd data={[productJsonLd(product), breadcrumbJsonLd(breadcrumbs)]} />
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
-        <Link href="/" className="hover:text-brand-600">Home</Link>
+    <article className="container py-8">
+      <JsonLd
+        data={[productJsonLd(product), breadcrumbJsonLd(breadcrumbs), localBusinessJsonLd()]}
+      />
+
+      <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
+        <Link href="/" className="hover:text-brand-600">
+          Home
+        </Link>
         <span>/</span>
-        <Link href="/shop" className="hover:text-brand-600">Shop</Link>
+        <Link href="/shop" className="hover:text-brand-600">
+          Shop
+        </Link>
         {product.category && (
           <>
             <span>/</span>
@@ -72,38 +82,41 @@ export default async function ProductPage({ params }: { params: { slug: string }
         <span className="text-gray-700">{product.name}</span>
       </nav>
 
-      <ProductDetailClient product={product} />
+      <ProductDetailClient product={product} imageAlts={imageAlts} />
 
-      {/* Description + specs */}
       <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_360px]">
-        <div>
+        <section>
           <h2 className="text-lg font-bold text-gray-900">Description</h2>
           <p className="mt-3 whitespace-pre-line leading-relaxed text-gray-600">{product.description}</p>
-        </div>
+        </section>
         {specs.length > 0 && (
-          <div>
+          <section>
             <h2 className="text-lg font-bold text-gray-900">Specifications</h2>
             <table className="mt-3 w-full overflow-hidden rounded-lg border text-sm">
+              <caption className="sr-only">{product.name} specifications</caption>
               <tbody>
                 {specs.map(([k, v], i) => (
                   <tr key={k} className={i % 2 ? "bg-gray-50" : "bg-white"}>
-                    <td className="w-1/2 border-r px-4 py-2 font-medium text-gray-600">{k}</td>
+                    <th scope="row" className="w-1/2 border-r px-4 py-2 text-left font-medium text-gray-600">
+                      {k}
+                    </th>
                     <td className="px-4 py-2 text-gray-900">{String(v)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+          </section>
         )}
       </div>
 
-      {/* Related */}
       {related.length > 0 && (
-        <div className="mt-14">
-          <h2 className="mb-6 text-xl font-bold text-gray-900">Related Products</h2>
+        <section className="mt-14" aria-labelledby="related-heading">
+          <h2 id="related-heading" className="mb-6 text-xl font-bold text-gray-900">
+            Related Products
+          </h2>
           <ProductGrid products={related} />
-        </div>
+        </section>
       )}
-    </div>
+    </article>
   );
 }

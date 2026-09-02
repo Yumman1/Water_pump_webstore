@@ -24,6 +24,12 @@ if (siteUrl && !process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
 
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      { source: "/categories/:slug", destination: "/category/:slug", permanent: true },
+      { source: "/products/:slug", destination: "/product/:slug", permanent: true },
+    ];
+  },
   env: {
     NEXTAUTH_URL: authUrl,
     ...(authSecret ? { NEXTAUTH_SECRET: authSecret } : {}),
