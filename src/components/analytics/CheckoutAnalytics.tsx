@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useCart } from "@/lib/cart-context";
-import { trackTikTokInitiateCheckout, type TikTokProductContent } from "@/lib/analytics";
+import { trackTikTokInitiateCheckout, trackMetaInitiateCheckout, type TikTokProductContent } from "@/lib/analytics";
 
 function toTikTokContents(
   items: ReturnType<typeof useCart>["items"]
@@ -25,6 +25,10 @@ export function CheckoutAnalytics() {
     if (tracked.current || items.length === 0) return;
     tracked.current = true;
     trackTikTokInitiateCheckout({
+      value: productsSubtotal,
+      contents: toTikTokContents(items),
+    });
+    trackMetaInitiateCheckout({
       value: productsSubtotal,
       contents: toTikTokContents(items),
     });

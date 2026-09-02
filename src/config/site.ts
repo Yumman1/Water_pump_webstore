@@ -186,6 +186,7 @@ export const siteConfig = {
   /** Third-party analytics (override IDs via env vars when needed). */
   analytics: {
     tiktokPixelId: "DA7J23JC77U208UL92BG",
+    metaPixelId: "1704456783970202",
   },
 };
 

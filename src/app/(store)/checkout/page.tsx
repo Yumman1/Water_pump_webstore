@@ -6,7 +6,7 @@ import { useCart } from "@/lib/cart-context";
 import { formatCurrency } from "@/lib/format";
 import { siteConfig } from "@/config/site";
 import { Button, ButtonLink } from "@/components/ui/button";
-import { trackTikTokPurchase } from "@/lib/analytics";
+import { trackTikTokPurchase, trackMetaPurchase } from "@/lib/analytics";
 import { CheckoutAnalytics } from "@/components/analytics/CheckoutAnalytics";
 import { computeCheckoutTotals, isServiceCity } from "@/lib/delivery";
 import type { InstallationType } from "@/lib/types";
@@ -193,6 +193,17 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error(data.error ?? "Something went wrong");
 
       trackTikTokPurchase({
+        orderId: data.orderNumber,
+        value: Number(data.total ?? payableTotal),
+        contents: items.map((i) => ({
+          content_id: i.slug,
+          content_type: "product" as const,
+          content_name: i.name,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+      });
+      trackMetaPurchase({
         orderId: data.orderNumber,
         value: Number(data.total ?? payableTotal),
         contents: items.map((i) => ({
