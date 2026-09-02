@@ -10,13 +10,12 @@ import { Icons } from "@/components/ui/icons";
 import type { Category } from "@/lib/types";
 import { siteConfig } from "@/config/site";
 import { services } from "@/data/services";
-import { categoryGroups, brandGroup } from "@/config/menu";
+import { categoryGroups, brandGroup, brands, type MenuGroup } from "@/config/menu";
 import { cn } from "@/lib/utils";
 
 type DropItem = { label: string; href: string };
 
 export function HeaderClient({ categories }: { categories: Category[] }) {
-  void categories;
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -73,7 +72,15 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
     </svg>
   );
 
-  const megaGroups = [...categoryGroups, brandGroup];
+  const categoryMenuGroup: MenuGroup =
+    categories.length > 0
+      ? {
+          title: "Categories",
+          items: categories.map((c) => ({ label: c.name, href: `/category/${c.slug}` })),
+        }
+      : categoryGroups[0]!;
+
+  const megaGroups = [categoryMenuGroup, brandGroup];
   const ShopMega = (
     <div className="group relative">
       <Link href="/shop" className={cn(linkClass, "inline-flex items-center gap-1")}>
@@ -147,10 +154,10 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
     );
   }
 
-  const mobileShopItems: DropItem[] = megaGroups.flatMap((g) => [
-    { label: `, ${g.title},`, href: g.items[0]?.href ?? "/shop" },
-    ...g.items,
-  ]);
+  const mobileShopItems: DropItem[] = [
+    ...categories.map((c) => ({ label: c.name, href: `/category/${c.slug}` })),
+    ...brands.map((b) => ({ label: b.label, href: `/brand/${b.slug}` })),
+  ];
   const mobileServiceItems: DropItem[] = services.map((s) => ({ label: s.title, href: `/services/${s.slug}` }));
 
   return (

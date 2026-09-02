@@ -24,6 +24,15 @@ if (siteUrl && !process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
 
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*\\.(mp4|webm|jpg|jpeg|png|webp|avif|ico|svg|woff2)",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: "/categories/:slug", destination: "/category/:slug", permanent: true },
@@ -36,6 +45,7 @@ const nextConfig = {
     ...(siteUrl ? { NEXT_PUBLIC_SITE_URL: siteUrl.replace(/\/$/, "") } : {}),
   },
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },

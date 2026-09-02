@@ -93,7 +93,7 @@ export default async function PriceListPage() {
                             href={`/product/${product.slug}`}
                             className="font-medium text-brand-600 hover:text-brand-700"
                           >
-                            View →
+                            Buy {product.name} — {formatCurrency(product.price)}
                           </Link>
                         </td>
                       </tr>

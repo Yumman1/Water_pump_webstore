@@ -205,6 +205,7 @@ export function localBusinessJsonLd() {
       opens: "09:00",
       closes: "20:00",
     },
+    hasMap: contact.mapUrl,
   };
 }
 

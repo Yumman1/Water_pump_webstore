@@ -4,6 +4,7 @@ import { siteConfig } from "@/config/site";
 import { Icons } from "@/components/ui/icons";
 import { Logo } from "./Logo";
 import { SocialLinks } from "./SocialLinks";
+import { brands } from "@/config/menu";
 
 export async function SiteFooter() {
   const categories = await getCategories();
@@ -11,7 +12,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="mt-16 border-t bg-gray-900 text-gray-300">
-      <div className="container grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="container grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div>
           <Logo className="[&_img]:h-10 [&_img]:max-w-[180px] sm:[&_img]:h-11 sm:[&_img]:max-w-[220px]" />
           <p className="mt-3 text-sm leading-relaxed text-gray-400">{siteConfig.description}</p>
@@ -32,13 +33,30 @@ export async function SiteFooter() {
         </div>
 
         <div>
+          <h4 className="font-semibold text-white">Brands</h4>
+          <ul className="mt-3 space-y-2 text-sm">
+            {brands.map((b) => (
+              <li key={b.slug}>
+                <Link href={`/brand/${b.slug}`} className="text-gray-400 hover:text-white">
+                  {b.label} pumps &amp; motors
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
           <h4 className="font-semibold text-white">Company</h4>
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/services" className="text-gray-400 hover:text-white">Services</Link></li>
             <li><Link href="/about" className="text-gray-400 hover:text-white">About Us</Link></li>
             <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
             <li><Link href="/shipping" className="text-gray-400 hover:text-white">Shipping & Returns</Link></li>
-            <li><Link href="/prices/jawed-water-pump-price-list" className="text-gray-400 hover:text-white">Price List</Link></li>
+            <li>
+              <Link href="/prices/jawed-water-pump-price-list" className="text-gray-400 hover:text-white">
+                Jawed Water Pump Price List
+              </Link>
+            </li>
             <li><Link href="/admin" className="text-gray-400 hover:text-white">Admin Login</Link></li>
           </ul>
         </div>

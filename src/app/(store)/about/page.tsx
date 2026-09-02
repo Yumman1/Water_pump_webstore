@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Icons, type IconName } from "@/components/ui/icons";
 import { Certifications } from "@/components/store/Certifications";
@@ -115,6 +116,45 @@ export default function AboutPage() {
               more seamless.
             </p>
           </div>
+
+          <section className="mt-10 rounded-xl border bg-brand-50/50 p-6">
+            <h2 className="text-lg font-bold text-gray-900">Explore our catalog</h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Shop genuine Jawed pumps and motors online with expert support from Karachi.
+            </p>
+            <ul className="mt-4 flex flex-wrap gap-2 text-sm">
+              <li>
+                <Link href="/shop" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
+                  All products
+                </Link>
+              </li>
+              <li>
+                <Link href="/category/copper-motors" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
+                  Copper motors
+                </Link>
+              </li>
+              <li>
+                <Link href="/category/monoblock-pressure-pumps" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
+                  Monoblock pumps
+                </Link>
+              </li>
+              <li>
+                <Link href="/category/bearing-pumps" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
+                  Bearing pumps
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
+                  Pump services
+                </Link>
+              </li>
+              <li>
+                <Link href="/prices/jawed-water-pump-price-list" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
+                  Jawed price list
+                </Link>
+              </li>
+            </ul>
+          </section>
         </div>
       </div>
 

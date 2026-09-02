@@ -97,6 +97,8 @@ export const siteConfig = {
     // OPTIONAL background video (muted, looping). Set to "" to use just the image.
     // Replace with your own short, compressed clip (MP4, ideally < 5 MB, ~10-20s).
     video: "/hero.mp4",
+    /** Static poster for instant LCP while video loads. */
+    poster: "/images/hero-poster.jpg",
   },
 
   // Homepage video showcase. Prefer your own clips under /public.

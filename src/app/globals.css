@@ -177,6 +177,8 @@ input[type="number"] {
   .special-pill,
   .animate-fade-up {
     animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
   .reveal {
     opacity: 1;

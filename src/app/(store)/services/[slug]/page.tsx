@@ -102,6 +102,29 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 ))}
             </div>
           </div>
+
+          <div className="mt-8 rounded-xl border bg-gray-50 p-5 text-sm text-gray-700">
+            <h2 className="font-semibold text-gray-900">Need pumps or motors?</h2>
+            <p className="mt-2">
+              Browse{" "}
+              <Link href="/category/copper-motors" className="font-medium text-brand-600 hover:text-brand-700">
+                Jawed copper motors
+              </Link>
+              ,{" "}
+              <Link href="/category/monoblock-pressure-pumps" className="font-medium text-brand-600 hover:text-brand-700">
+                monoblock pressure pumps
+              </Link>{" "}
+              and{" "}
+              <Link href="/shop" className="font-medium text-brand-600 hover:text-brand-700">
+                the full shop
+              </Link>
+              . See PKR prices on the{" "}
+              <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
+                Jawed water pump price list
+              </Link>
+              .
+            </p>
+          </div>
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">

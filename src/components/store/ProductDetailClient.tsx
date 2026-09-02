@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import type { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
 import { AddToCartButton } from "./AddToCartButton";
 import { Icons } from "@/components/ui/icons";
 import { cn, realImages } from "@/lib/utils";
+import { getBrandSlug } from "@/config/menu";
 
 export function ProductDetailClient({
   product,
@@ -34,6 +36,7 @@ export function ProductDetailClient({
       ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
       : 0;
   const lowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
+  const brandSlug = product.brand ? getBrandSlug(product.brand) : null;
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
@@ -97,7 +100,17 @@ export function ProductDetailClient({
 
       {/* Info */}
       <div>
-        {product.brand && <p className="text-sm font-medium uppercase tracking-wide text-brand-600">{product.brand}</p>}
+        {product.brand &&
+          (brandSlug ? (
+            <Link
+              href={`/brand/${brandSlug}`}
+              className="text-sm font-medium uppercase tracking-wide text-brand-600 hover:text-brand-700"
+            >
+              {product.brand}
+            </Link>
+          ) : (
+            <p className="text-sm font-medium uppercase tracking-wide text-brand-600">{product.brand}</p>
+          ))}
         <h1 className="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">{product.name}</h1>
         <p className="mt-1 text-sm text-gray-500">SKU: {product.sku}</p>
 
@@ -153,6 +166,13 @@ export function ProductDetailClient({
           <li className="flex items-center gap-2"><Icons.shield className="h-4 w-4 text-brand-600" /> Genuine product with warranty</li>
           <li className="flex items-center gap-2"><Icons.lock className="h-4 w-4 text-brand-600" /> Cash on delivery accepted</li>
         </ul>
+        <p className="mt-4 text-sm text-gray-500">
+          Compare all models on our{" "}
+          <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
+            Jawed water pump price list
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

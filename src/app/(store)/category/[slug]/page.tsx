@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCategories, getCategoryBySlug } from "@/lib/data";
 import { ProductListing, type NavLink } from "@/components/store/ProductListing";
+import { BreadcrumbNav } from "@/components/store/BreadcrumbNav";
 import { JsonLd } from "@/components/seo/JsonLd";
 import {
   breadcrumbJsonLd,
@@ -75,6 +76,9 @@ export default async function CategoryPage({
   return (
     <>
       <JsonLd data={[categoryJsonLd(category), breadcrumbJsonLd(breadcrumbs), faqPageJsonLd(faqs)]} />
+      <div className="container pt-8">
+        <BreadcrumbNav items={breadcrumbs} />
+      </div>
       <ProductListing
         title={category.name}
         description={category.description ?? undefined}

@@ -24,6 +24,11 @@ export function getBrandBySlug(slug: string) {
   return brands.find((b) => b.slug === slug);
 }
 
+export function getBrandSlug(label: string): string | null {
+  const match = brands.find((b) => b.label.toLowerCase() === label.toLowerCase());
+  return match?.slug ?? null;
+}
+
 const cat = (label: string, slug: string): MenuItem => ({ label, href: `/category/${slug}` });
 
 // Category groups (also used to build the Shop page sidebar).

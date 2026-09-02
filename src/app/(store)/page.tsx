@@ -12,6 +12,8 @@ import { HeroMedia } from "@/components/store/HeroMedia";
 import { ShowcaseVideo } from "@/components/store/ShowcaseVideo";
 import { Reveal } from "@/components/store/Reveal";
 import { Certifications } from "@/components/store/Certifications";
+import { HomepagePromoPopup } from "@/components/store/HomepagePromoPopup";
+import { getPromoPopupConfig } from "@/lib/promo";
 
 export const revalidate = 60;
 
@@ -22,10 +24,15 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function HomePage() {
-  const [categories, featured] = await Promise.all([getCategories(), getFeaturedProducts(8)]);
+  const [categories, featured, promo] = await Promise.all([
+    getCategories(),
+    getFeaturedProducts(8),
+    getPromoPopupConfig(),
+  ]);
 
   return (
     <div>
+      <HomepagePromoPopup promo={promo} />
       {/* Hero: full-bleed video behind the transparent header, dark-tinted */}
       <section className="relative overflow-hidden bg-brand-900 text-white">
         <HeroMedia />
@@ -37,7 +44,7 @@ export default async function HomePage() {
           <span className="animate-fade-up inline-flex w-fit items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow">
             <Icons.shield className="h-3.5 w-3.5" /> {siteConfig.tagline}
           </span>
-          <h1 className="animate-fade-up delay-100 mt-4 text-4xl font-extrabold leading-tight drop-shadow-lg sm:text-5xl md:text-6xl">
+          <h1 className="mt-4 text-4xl font-extrabold leading-tight drop-shadow-lg sm:text-5xl md:text-6xl">
             {siteConfig.hero.heading}
           </h1>
           <p className="animate-fade-up delay-200 mt-5 max-w-xl text-lg text-white/90 drop-shadow md:text-xl">
@@ -88,6 +95,14 @@ export default async function HomePage() {
             <strong>bearing pumps</strong> and matched motor-pump sets. Trusted by homes, farms and
             industry since {siteConfig.seo.foundingDate}, with nationwide delivery, cash on delivery
             and expert support on every water lifting challenge.
+          </p>
+          <p className="mt-4">
+            <Link
+              href="/prices/jawed-water-pump-price-list"
+              className="text-sm font-semibold text-brand-600 hover:text-brand-700"
+            >
+              View the Jawed water pump price list (PKR) →
+            </Link>
           </p>
         </div>
       </section>

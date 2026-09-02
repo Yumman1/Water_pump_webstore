@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data";
 import { ProductDetailClient } from "@/components/store/ProductDetailClient";
 import { ProductGrid } from "@/components/store/ProductGrid";
+import { BreadcrumbNav } from "@/components/store/BreadcrumbNav";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/config/site";
 import {
@@ -62,25 +62,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
         data={[productJsonLd(product), breadcrumbJsonLd(breadcrumbs), localBusinessJsonLd()]}
       />
 
-      <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-1 text-sm text-gray-500">
-        <Link href="/" className="hover:text-brand-600">
-          Home
-        </Link>
-        <span>/</span>
-        <Link href="/shop" className="hover:text-brand-600">
-          Shop
-        </Link>
-        {product.category && (
-          <>
-            <span>/</span>
-            <Link href={`/category/${product.category.slug}`} className="hover:text-brand-600">
-              {product.category.name}
-            </Link>
-          </>
-        )}
-        <span>/</span>
-        <span className="text-gray-700">{product.name}</span>
-      </nav>
+      <BreadcrumbNav items={breadcrumbs} />
 
       <ProductDetailClient product={product} imageAlts={imageAlts} />
 

@@ -3,7 +3,9 @@ import Image from "next/image";
 import type { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
 import { AddToCartButton } from "./AddToCartButton";
-import { cn, productCoverMedia } from "@/lib/utils";
+import { ProductCardMedia } from "./ProductCardMedia";
+import { cn } from "@/lib/utils";
+import { getBrandSlug } from "@/config/menu";
 
 export function ProductCard({ product }: { product: Product }) {
   const discount =
@@ -11,31 +13,12 @@ export function ProductCard({ product }: { product: Product }) {
       ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
       : 0;
   const lowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
-  const cover = productCoverMedia(product);
+  const brandSlug = product.brand ? getBrandSlug(product.brand) : null;
 
   return (
     <div className="card-hover group flex flex-col overflow-hidden rounded-xl border bg-white">
       <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-gray-100">
-        {cover?.type === "video" ? (
-          <video
-            src={cover.src}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label={product.name}
-          />
-        ) : cover ? (
-          <Image
-            src={cover.src}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : null}
+        <ProductCardMedia productName={product.name} video={product.video} images={product.images} />
         <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
           {discount > 0 && (
             <span className="rounded-md bg-red-600 px-2 py-0.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm">
@@ -57,7 +40,17 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div className="flex flex-1 flex-col p-4">
-        {product.brand && <p className="text-xs font-medium uppercase tracking-wide text-brand-600">{product.brand}</p>}
+        {product.brand &&
+          (brandSlug ? (
+            <Link
+              href={`/brand/${brandSlug}`}
+              className="text-xs font-medium uppercase tracking-wide text-brand-600 hover:text-brand-700"
+            >
+              {product.brand}
+            </Link>
+          ) : (
+            <p className="text-xs font-medium uppercase tracking-wide text-brand-600">{product.brand}</p>
+          ))}
         <Link href={`/product/${product.slug}`} className="mt-1">
           <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-brand-700">{product.name}</h3>
         </Link>

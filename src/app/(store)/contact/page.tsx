@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
@@ -93,6 +94,42 @@ export default function ContactPage() {
             <div className="rounded-xl border bg-white p-5">
               <SocialLinks variant="contact" />
               <p className="mt-3 text-sm text-gray-500">Follow Jawed Pumps for product updates, tips and offers.</p>
+            </div>
+            <div className="rounded-xl border bg-brand-50/60 p-5 text-sm">
+              <h2 className="font-semibold text-gray-900">Shop &amp; pricing</h2>
+              <ul className="mt-3 space-y-2">
+                <li>
+                  <Link href="/shop" className="font-medium text-brand-600 hover:text-brand-700">
+                    Browse all water pumps &amp; motors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
+                    Jawed water pump price list Karachi
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services" className="font-medium text-brand-600 hover:text-brand-700">
+                    Pump installation &amp; boring services
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-xl border bg-white p-5 text-sm text-gray-600">
+              <h2 className="font-semibold text-gray-900">Find us online</h2>
+              <p className="mt-2">
+                Search for <strong>{siteConfig.legalName}</strong> on Google Maps and leave a review after your order.
+                Consistent business name, phone ({siteConfig.contact.phone}) and address help customers find us in Karachi
+                and across Pakistan.
+              </p>
+              <a
+                href={siteConfig.contact.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-block font-medium text-brand-600 hover:text-brand-700"
+              >
+                Open Jawed Pumps on Google Maps →
+              </a>
             </div>
           </div>
 

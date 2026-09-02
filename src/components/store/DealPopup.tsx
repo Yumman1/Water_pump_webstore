@@ -15,7 +15,7 @@ export function DealPopup({ promo }: { promo: PromoPopupConfig }) {
   useEffect(() => {
     if (!promo.enabled) return;
     if (sessionStorage.getItem(STORAGE_KEY)) return;
-    const t = setTimeout(() => setOpen(true), 1200);
+    const t = setTimeout(() => setOpen(true), 4000);
     return () => clearTimeout(t);
   }, [promo.enabled]);
 
@@ -39,7 +39,7 @@ export function DealPopup({ promo }: { promo: PromoPopupConfig }) {
   if (!promo.enabled || !open) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="promo-heading">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={close} aria-hidden />
 
       <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
@@ -62,7 +62,7 @@ export function DealPopup({ promo }: { promo: PromoPopupConfig }) {
                 <Icons.tag className="h-3.5 w-3.5" /> {promo.badge}
               </span>
             )}
-            <h2 className="mt-3 text-2xl font-extrabold text-gray-900">{promo.heading}</h2>
+            <h2 id="promo-heading" className="mt-3 text-2xl font-extrabold text-gray-900">{promo.heading}</h2>
             <p className="mt-2 text-sm text-gray-600">{promo.message}</p>
 
             {promo.couponCode && (

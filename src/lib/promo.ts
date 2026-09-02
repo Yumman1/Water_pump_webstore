@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 
@@ -28,6 +29,10 @@ function defaultPromo(): PromoPopupConfig {
 
 /** Promo popup content from StoreSettings, with siteConfig fallback. */
 export async function getPromoPopupConfig(): Promise<PromoPopupConfig> {
+  return unstable_cache(fetchPromoPopupConfig, ["promo-popup-config"], { revalidate: 300 })();
+}
+
+async function fetchPromoPopupConfig(): Promise<PromoPopupConfig> {
   const defaults = defaultPromo();
   if (!isDbConfigured) return defaults;
 
