@@ -29,12 +29,14 @@ async function square(size) {
 }
 
 const png48 = await square(48);
+const png32 = await sharp(png48).resize(32, 32).png().toBuffer();
+const png16 = await sharp(png48).resize(16, 16).png().toBuffer();
 const png180 = await square(180);
 const png192 = await square(192);
 const png512 = await square(512);
 
-// BMP-based ICO for legacy /favicon.ico requests (to-ico PNG-in-ICO breaks many browsers).
-const icoBuffer = await pngToIco(source);
+// Small multi-size ICO for browsers and search crawlers (full-source ICOs are often rejected).
+const icoBuffer = await pngToIco([png16, png32, png48]);
 
 const outputs = [
   [path.join(root, "public/favicon.ico"), icoBuffer],
