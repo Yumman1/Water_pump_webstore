@@ -185,6 +185,13 @@ export const products: SeedProduct[] = [
       Warranty: "1 Year",
     },
     imageSeed: "cm-05",
+    images: pm(
+      "0-5hp-copper-motor",
+      "gallery-01.jpg",
+      "gallery-02.jpg",
+      "gallery-03.jpg",
+      "gallery-04.jpg"
+    ),
     video: "/videos/copper-motors/0-5hp-copper-motor.mp4",
   }),
   product({
