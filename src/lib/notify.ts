@@ -13,6 +13,7 @@ import nodemailer from "nodemailer";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 import { formatCurrency } from "@/lib/format";
+import { sendWhatsAppSmart, sendWhatsAppText } from "@/lib/whatsapp";
 
 export type StoreSettings = {
   ownerNotifyEmail: string | null;
@@ -102,41 +103,19 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
   console.log(`\n📧 [EMAIL → ${opts.to}] ${opts.subject}\n(No email provider configured, set RESEND_API_KEY or SMTP_* to send.)`);
 }
 
-/** Normalize a phone number to international digits for WhatsApp (defaults PK 92). */
-function normalizePhone(raw: string): string {
-  let digits = raw.replace(/[^0-9]/g, "");
-  if (digits.startsWith("0")) digits = "92" + digits.slice(1);
-  return digits;
+/** @deprecated Use sendWhatsAppText or sendWhatsAppSmart from @/lib/whatsapp */
+export async function sendWhatsApp(opts: { to: string; text: string }): Promise<void> {
+  await sendWhatsAppText(opts);
 }
 
-export async function sendWhatsApp(opts: { to: string; text: string }): Promise<void> {
-  const to = normalizePhone(opts.to);
-  if (!to) return;
-
-  const token = process.env.WHATSAPP_TOKEN;
-  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-
-  if (token && phoneId) {
-    try {
-      const res = await fetch(`https://graph.facebook.com/v20.0/${phoneId}/messages`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to,
-          type: "text",
-          text: { body: opts.text },
-        }),
-      });
-      if (!res.ok) console.warn("[notify] WhatsApp error:", await res.text());
-      return;
-    } catch (e) {
-      console.warn("[notify] WhatsApp request failed:", (e as Error).message);
-      return;
-    }
-  }
-
-  console.log(`\n💬 [WHATSAPP → ${to}]\n${opts.text}\n(No WhatsApp provider configured, set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID to send.)`);
+function templateName(key: "order" | "dispatch" | "cancel" | "owner"): string | null {
+  const map: Record<string, string | undefined> = {
+    order: process.env.WHATSAPP_TEMPLATE_ORDER_CONFIRM,
+    dispatch: process.env.WHATSAPP_TEMPLATE_ORDER_DISPATCH,
+    cancel: process.env.WHATSAPP_TEMPLATE_ORDER_CANCEL,
+    owner: process.env.WHATSAPP_TEMPLATE_OWNER_NEW_ORDER,
+  };
+  return map[key]?.trim() || null;
 }
 
 // ---------------------------------------------------------------------------
@@ -240,11 +219,20 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
     );
   }
   if (settings.ownerNotifyWhatsapp) {
+    const ownerText = `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDeliver to: ${order.address}, ${order.city}\nPayment: ${order.paymentMethod}${installTextBlock(order)}\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*`;
     tasks.push(
-      sendWhatsApp({
+      sendWhatsAppSmart({
         to: settings.ownerNotifyWhatsapp,
-        text: `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDeliver to: ${order.address}, ${order.city}\nPayment: ${order.paymentMethod}${installTextBlock(order)}\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*`,
-      })
+        text: ownerText,
+        templateName: templateName("owner"),
+        templateParams: [
+          order.orderNumber,
+          order.customerName,
+          order.customerPhone,
+          `${order.address}, ${order.city}`,
+          formatCurrency(order.total),
+        ],
+      }).then(() => {})
     );
   }
 
@@ -266,11 +254,19 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
     );
   }
   if (settings.notifyCustomerWhatsapp && order.customerPhone) {
+    const customerText = `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*${installTextBlock(order)}\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\nPayment: ${order.paymentMethod}\n\nWe'll contact you shortly to confirm delivery.`;
     tasks.push(
-      sendWhatsApp({
+      sendWhatsAppSmart({
         to: order.customerPhone,
-        text: `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*${installTextBlock(order)}\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\nPayment: ${order.paymentMethod}\n\nWe'll contact you shortly to confirm delivery.`,
-      })
+        text: customerText,
+        templateName: templateName("order"),
+        templateParams: [
+          order.customerName,
+          order.orderNumber,
+          formatCurrency(order.total),
+          order.paymentMethod,
+        ],
+      }).then(() => {})
     );
   }
 
@@ -297,11 +293,14 @@ export async function notifyDispatch(order: OrderLike): Promise<void> {
     );
   }
   if (settings.notifyCustomerWhatsapp && order.customerPhone) {
+    const dispatchText = `🚚 Hi ${order.customerName}, your order *${order.orderNumber}* from ${siteConfig.name} has been *dispatched* and is on its way!\n\nDeliver to: ${order.address}, ${order.city}\nTotal: ${formatCurrency(order.total)} (${order.paymentMethod})\n\nThank you for shopping with us!`;
     tasks.push(
-      sendWhatsApp({
+      sendWhatsAppSmart({
         to: order.customerPhone,
-        text: `🚚 Hi ${order.customerName}, your order *${order.orderNumber}* from ${siteConfig.name} has been *dispatched* and is on its way!\n\nDeliver to: ${order.address}, ${order.city}\nTotal: ${formatCurrency(order.total)} (${order.paymentMethod})\n\nThank you for shopping with us!`,
-      })
+        text: dispatchText,
+        templateName: templateName("dispatch"),
+        templateParams: [order.customerName, order.orderNumber, order.city, formatCurrency(order.total)],
+      }).then(() => {})
     );
   }
 
@@ -329,11 +328,14 @@ export async function notifyCancellation(order: OrderLike): Promise<void> {
   }
 
   if (order.customerPhone) {
+    const cancelText = `Hi ${order.customerName}, your order *${order.orderNumber}* at ${siteConfig.name} has been *cancelled*.\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\n\nIf you have questions, call ${siteConfig.contact.phone} or email ${siteConfig.contact.email}.`;
     tasks.push(
-      sendWhatsApp({
+      sendWhatsAppSmart({
         to: order.customerPhone,
-        text: `Hi ${order.customerName}, your order *${order.orderNumber}* at ${siteConfig.name} has been *cancelled*.\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\n\nIf you have questions, call ${siteConfig.contact.phone} or email ${siteConfig.contact.email}.`,
-      })
+        text: cancelText,
+        templateName: templateName("cancel"),
+        templateParams: [order.customerName, order.orderNumber, formatCurrency(order.total)],
+      }).then(() => {})
     );
   }
 

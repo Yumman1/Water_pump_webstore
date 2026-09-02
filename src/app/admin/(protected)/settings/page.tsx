@@ -5,6 +5,7 @@ import { getPromoPopupConfig } from "@/lib/promo";
 import { getDeliveryCities } from "@/lib/delivery-cities";
 import { siteConfig } from "@/config/site";
 import { formatCurrency } from "@/lib/format";
+import { getWhatsAppWebhookUrl, isWhatsAppConfigured } from "@/lib/whatsapp";
 import { ConfirmButton } from "@/components/admin/ConfirmButton";
 import { PageHeader } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,9 @@ export default async function SettingsPage({
   const deliveryCities = await getDeliveryCities();
   const testNotify = testNotificationChannels;
   const emailOk = Boolean(process.env.RESEND_API_KEY || process.env.SMTP_HOST);
-  const whatsappOk = Boolean(process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID);
+  const whatsappOk = isWhatsAppConfigured();
+  const webhookUrl = getWhatsAppWebhookUrl();
+  const templatesOk = Boolean(process.env.WHATSAPP_TEMPLATE_ORDER_CONFIRM);
   const uploadOk = Boolean(
     (process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL) &&
       process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -268,12 +271,31 @@ export default async function SettingsPage({
           Until connected, messages are logged to the server console.
         </p>
         <ProviderStatus label="Email" ok={emailOk} hint="Outlook: SMTP_HOST=smtp.office365.com, SMTP_USER=jawedmotors@outlook.com, SMTP_PASS=app password. See docs/NOTIFICATIONS_SETUP.md." />
-        <ProviderStatus label="WhatsApp" ok={whatsappOk} hint="Set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID (Meta WhatsApp Cloud API). See docs/NOTIFICATIONS_SETUP.md." />
+        <ProviderStatus label="WhatsApp Business API" ok={whatsappOk} hint="Set WHATSAPP_TOKEN & WHATSAPP_PHONE_NUMBER_ID in Vercel. See docs/NOTIFICATIONS_SETUP.md." />
+        <ProviderStatus
+          label="WhatsApp message templates"
+          ok={templatesOk}
+          hint={
+            templatesOk
+              ? "Approved templates configured — automated order messages will deliver outside the 24h window."
+              : "Optional but recommended: set WHATSAPP_TEMPLATE_* env vars after Meta approves your templates."
+          }
+        />
         <ProviderStatus
           label="Image uploads"
           ok={uploadOk}
           hint="Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. Create a public bucket named store-assets in Supabase Storage."
         />
+        <div className="border-t pt-4">
+          <h3 className="text-sm font-semibold text-gray-900">WhatsApp Business webhook</h3>
+          <p className="mt-1 text-xs text-gray-500">
+            Paste this URL in Meta Developer Console → WhatsApp → Configuration → Webhook callback URL.
+            Subscribe to <strong>messages</strong>. Set <code className="rounded bg-gray-100 px-1">WHATSAPP_VERIFY_TOKEN</code> in
+            Vercel to match your Verify token. Set <code className="rounded bg-gray-100 px-1">WHATSAPP_AUTO_REPLY=true</code> to
+            auto-reply when customers message you.
+          </p>
+          <p className="mt-2 break-all rounded-lg bg-gray-50 px-3 py-2 font-mono text-xs text-gray-800">{webhookUrl}</p>
+        </div>
         <div className="border-t pt-4">
           <p className="mb-2 text-sm text-gray-600">
             Sends a test message to <strong>{settings.ownerNotifyEmail || "owner email"}</strong>
