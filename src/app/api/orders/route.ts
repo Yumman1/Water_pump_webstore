@@ -9,6 +9,8 @@ import { getPricingConfig } from "@/lib/pricing";
 import { getDeliveryCities } from "@/lib/delivery-cities";
 import { computeCheckoutTotals, isServiceCity } from "@/lib/delivery";
 
+export const maxDuration = 60;
+
 const orderSchema = z.object({
   customerName: z.string().min(2),
   customerEmail: z.preprocess(

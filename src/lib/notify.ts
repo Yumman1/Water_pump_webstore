@@ -61,9 +61,11 @@ export async function getStoreSettings(): Promise<StoreSettings> {
 // Channels
 // ---------------------------------------------------------------------------
 export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<void> {
-  const from = process.env.EMAIL_FROM ?? `${siteConfig.name} <onboarding@resend.dev>`;
+  const resendFrom = process.env.EMAIL_FROM ?? `${siteConfig.name} <onboarding@resend.dev>`;
+  const smtpUser = process.env.SMTP_USER?.trim();
+  const smtpFrom =
+    smtpUser && /resend\.dev/i.test(resendFrom) ? smtpUser : resendFrom;
 
-  // 1) Resend (HTTP API, no dependency needed)
   if (process.env.RESEND_API_KEY) {
     try {
       const res = await fetch("https://api.resend.com/emails", {
@@ -72,17 +74,18 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
           Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ from, to: [opts.to], subject: opts.subject, html: opts.html }),
+        body: JSON.stringify({ from: resendFrom, to: [opts.to], subject: opts.subject, html: opts.html }),
       });
-      if (!res.ok) console.warn("[notify] Resend error:", await res.text());
-      return;
+      if (res.ok) {
+        console.log("[notify] Resend accepted email to", opts.to);
+        return;
+      }
+      console.warn("[notify] Resend error:", res.status, await res.text());
     } catch (e) {
       console.warn("[notify] Resend request failed:", (e as Error).message);
-      return;
     }
   }
 
-  // 2) SMTP via nodemailer (Outlook, Gmail, etc.)
   if (process.env.SMTP_HOST) {
     try {
       const transport = nodemailer.createTransport({
@@ -91,7 +94,8 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
         secure: process.env.SMTP_SECURE === "true",
         auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
       });
-      await transport.sendMail({ from, to: opts.to, subject: opts.subject, html: opts.html });
+      await transport.sendMail({ from: smtpFrom, to: opts.to, subject: opts.subject, html: opts.html });
+      console.log("[notify] SMTP accepted email to", opts.to);
       return;
     } catch (e) {
       console.warn("[notify] SMTP send failed:", (e as Error).message);
@@ -99,7 +103,6 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
     }
   }
 
-  // 3) Demo fallback
   console.log(`\n📧 [EMAIL → ${opts.to}] ${opts.subject}\n(No email provider configured, set RESEND_API_KEY or SMTP_* to send.)`);
 }
 
@@ -199,13 +202,14 @@ function emailShell(title: string, body: string): string {
 /** Fire when a new order is placed: alert the owner + confirm to the customer. */
 export async function notifyNewOrder(order: OrderLike): Promise<void> {
   const settings = await getStoreSettings();
-  const tasks: Promise<void>[] = [];
+  const emailTasks: Promise<void>[] = [];
+  const whatsappTasks: Promise<void>[] = [];
 
   // → Owner alert (always — checkout email is optional for the customer)
   const ownerEmail = settings.ownerNotifyEmail?.trim() || siteConfig.contact.email;
   const customerEmailLabel = order.customerEmail?.trim() || "no email provided";
   if (ownerEmail) {
-    tasks.push(
+    emailTasks.push(
       sendEmail({
         to: ownerEmail,
         subject: `🛒 New order ${order.orderNumber} (${formatCurrency(order.total)})`,
@@ -222,7 +226,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
   }
   if (settings.ownerNotifyWhatsapp) {
     const ownerText = `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDeliver to: ${order.address}, ${order.city}\nPayment: ${order.paymentMethod}${installTextBlock(order)}\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*`;
-    tasks.push(
+    whatsappTasks.push(
       sendWhatsAppSmart({
         to: settings.ownerNotifyWhatsapp,
         text: ownerText,
@@ -240,7 +244,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
 
   // → Customer confirmation
   if (settings.notifyCustomerEmail && order.customerEmail) {
-    tasks.push(
+    emailTasks.push(
       sendEmail({
         to: order.customerEmail,
         subject: `Order confirmed: ${order.orderNumber}`,
@@ -257,7 +261,7 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
   }
   if (settings.notifyCustomerWhatsapp && order.customerPhone) {
     const customerText = `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*${installTextBlock(order)}\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\nPayment: ${order.paymentMethod}\n\nWe'll contact you shortly to confirm delivery.`;
-    tasks.push(
+    whatsappTasks.push(
       sendWhatsAppSmart({
         to: order.customerPhone,
         text: customerText,
@@ -272,7 +276,9 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
     );
   }
 
-  await Promise.allSettled(tasks);
+  // Emails first so a slow WhatsApp call cannot starve the owner alert.
+  await Promise.allSettled(emailTasks);
+  await Promise.allSettled(whatsappTasks);
 }
 
 /** Fire when the owner dispatches an order: notify the customer. */
