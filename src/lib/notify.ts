@@ -60,11 +60,32 @@ export async function getStoreSettings(): Promise<StoreSettings> {
 // ---------------------------------------------------------------------------
 // Channels
 // ---------------------------------------------------------------------------
-export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<void> {
+export type EmailSendResult = { ok: boolean; provider?: "smtp" | "resend"; error?: string };
+
+export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<EmailSendResult> {
   const resendFrom = process.env.EMAIL_FROM ?? `${siteConfig.name} <onboarding@resend.dev>`;
   const smtpUser = process.env.SMTP_USER?.trim();
-  const smtpFrom =
-    smtpUser && /resend\.dev/i.test(resendFrom) ? smtpUser : resendFrom;
+  const smtpFrom = smtpUser || resendFrom;
+  const errors: string[] = [];
+
+  // Outlook SMTP first. Resend often "accepts" mail that Outlook then silently drops.
+  if (process.env.SMTP_HOST) {
+    try {
+      const transport = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT ?? 587),
+        secure: process.env.SMTP_SECURE === "true",
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
+      await transport.sendMail({ from: smtpFrom, to: opts.to, subject: opts.subject, html: opts.html });
+      console.log("[notify] SMTP accepted email to", opts.to);
+      return { ok: true, provider: "smtp" };
+    } catch (e) {
+      const message = (e as Error).message;
+      errors.push(`SMTP: ${message}`);
+      console.warn("[notify] SMTP send failed:", message);
+    }
+  }
 
   if (process.env.RESEND_API_KEY) {
     try {
@@ -78,32 +99,24 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
       });
       if (res.ok) {
         console.log("[notify] Resend accepted email to", opts.to);
-        return;
+        return { ok: true, provider: "resend" };
       }
-      console.warn("[notify] Resend error:", res.status, await res.text());
+      const body = await res.text();
+      errors.push(`Resend: ${res.status} ${body}`);
+      console.warn("[notify] Resend error:", res.status, body);
     } catch (e) {
-      console.warn("[notify] Resend request failed:", (e as Error).message);
+      const message = (e as Error).message;
+      errors.push(`Resend: ${message}`);
+      console.warn("[notify] Resend request failed:", message);
     }
   }
 
-  if (process.env.SMTP_HOST) {
-    try {
-      const transport = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT ?? 587),
-        secure: process.env.SMTP_SECURE === "true",
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-      });
-      await transport.sendMail({ from: smtpFrom, to: opts.to, subject: opts.subject, html: opts.html });
-      console.log("[notify] SMTP accepted email to", opts.to);
-      return;
-    } catch (e) {
-      console.warn("[notify] SMTP send failed:", (e as Error).message);
-      return;
-    }
+  if (errors.length) {
+    return { ok: false, error: errors.join(" | ") };
   }
 
   console.log(`\n📧 [EMAIL → ${opts.to}] ${opts.subject}\n(No email provider configured, set RESEND_API_KEY or SMTP_* to send.)`);
+  return { ok: false, error: "No email provider configured" };
 }
 
 /** @deprecated Use sendWhatsAppText or sendWhatsAppSmart from @/lib/whatsapp */
