@@ -15,7 +15,7 @@ import { cleanCopy, cleanSpecs, realImages } from "@/lib/utils";
 
 const CACHE_REVALIDATE = 60;
 /** Bump when product media/catalog changes outside admin (e.g. direct DB edits). */
-const PRODUCTS_CACHE_VERSION = "6";
+const PRODUCTS_CACHE_VERSION = "7";
 
 // ---------------------------------------------------------------------------
 // Fallback: normalize the bundled seed data into UI shapes.
@@ -301,7 +301,7 @@ export const getProducts = cache(
     getProductsCached(query)
 );
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+async function fetchProductBySlugUncached(slug: string): Promise<Product | null> {
   if (await useDb()) {
     try {
       const p = await prisma.product.findUnique({
@@ -316,6 +316,13 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   const p = seedProducts.find((x) => x.slug === slug);
   return p ? seedProductToProduct(p) : null;
 }
+
+export const getProductBySlug = cache(async (slug: string): Promise<Product | null> =>
+  unstable_cache(() => fetchProductBySlugUncached(slug), ["store-product", PRODUCTS_CACHE_VERSION, slug], {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["products"],
+  })()
+);
 
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   const { products } = await getProducts({ featured: true, pageSize: limit });

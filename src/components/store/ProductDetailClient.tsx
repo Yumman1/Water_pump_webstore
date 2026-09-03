@@ -19,6 +19,7 @@ export function ProductDetailClient({
 }) {
   // Prefer real photos; skip placeholder when a product video is the cover.
   const images = realImages(product.images);
+  const poster = images[0];
   // Gallery items: video first when present, then still images.
   const media: { type: "video" | "image"; src: string; alt?: string }[] = [
     ...(product.video ? [{ type: "video" as const, src: product.video, alt: product.name }] : []),
@@ -47,6 +48,7 @@ export function ProductDetailClient({
             <video
               key={current.src}
               src={current.src}
+              poster={poster}
               className="h-full w-full object-cover"
               autoPlay
               muted
@@ -82,7 +84,17 @@ export function ProductDetailClient({
                 )}
               >
                 {item.type === "video" ? (
-                  <video src={item.src} className="h-full w-full object-cover" muted playsInline preload="metadata" />
+                  <>
+                    {poster ? (
+                      <Image src={poster} alt="" fill sizes="80px" className="object-cover" />
+                    ) : (
+                      <div className="h-full w-full bg-gray-200" />
+                    )}
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/35" aria-hidden>
+                      <span className="ml-0.5 h-0 w-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-white" />
+                    </span>
+                    <span className="sr-only">Play video</span>
+                  </>
                 ) : (
                   <Image
                     src={item.src}
