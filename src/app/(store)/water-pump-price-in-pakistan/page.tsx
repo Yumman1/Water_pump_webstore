@@ -35,7 +35,7 @@ export default async function WaterPumpPriceInPakistanPage() {
 
   const byCategory = categories.map((cat) => ({
     category: cat,
-    products: products.filter((p) => p.category?.slug === cat.slug),
+    products: priced.filter((p) => p.category?.slug === cat.slug),
   }));
 
   const breadcrumbs = [
@@ -43,7 +43,7 @@ export default async function WaterPumpPriceInPakistanPage() {
     { name: "Water Pump Price in Pakistan", path: PATH },
   ];
 
-  const listItems = products.map((p) => ({
+  const listItems = priced.map((p) => ({
     name: p.name,
     url: absoluteUrl(`/product/${p.slug}`),
   }));
