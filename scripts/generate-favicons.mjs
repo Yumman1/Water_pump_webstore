@@ -42,8 +42,8 @@ const outputs = [
   [path.join(root, "public/favicon.ico"), icoBuffer],
   [path.join(root, "public/icon-48.png"), png48],
   [path.join(root, "public/icon-192.png"), png192],
-  [path.join(root, "src/app/icon.png"), png512],
-  [path.join(root, "src/app/apple-icon.png"), png180],
+  [path.join(root, "public/icon.png"), png512],
+  [path.join(root, "public/apple-icon.png"), png180],
 ];
 
 for (const [file, buf] of outputs) {
@@ -52,4 +52,4 @@ for (const [file, buf] of outputs) {
   console.log("wrote", path.relative(root, file));
 }
 
-console.log("Done. (No src/app/favicon.ico — avoids broken ICO in <head>.)");
+console.log("Done. Icons are static files in public/ (no App Router icon routes).");

@@ -13,6 +13,7 @@ export function getSiteUrl(): string {
 
 export function absoluteUrl(path: string): string {
   if (/^https?:\/\//i.test(path)) return path;
+  if (!path || path === "/") return getSiteUrl();
   return `${getSiteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
 }
 

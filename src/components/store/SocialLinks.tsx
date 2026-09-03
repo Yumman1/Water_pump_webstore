@@ -26,7 +26,6 @@ export function SocialLinks({ variant = "footer", className }: SocialLinksProps)
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={label}
             className={cn(
               "inline-flex items-center justify-center transition-colors",
               isFooter
@@ -35,6 +34,7 @@ export function SocialLinks({ variant = "footer", className }: SocialLinksProps)
             )}
           >
             <Icon className="h-5 w-5" />
+            <span className="sr-only">{label}</span>
           </a>
         ))}
       </div>

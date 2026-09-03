@@ -47,6 +47,18 @@ const nextConfig = {
         destination: "/water-pump-price-in-pakistan",
         permanent: true,
       },
+      {
+        source: "/",
+        has: [{ type: "host", value: "jawedpumps.com" }],
+        destination: "https://www.jawedpumps.com/",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "jawedpumps.com" }],
+        destination: "https://www.jawedpumps.com/:path*",
+        permanent: true,
+      },
     ];
   },
   env: {

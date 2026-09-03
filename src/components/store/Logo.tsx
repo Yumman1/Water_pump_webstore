@@ -15,15 +15,16 @@ export function Logo({
   light?: boolean;
 }) {
   return (
-    <Link href="/" className={cn("flex items-center", className)} aria-label={siteConfig.name}>
+    <Link href="/" className={cn("flex items-center", className)}>
       <Image
         src={siteConfig.logo}
-        alt={siteConfig.name}
+        alt=""
         width={221}
         height={60}
         priority
         className="h-9 w-auto max-w-[160px] object-contain object-left sm:h-10 sm:max-w-[200px]"
       />
+      <span className="sr-only">{siteConfig.name}</span>
     </Link>
   );
 }

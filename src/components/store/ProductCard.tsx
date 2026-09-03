@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
 import { AddToCartButton } from "./AddToCartButton";
@@ -16,10 +15,14 @@ export function ProductCard({ product }: { product: Product }) {
   const brandSlug = product.brand ? getBrandSlug(product.brand) : null;
 
   return (
-    <div className="card-hover group flex flex-col overflow-hidden rounded-xl border bg-white">
-      <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-gray-100">
+    <div className="card-hover group relative flex flex-col overflow-hidden rounded-xl border bg-white">
+      <Link href={`/product/${product.slug}`} className="absolute inset-0 z-10">
+        <span className="sr-only">{product.name}</span>
+      </Link>
+
+      <div className="relative aspect-square overflow-hidden bg-gray-100">
         <ProductCardMedia productName={product.name} video={product.video} images={product.images} />
-        <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
+        <div className="absolute left-2 top-2 z-20 flex flex-col items-start gap-1">
           {discount > 0 && (
             <span className="rounded-md bg-red-600 px-2 py-0.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm">
               Sale -{discount}%
@@ -37,23 +40,23 @@ export function ProductCard({ product }: { product: Product }) {
             <span className="rounded-md bg-gray-900 px-3 py-1 text-sm font-semibold text-white">Out of Stock</span>
           </div>
         )}
-      </Link>
+      </div>
 
       <div className="flex flex-1 flex-col p-4">
         {product.brand &&
           (brandSlug ? (
             <Link
               href={`/brand/${brandSlug}`}
-              className="text-xs font-medium uppercase tracking-wide text-brand-600 hover:text-brand-700"
+              className="relative z-20 text-xs font-medium uppercase tracking-wide text-brand-600 hover:text-brand-700"
             >
               {product.brand}
             </Link>
           ) : (
             <p className="text-xs font-medium uppercase tracking-wide text-brand-600">{product.brand}</p>
           ))}
-        <Link href={`/product/${product.slug}`} className="mt-1">
-          <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-brand-700">{product.name}</h3>
-        </Link>
+        <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-gray-900 group-hover:text-brand-700">
+          {product.name}
+        </h3>
         {product.shortDescription && (
           <p className="mt-1 line-clamp-2 text-xs text-gray-500">{product.shortDescription}</p>
         )}
@@ -69,7 +72,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.stock <= 0 ? "" : lowStock ? `Only ${product.stock} left` : "In stock"}
         </p>
 
-        <div className="mt-3 pt-1">
+        <div className="relative z-20 mt-3 pt-1">
           <AddToCartButton product={product} size="sm" className="w-full" />
         </div>
       </div>
