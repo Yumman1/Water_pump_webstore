@@ -19,8 +19,8 @@ export function Logo({
       <Image
         src={siteConfig.logo}
         alt={siteConfig.name}
-        width={200}
-        height={40}
+        width={204}
+        height={68}
         priority
         className="h-9 w-auto max-w-[160px] object-contain object-left sm:h-10 sm:max-w-[200px]"
       />

@@ -197,7 +197,7 @@ function emailShell(title: string, body: string): string {
           <tr>
             <td align="center" style="background:#111111;padding:22px 24px">
               <a href="${shopUrl}" style="text-decoration:none">
-                <img src="${logoUrl}" alt="${siteConfig.name}" width="200" height="40" style="display:block;width:200px;max-width:80%;height:auto;border:0;outline:none" />
+                <img src="${logoUrl}" alt="${siteConfig.name}" width="240" height="80" style="display:block;width:240px;max-width:80%;height:auto;border:0;outline:none" />
               </a>
             </td>
           </tr>

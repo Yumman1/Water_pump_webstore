@@ -16,7 +16,7 @@ export const siteConfig = {
 
   // Logo: put an image at /public/logo.png (or .svg) to use it automatically.
   // If the file is missing, the name is shown as a styled text logo.
-  logo: "/logo.png",
+  logo: "/jawed-logo.png",
 
   currency: {
     code: "PKR",
@@ -158,7 +158,7 @@ export const siteConfig = {
       "Official Jawed Pumps online store. Shop copper motors, monoblock pressure pumps, bearing pumps and complete motor pump sets with expert support and delivery across Pakistan.",
     locale: "en_PK",
     foundingDate: "1980",
-    ogImage: "/logo.png",
+    ogImage: "/jawed-logo.png",
     alternateNames: [
       "Jawed Pumps",
       "Jawed Engineering Pumps",
