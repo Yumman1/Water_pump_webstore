@@ -53,7 +53,7 @@ export const siteConfig = {
 
   // Checkout installation & removal fee (PKR). Available in serviceCity only.
   installation: {
-    fee: 5000,
+    fee: 3500,
   },
 
   /** City where install/removal is offered. Other cities use deliveryCities fees. */

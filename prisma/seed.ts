@@ -118,7 +118,7 @@ async function main() {
       ownerNotifyWhatsapp: process.env.OWNER_NOTIFY_WHATSAPP ?? "03053770002",
       shippingFlatRate: 1000,
       freeShippingThreshold: 50000,
-      installationFee: 5000,
+      installationFee: 3500,
       promoEnabled: promo.enabled,
       promoBadge: promo.badge ?? null,
       promoHeading: promo.heading,
