@@ -330,7 +330,7 @@ export async function deleteOrder(id: string) {
 }
 
 /** Send a test email + WhatsApp to owner contacts (Admin → Settings). */
-export async function testNotificationChannels(): Promise<string> {
+export async function testNotificationChannels() {
   await requireAdmin();
   const settings = await getStoreSettings();
   const email = settings.ownerNotifyEmail;
@@ -339,28 +339,26 @@ export async function testNotificationChannels(): Promise<string> {
     throw new Error("Set owner email or WhatsApp in Settings first.");
   }
 
-  const notes: string[] = [];
+  const tasks: Promise<void>[] = [];
   if (email) {
-    const result = await sendEmail({
-      to: email,
-      subject: "Test: Jawed Pumps notifications are working",
-      html: `<p>If you received this, email is configured correctly for order alerts and customer cancellations.</p>`,
-    });
-    notes.push(
-      result.ok
-        ? `Email sent via ${result.provider} to ${email}. Check inbox and junk.`
-        : `Email failed: ${result.error}`
+    tasks.push(
+      sendEmail({
+        to: email,
+        subject: "Test: Jawed Pumps notifications are working",
+        html: `<p>If you received this, email is configured correctly for order alerts and customer cancellations.</p>`,
+      })
     );
   }
   if (phone) {
-    await sendWhatsApp({
-      to: phone,
-      text: `✅ Test from ${siteConfig.name}: WhatsApp notifications are configured. Customer order updates will go to the phone number on each order.`,
-    });
-    notes.push(`WhatsApp test queued for ${phone}.`);
+    tasks.push(
+      sendWhatsApp({
+        to: phone,
+        text: `✅ Test from ${siteConfig.name}: WhatsApp notifications are configured. Customer order updates will go to the phone number on each order.`,
+      })
+    );
   }
+  await Promise.allSettled(tasks);
   revalidatePath("/admin/settings");
-  return notes.join(" ");
 }
 
 // ---------------------------------------------------------------------------
