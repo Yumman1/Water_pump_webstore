@@ -201,15 +201,17 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
   const settings = await getStoreSettings();
   const tasks: Promise<void>[] = [];
 
-  // → Owner alert
-  if (settings.ownerNotifyEmail) {
+  // → Owner alert (always — checkout email is optional for the customer)
+  const ownerEmail = settings.ownerNotifyEmail?.trim() || siteConfig.contact.email;
+  const customerEmailLabel = order.customerEmail?.trim() || "no email provided";
+  if (ownerEmail) {
     tasks.push(
       sendEmail({
-        to: settings.ownerNotifyEmail,
+        to: ownerEmail,
         subject: `🛒 New order ${order.orderNumber} (${formatCurrency(order.total)})`,
         html: emailShell(
           `New order received: ${order.orderNumber}`,
-          `<p style="color:#374151">Customer: <b>${order.customerName}</b> (${order.customerPhone}, ${order.customerEmail})<br/>
+          `<p style="color:#374151">Customer: <b>${order.customerName}</b> (${order.customerPhone}, ${customerEmailLabel})<br/>
            Deliver to: ${order.address}, ${order.city}<br/>Payment: ${order.paymentMethod}</p>
            ${installHtmlBlock(order)}
            <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}

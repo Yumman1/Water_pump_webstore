@@ -177,6 +177,7 @@ export default function CheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          customerEmail: form.customerEmail.trim(),
           paymentMethod: payment,
           couponCode: appliedCoupon?.code,
           installationType: checkoutTotals.effectiveInstallationType,
@@ -260,8 +261,16 @@ export default function CheckoutPage() {
                 <input required value={form.customerPhone} onChange={(e) => update("customerPhone", e.target.value)} className={inputClass} placeholder="03053770002" />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Email *</label>
-                <input required type="email" value={form.customerEmail} onChange={(e) => update("customerEmail", e.target.value)} className={inputClass} />
+                <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  value={form.customerEmail}
+                  onChange={(e) => update("customerEmail", e.target.value)}
+                  className={inputClass}
+                  placeholder="Optional — for order confirmation"
+                  autoComplete="email"
+                />
+                <p className="mt-1 text-xs text-gray-500">Leave blank if you do not want an email confirmation.</p>
               </div>
               <div className="sm:col-span-2">
                 <label className="mb-1 block text-sm font-medium text-gray-700">Address *</label>

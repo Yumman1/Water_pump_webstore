@@ -11,7 +11,10 @@ import { computeCheckoutTotals, isServiceCity } from "@/lib/delivery";
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
-  customerEmail: z.string().email(),
+  customerEmail: z.preprocess(
+    (v) => (typeof v === "string" ? v.trim().toLowerCase() : ""),
+    z.union([z.literal(""), z.string().email()])
+  ),
   customerPhone: z.string().min(6),
   address: z.string().min(3),
   city: z.string().min(2),
@@ -231,28 +234,31 @@ export async function POST(req: Request) {
     const orderNumber = generateOrderNumber();
 
     const order = await prisma.$transaction(async (tx) => {
-      const customer = await tx.customer.upsert({
-        where: { email: data.customerEmail.toLowerCase() },
-        update: { name: data.customerName, phone: data.customerPhone, address: data.address, city: data.city },
-        create: {
-          name: data.customerName,
-          email: data.customerEmail.toLowerCase(),
-          phone: data.customerPhone,
-          address: data.address,
-          city: data.city,
-        },
-      });
+      const email = data.customerEmail;
+      const customer = email
+        ? await tx.customer.upsert({
+            where: { email },
+            update: { name: data.customerName, phone: data.customerPhone, address: data.address, city: data.city },
+            create: {
+              name: data.customerName,
+              email,
+              phone: data.customerPhone,
+              address: data.address,
+              city: data.city,
+            },
+          })
+        : null;
 
       const created = await tx.order.create({
         data: {
           orderNumber,
           customerName: data.customerName,
-          customerEmail: data.customerEmail.toLowerCase(),
+          customerEmail: email,
           customerPhone: data.customerPhone,
           address: data.address,
           city: data.city,
           notes: data.notes,
-          customerId: customer.id,
+          customerId: customer?.id,
           subtotal,
           shipping,
           tax,

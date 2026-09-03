@@ -116,7 +116,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
             <h2 className="font-semibold text-gray-900">Customer</h2>
             <div className="mt-3 space-y-1 text-sm text-gray-600">
               <p className="font-medium text-gray-900">{order.customerName}</p>
-              <p>{order.customerEmail}</p>
+              <p>{order.customerEmail?.trim() ? order.customerEmail : "No email provided"}</p>
               <p>{order.customerPhone}</p>
               <p className="pt-2">{order.address}</p>
               <p>{order.city}, {order.country}</p>
