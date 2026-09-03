@@ -15,6 +15,7 @@ import { siteConfig } from "@/config/site";
 import { formatCurrency } from "@/lib/format";
 import { sendWhatsAppSmart, sendWhatsAppText } from "@/lib/whatsapp";
 import { absoluteUrl } from "@/lib/seo";
+import { JAWED_LOGO_PNG_BASE64 } from "@/lib/jawed-logo-base64";
 
 export type StoreSettings = {
   ownerNotifyEmail: string | null;
@@ -61,10 +62,23 @@ export async function getStoreSettings(): Promise<StoreSettings> {
 // ---------------------------------------------------------------------------
 // Channels
 // ---------------------------------------------------------------------------
+const EMAIL_LOGO_CID = "jawed-logo";
+
+function emailLogoAttachment() {
+  return {
+    filename: "jawed-logo.png",
+    content: JAWED_LOGO_PNG_BASE64,
+    contentId: EMAIL_LOGO_CID,
+    content_id: EMAIL_LOGO_CID,
+    contentType: "image/png",
+    content_type: "image/png",
+  };
+}
+
 export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<void> {
   const from = process.env.EMAIL_FROM ?? `${siteConfig.name} <onboarding@resend.dev>`;
+  const logo = emailLogoAttachment();
 
-  // 1) Resend (HTTP API, no dependency needed)
   if (process.env.RESEND_API_KEY) {
     try {
       const res = await fetch("https://api.resend.com/emails", {
@@ -73,7 +87,13 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
           Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ from, to: [opts.to], subject: opts.subject, html: opts.html }),
+        body: JSON.stringify({
+          from,
+          to: [opts.to],
+          subject: opts.subject,
+          html: opts.html,
+          attachments: [logo],
+        }),
       });
       if (!res.ok) console.warn("[notify] Resend error:", await res.text());
       return;
@@ -83,7 +103,6 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
     }
   }
 
-  // 2) SMTP via nodemailer (Outlook, Gmail, etc.)
   if (process.env.SMTP_HOST) {
     try {
       const transport = nodemailer.createTransport({
@@ -92,7 +111,20 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
         secure: process.env.SMTP_SECURE === "true",
         auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
       });
-      await transport.sendMail({ from, to: opts.to, subject: opts.subject, html: opts.html });
+      await transport.sendMail({
+        from,
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+        attachments: [
+          {
+            filename: "jawed-logo.png",
+            content: Buffer.from(JAWED_LOGO_PNG_BASE64, "base64"),
+            cid: EMAIL_LOGO_CID,
+            contentDisposition: "inline",
+          },
+        ],
+      });
       return;
     } catch (e) {
       console.warn("[notify] SMTP send failed:", (e as Error).message);
@@ -100,7 +132,6 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
     }
   }
 
-  // 3) Demo fallback
   console.log(`\n📧 [EMAIL → ${opts.to}] ${opts.subject}\n(No email provider configured, set RESEND_API_KEY or SMTP_* to send.)`);
 }
 
@@ -184,9 +215,8 @@ function installHtmlBlock(order: OrderLike): string {
     : "";
   return `<p style="color:#374151;margin-top:8px">Installation: <b>${label}</b>, ${fee}${serial}</p>`;
 }
-function emailShell(title: string, body: string): string {
+export function emailShell(title: string, body: string): string {
   const shopUrl = absoluteUrl("/");
-  const logoUrl = absoluteUrl(siteConfig.logo);
   return `<!DOCTYPE html>
 <html>
 <body style="margin:0;padding:0;background:#f3f4f6">
@@ -195,26 +225,26 @@ function emailShell(title: string, body: string): string {
       <td align="center" style="padding:24px 12px">
         <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden">
           <tr>
-            <td align="center" style="background:#111111;padding:22px 24px">
+            <td align="center" style="background:#ffffff;padding:28px 24px 12px">
               <a href="${shopUrl}" style="text-decoration:none">
-                <img src="${logoUrl}" alt="${siteConfig.name}" width="240" height="80" style="display:block;width:240px;max-width:80%;height:auto;border:0;outline:none" />
+                <img src="cid:${EMAIL_LOGO_CID}" alt="${siteConfig.name}" width="240" height="65" style="display:block;width:240px;max-width:80%;height:auto;border:0;outline:none" />
               </a>
             </td>
           </tr>
           <tr>
-            <td style="padding:24px 24px 8px;font-family:system-ui,Segoe UI,sans-serif">
+            <td style="padding:8px 24px 24px;font-family:system-ui,Segoe UI,sans-serif">
               <h2 style="margin:0 0 16px;color:#111827;font-size:20px;line-height:1.3">${title}</h2>
               ${body}
             </td>
           </tr>
           <tr>
-            <td style="padding:20px 24px;background:#111111;font-family:system-ui,Segoe UI,sans-serif;text-align:center">
-              <p style="margin:0 0 6px;color:#f59e0b;font-size:13px;font-weight:600">${siteConfig.legalName}</p>
-              <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.6">
-                <a href="tel:${siteConfig.contact.phone.replace(/\s/g, "")}" style="color:#d1d5db;text-decoration:none">${siteConfig.contact.phone}</a>
+            <td style="padding:16px 24px 24px;border-top:1px solid #f3f4f6;font-family:system-ui,Segoe UI,sans-serif;text-align:center">
+              <p style="margin:0 0 6px;color:#ea580c;font-size:13px;font-weight:600">${siteConfig.legalName}</p>
+              <p style="margin:0;color:#6b7280;font-size:12px;line-height:1.6">
+                <a href="tel:${siteConfig.contact.phone.replace(/\s/g, "")}" style="color:#4b5563;text-decoration:none">${siteConfig.contact.phone}</a>
                 ·
-                <a href="mailto:${siteConfig.contact.email}" style="color:#d1d5db;text-decoration:none">${siteConfig.contact.email}</a><br/>
-                <a href="${shopUrl}" style="color:#f59e0b;text-decoration:none">www.jawedpumps.com</a>
+                <a href="mailto:${siteConfig.contact.email}" style="color:#4b5563;text-decoration:none">${siteConfig.contact.email}</a><br/>
+                <a href="${shopUrl}" style="color:#ea580c;text-decoration:none">www.jawedpumps.com</a>
               </p>
             </td>
           </tr>

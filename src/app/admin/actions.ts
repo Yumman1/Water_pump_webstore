@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma, isDbConfigured } from "@/lib/prisma";
 import { getAdminUser } from "@/lib/admin-auth";
 import { slugify } from "@/lib/utils";
-import { notifyDispatch, notifyCancellation, getStoreSettings, sendEmail, sendWhatsApp } from "@/lib/notify";
+import { notifyDispatch, notifyCancellation, getStoreSettings, sendEmail, sendWhatsApp, emailShell } from "@/lib/notify";
 import { siteConfig } from "@/config/site";
 
 async function requireAdmin() {
@@ -345,7 +345,10 @@ export async function testNotificationChannels() {
       sendEmail({
         to: email,
         subject: "Test: Jawed Pumps notifications are working",
-        html: `<p>If you received this, email is configured correctly for order alerts and customer cancellations.</p>`,
+        html: emailShell(
+          "Test notification",
+          `<p style="color:#374151">If you received this, email is configured correctly for order alerts and customer cancellations.</p>`
+        ),
       })
     );
   }
