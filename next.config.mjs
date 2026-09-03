@@ -42,6 +42,11 @@ const nextConfig = {
         destination: "/product/set-1hp-full-load-premium-gd50000",
         permanent: true,
       },
+      {
+        source: "/prices/jawed-water-pump-price-list",
+        destination: "/water-pump-price-in-pakistan",
+        permanent: true,
+      },
     ];
   },
   env: {

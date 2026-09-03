@@ -152,10 +152,10 @@ export const siteConfig = {
     brandShort: "Jawed Pumps",
     defaultTitle: "Jawed Pumps & Motors | Official Water Pump Store Pakistan",
     defaultDescription:
-      "Buy genuine Jawed pumps, copper motors, monoblock pressure pumps and bearing pumps online. Serving homes, farms and industry across Pakistan since 1980. Nationwide delivery & cash on delivery.",
-    homeTitle: "Jawed Pumps & Motors | Genuine Water Pumps Since 1980",
+      "Buy genuine Jawed pumps, copper motors, monoblock pressure pumps and bearing pumps online. Current water pump price in Pakistan with nationwide delivery and cash on delivery.",
+    homeTitle: "Jawed Pumps & Motors | Water Pump Prices in Pakistan",
     homeDescription:
-      "Official Jawed Pumps online store. Shop copper motors, monoblock pressure pumps, bearing pumps and complete motor pump sets with expert support and delivery across Pakistan.",
+      "Official water pump price in Pakistan from Jawed Pumps. Shop copper motors, monoblock pressure pumps, bearing pumps and complete sets with nationwide delivery and cash on delivery.",
     locale: "en_PK",
     foundingDate: "1980",
     ogImage: "/jawed-logo-email.png",
@@ -191,6 +191,9 @@ export const siteConfig = {
       "100% copper winding",
       "agricultural water pump",
       "industrial water pump",
+      "water pump price in Pakistan",
+      "water pump price",
+      "1HP water pump price Pakistan",
       "water pump online Pakistan",
       "Jawed Pumps & Motors",
     ],

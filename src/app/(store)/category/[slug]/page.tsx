@@ -101,8 +101,8 @@ export default async function CategoryPage({
         </dl>
         <p className="mt-6 text-sm text-gray-500">
           See our full{" "}
-          <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
-            Jawed water pump price list
+          <Link href="/water-pump-price-in-pakistan" className="font-medium text-brand-600 hover:text-brand-700">
+            Water pump price in Pakistan
           </Link>{" "}
           or{" "}
           <Link href="/contact" className="font-medium text-brand-600 hover:text-brand-700">

@@ -78,8 +78,8 @@ export default function BrandPage({
       <section className="container border-t py-8 text-sm text-gray-600">
         <p>
           View updated PKR prices on the{" "}
-          <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
-            Jawed water pump price list
+          <Link href="/water-pump-price-in-pakistan" className="font-medium text-brand-600 hover:text-brand-700">
+            Water pump price in Pakistan
           </Link>
           . Browse by category:{" "}
           <Link href="/category/copper-motors" className="font-medium text-brand-600 hover:text-brand-700">

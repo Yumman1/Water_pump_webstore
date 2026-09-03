@@ -212,6 +212,7 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
             <Icons.tag className="h-4 w-4" /> Special Offers
           </Link>
           {ServicesDrop}
+          <Link href="/water-pump-price-in-pakistan" className={cn(linkClass, "nav-underline")}>Prices</Link>
           <Link href="/about" className={cn(linkClass, "nav-underline")}>About Us</Link>
           <Link href="/contact" className={cn(linkClass, "nav-underline")}>Contact Us</Link>
         </div>
@@ -238,6 +239,7 @@ export function HeaderClient({ categories }: { categories: Category[] }) {
               <Icons.tag className="h-4 w-4" /> Special Offers &amp; Deals
             </Link>
             <MobileSection id="services" label="Services" href="/services" items={mobileServiceItems} />
+            <Link href="/water-pump-price-in-pakistan" onClick={() => setMobileOpen(false)} className="block border-b px-3 py-2.5 font-medium text-gray-800">Prices</Link>
             <Link href="/about" onClick={() => setMobileOpen(false)} className="block border-b px-3 py-2.5 font-medium text-gray-800">About Us</Link>
             <Link href="/contact" onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 font-medium text-gray-800">Contact Us</Link>
           </div>

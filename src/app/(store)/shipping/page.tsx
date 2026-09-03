@@ -59,8 +59,8 @@ export default async function ShippingPage() {
               </Link>
             </li>
             <li>
-              <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
-                Jawed water pump price list (PKR)
+              <Link href="/water-pump-price-in-pakistan" className="font-medium text-brand-600 hover:text-brand-700">
+                Water pump price in Pakistan
               </Link>
             </li>
             <li>

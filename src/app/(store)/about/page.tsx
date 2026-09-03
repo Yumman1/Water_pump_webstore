@@ -149,8 +149,8 @@ export default function AboutPage() {
                 </Link>
               </li>
               <li>
-                <Link href="/prices/jawed-water-pump-price-list" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
-                  Jawed price list
+                <Link href="/water-pump-price-in-pakistan" className="rounded-full border bg-white px-3 py-1.5 font-medium text-brand-700 hover:border-brand-400">
+                  Water pump price in Pakistan
                 </Link>
               </li>
             </ul>

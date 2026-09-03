@@ -180,8 +180,8 @@ export function ProductDetailClient({
         </ul>
         <p className="mt-4 text-sm text-gray-500">
           Compare all models on our{" "}
-          <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
-            Jawed water pump price list
+          <Link href="/water-pump-price-in-pakistan" className="font-medium text-brand-600 hover:text-brand-700">
+            Water pump price in Pakistan
           </Link>
           .
         </p>

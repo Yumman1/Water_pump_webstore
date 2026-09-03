@@ -94,14 +94,15 @@ export default async function HomePage() {
             <strong>Jawed copper motors</strong>, <strong>monoblock pressure pumps</strong>,{" "}
             <strong>bearing pumps</strong> and matched motor-pump sets. Trusted by homes, farms and
             industry since {siteConfig.seo.foundingDate}, with nationwide delivery, cash on delivery
-            and expert support on every water lifting challenge.
+            and expert support on every water lifting challenge. Compare the current{" "}
+            <strong>water pump price in Pakistan</strong> on our official PKR list.
           </p>
           <p className="mt-4">
             <Link
-              href="/prices/jawed-water-pump-price-list"
+              href="/water-pump-price-in-pakistan"
               className="text-sm font-semibold text-brand-600 hover:text-brand-700"
             >
-              View the Jawed water pump price list (PKR) →
+              Water pump price in Pakistan (PKR list) →
             </Link>
           </p>
         </div>

@@ -53,8 +53,8 @@ export async function SiteFooter() {
             <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
             <li><Link href="/shipping" className="text-gray-400 hover:text-white">Shipping & Returns</Link></li>
             <li>
-              <Link href="/prices/jawed-water-pump-price-list" className="text-gray-400 hover:text-white">
-                Jawed Water Pump Price List
+              <Link href="/water-pump-price-in-pakistan" className="text-gray-400 hover:text-white">
+                Water Pump Price in Pakistan
               </Link>
             </li>
             <li><Link href="/admin" className="text-gray-400 hover:text-white">Admin Login</Link></li>

@@ -119,8 +119,8 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 the full shop
               </Link>
               . See PKR prices on the{" "}
-              <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
-                Jawed water pump price list
+              <Link href="/water-pump-price-in-pakistan" className="font-medium text-brand-600 hover:text-brand-700">
+                Water pump price in Pakistan
               </Link>
               .
             </p>

@@ -42,7 +42,7 @@ export function productPageDescription(product: Product): string {
 }
 
 export function categoryPageTitle(category: Category): string {
-  return `${category.name} | Jawed Pumps Karachi | Javed Water Pump Prices`;
+  return `${category.name} Price in Pakistan | Jawed Pumps`;
 }
 
 export function categoryPageDescription(category: Category): string {
@@ -50,8 +50,8 @@ export function categoryPageDescription(category: Category): string {
     category.description ??
     `Shop ${category.name} from Jawed Engineering Pumps in Karachi.`;
   return (
-    `${base} Genuine Jawed & Javed water pumps with 100% copper winding options, ` +
-    `monoblock and bearing pumps for home use, bore and agriculture. Nationwide shipping across Pakistan.`
+    `${base} Compare ${category.name.toLowerCase()} water pump price in Pakistan, ` +
+    `with genuine Jawed copper winding options, nationwide shipping and cash on delivery.`
   );
 }
 

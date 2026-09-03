@@ -104,8 +104,8 @@ export default function ContactPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/prices/jawed-water-pump-price-list" className="font-medium text-brand-600 hover:text-brand-700">
-                    Jawed water pump price list Karachi
+                  <Link href="/water-pump-price-in-pakistan" className="font-medium text-brand-600 hover:text-brand-700">
+                    Water pump price in Pakistan
                   </Link>
                 </li>
                 <li>
