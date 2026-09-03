@@ -14,6 +14,7 @@ import { prisma, isDbConfigured } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 import { formatCurrency } from "@/lib/format";
 import { sendWhatsAppSmart, sendWhatsAppText } from "@/lib/whatsapp";
+import { absoluteUrl } from "@/lib/seo";
 
 export type StoreSettings = {
   ownerNotifyEmail: string | null;
@@ -184,12 +185,45 @@ function installHtmlBlock(order: OrderLike): string {
   return `<p style="color:#374151;margin-top:8px">Installation: <b>${label}</b>, ${fee}${serial}</p>`;
 }
 function emailShell(title: string, body: string): string {
-  return `<div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px">
-    <h2 style="color:#0067a5;margin:0 0 4px">${siteConfig.name}</h2>
-    <h3 style="margin:16px 0 8px;color:#111827">${title}</h3>
-    ${body}
-    <p style="margin-top:24px;color:#6b7280;font-size:13px">${siteConfig.name} · ${siteConfig.contact.phone} · ${siteConfig.contact.email}</p>
-  </div>`;
+  const shopUrl = absoluteUrl("/");
+  const logoUrl = absoluteUrl(siteConfig.logo);
+  return `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f3f4f6">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6">
+    <tr>
+      <td align="center" style="padding:24px 12px">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden">
+          <tr>
+            <td align="center" style="background:#111111;padding:22px 24px">
+              <a href="${shopUrl}" style="text-decoration:none">
+                <img src="${logoUrl}" alt="${siteConfig.name}" width="200" height="40" style="display:block;width:200px;max-width:80%;height:auto;border:0;outline:none" />
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:24px 24px 8px;font-family:system-ui,Segoe UI,sans-serif">
+              <h2 style="margin:0 0 16px;color:#111827;font-size:20px;line-height:1.3">${title}</h2>
+              ${body}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 24px;background:#111111;font-family:system-ui,Segoe UI,sans-serif;text-align:center">
+              <p style="margin:0 0 6px;color:#f59e0b;font-size:13px;font-weight:600">${siteConfig.legalName}</p>
+              <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.6">
+                <a href="tel:${siteConfig.contact.phone.replace(/\s/g, "")}" style="color:#d1d5db;text-decoration:none">${siteConfig.contact.phone}</a>
+                ·
+                <a href="mailto:${siteConfig.contact.email}" style="color:#d1d5db;text-decoration:none">${siteConfig.contact.email}</a><br/>
+                <a href="${shopUrl}" style="color:#f59e0b;text-decoration:none">www.jawedpumps.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 }
 
 // ---------------------------------------------------------------------------
