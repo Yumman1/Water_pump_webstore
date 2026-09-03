@@ -6,7 +6,8 @@ import { siteConfig } from "@/config/site";
 import type { PricingConfig } from "@/lib/pricing";
 import type { DeliveryCityOption } from "@/lib/delivery";
 
-const STORAGE_KEY = "cart:v4";
+const STORAGE_KEY = "cart:v5";
+const LEGACY_STORAGE_KEYS = ["cart:v4", "cart:v3"];
 
 type CartState = {
   items: CartItem[];
@@ -116,28 +117,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     deliveryCities: defaultDeliveryCities(),
   });
 
+  const [hydrated, setHydrated] = useState(false);
+
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem("cart:v3");
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        dispatch({ type: "HYDRATE", state: { items: parsed } });
-      } else if (parsed.items) {
-        dispatch({ type: "HYDRATE", state: { items: parsed.items } });
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const items = Array.isArray(parsed) ? parsed : parsed?.items;
+        if (Array.isArray(items)) {
+          dispatch({ type: "HYDRATE", state: { items } });
+        }
       }
+      for (const key of LEGACY_STORAGE_KEYS) localStorage.removeItem(key);
     } catch {
       /* ignore */
     }
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
       /* ignore */
     }
-  }, [state]);
+  }, [hydrated, state]);
 
   useEffect(() => {
     let cancelled = false;

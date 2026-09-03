@@ -69,12 +69,13 @@ export function AddToCartButton({
 
   return (
     <div className={showBuyNow ? "flex flex-col gap-2 sm:flex-row" : ""}>
-      <Button variant="primary" size={size} onClick={add} className={className}>
+      <Button type="button" variant="primary" size={size} onClick={add} className={className}>
         {added ? <Icons.check className="h-4 w-4" /> : <Icons.cart className="h-4 w-4" />}
         {added ? "Added!" : "Add to Cart"}
       </Button>
       {showBuyNow && (
         <Button
+          type="button"
           variant="accent"
           size={size}
           onClick={() => {
