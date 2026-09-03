@@ -260,16 +260,16 @@ export const products: SeedProduct[] = [
     video: "/videos/copper-motors/1hp-s-copper-motor.mp4",
   }),
   product({
-    name: "1HP Full Load Heavy Duty Copper Motor",
+    name: "1HP Premium Full Load Heavy Duty Copper Motor",
     slug: "1hp-full-load-heavy-duty-copper-motor",
-    sku: "JW-CM-1FL",
-    brand: "Jawed",
+    sku: "PR-CM-1FL",
+    brand: "Premium",
     categorySlug: "copper-motors",
-    shortDescription: "1HP full-load heavy-duty copper motor, throw-up up to 100 feet.",
+    shortDescription: "1HP Premium full-load heavy-duty copper motor, throw-up up to 100 feet.",
     description:
-      "The Jawed 1HP full load heavy duty copper motor is engineered for high demand installations and professional pumping setups. It draws 5 amp on 220V at 1450 RPM and uses 100% copper winding to handle sustained load without compromise. Water throw-up reaches up to 100 feet, so it pairs naturally with 2HP class bearing pumps such as GD50000. Select this motor when you need maximum head and continuous duty performance. Covered by a 1 year warranty.",
+      "The Premium 1HP full load heavy duty copper motor is engineered for high demand installations and professional pumping setups. It draws 5 amp on 220V at 1450 RPM and uses 100% copper winding to handle sustained load without compromise. Water throw-up reaches up to 100 feet, so it pairs naturally with 2HP class bearing pumps such as GD50000. Select this motor when you need maximum head and continuous duty performance. Covered by a 1 year warranty.",
     featured: true,
-    tags: ["copper", "motor", "1hp", "full-load", "heavy-duty"],
+    tags: ["copper", "motor", "1hp", "full-load", "heavy-duty", "premium"],
     specs: {
       Power: "1 HP",
       Duty: "Full Load Heavy Duty",
@@ -278,10 +278,17 @@ export const products: SeedProduct[] = [
       Speed: "1450 RPM",
       "Winding Material": "100% Copper",
       "Water Throw-up": "Up to 100 feet",
-      Brand: "Jawed",
+      Brand: "Premium",
       Warranty: "1 Year",
     },
     imageSeed: "cm-1fl",
+    images: pm(
+      "1hp-full-load-heavy-duty-copper-motor",
+      "gallery-01.jpg",
+      "gallery-02.jpg",
+      "gallery-03.jpg",
+      "gallery-04.jpg"
+    ),
     video: "/videos/copper-motors/1hp-full-load-copper-motor.mp4",
   }),
 
