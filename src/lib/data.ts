@@ -15,7 +15,7 @@ import { cleanCopy, cleanSpecs, realImages } from "@/lib/utils";
 
 const CACHE_REVALIDATE = 60;
 /** Bump when product media/catalog changes outside admin (e.g. direct DB edits). */
-const PRODUCTS_CACHE_VERSION = "5";
+const PRODUCTS_CACHE_VERSION = "6";
 
 // ---------------------------------------------------------------------------
 // Fallback: normalize the bundled seed data into UI shapes.
@@ -319,7 +319,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   const { products } = await getProducts({ featured: true, pageSize: limit });
-  return products;
+  return products.filter((p) => p.active);
 }
 
 export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {

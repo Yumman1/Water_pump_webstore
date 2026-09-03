@@ -37,6 +37,11 @@ const nextConfig = {
     return [
       { source: "/categories/:slug", destination: "/category/:slug", permanent: true },
       { source: "/products/:slug", destination: "/product/:slug", permanent: true },
+      {
+        source: "/product/set-1hp-full-load-jawed-gd50000",
+        destination: "/product/set-1hp-full-load-premium-gd50000",
+        permanent: true,
+      },
     ];
   },
   env: {

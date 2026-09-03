@@ -816,7 +816,8 @@ export const products: SeedProduct[] = [
     shortDescription: "Full-load 1HP Jawed motor + 2HP Jawed GD50000 pump.",
     description:
       "Top Jawed complete set: 1HP Full Load Heavy Duty copper motor with the 2HP Jawed GD50000 steel-plate bearing pump for high-demand installations.",
-    featured: true,
+    featured: false,
+    active: false,
     tags: ["set", "full-load", "gd50000", "jawed", "2hp"],
     specs: {
       Motor: "1HP Full Load Heavy Duty Copper Motor (Jawed)",
