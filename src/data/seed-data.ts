@@ -73,6 +73,7 @@ const PRODUCT_PRICES: Record<string, number> = {
   "set-1hp-s-gd26000": 31000,
   "set-1hp-full-load-jawed-gd50000": 44000,
   "set-1hp-full-load-premium-gd50000": 44500,
+  "espa-ams-15-dz-kit": 5500,
 };
 
 export const categories: SeedCategory[] = [
@@ -429,6 +430,30 @@ export const products: SeedProduct[] = [
     imageSeed: "mb-pr-2",
     images: pm("2hp-monoblock-pressure-pump-premium-steel-impeller", "cover.jpg"),
     video: "/products/2hp-monoblock-pressure-pump-premium-steel-impeller/video.mp4",
+  }),
+  product({
+    name: "ESPA AMS 15 DZ Pressure Booster Kit",
+    slug: "espa-ams-15-dz-kit",
+    sku: "IMP-ESPA-AMS15",
+    brand: "Imported",
+    categorySlug: "monoblock-pressure-pumps",
+    shortDescription: "Imported ESPA AMS 15 DZ automatic pressure booster kit. 230 V, 10 A.",
+    description:
+      "The ESPA AMS 15 DZ is a 230 V AC, 50–60 Hz automatic pressure booster kit designed to maintain constant water pressure and protect pumps from dry running. With a maximum working pressure of 10.2 kg/cm² (≈145 psi) and a maximum current of 10 A, it is suitable for household, irrigation, and small commercial applications. Built with IP55-rated corrosion-resistant components, this compact kit automatically starts and stops the pump based on water demand, ensuring efficient operation and reliable water supply.\n\nAn ESPA pressure booster/AMS kit with these specs is used to:\n• Automate pump operation — automatic on/off based on water demand.\n• Maintain constant pressure in household or irrigation systems.\n• Protect the pump from dry running and unnecessary cycling.\n• Be integrated with new or existing surface pumps, multi-stage pumps, or booster sets.\n\nConnections & size: 1\" threaded discharge and suction ports for standard hose or pipe connections. Compact kit designed to mount in line with the pump and piping — often fitting on a horizontal surface pump or booster system.\n\nMaterials & build: Technopolymer/plastic housing with corrosion-resistant seals. O-rings and seals in rubber (NBR/EPDM) suitable for potable and general water installations. Union fittings included (3-piece unions) for easier install/remove.",
+    tags: ["espa", "ams", "pressure", "booster", "imported", "kit", "automatic"],
+    specs: {
+      Model: "ESPA AMS 15 DZ / KIT 02 AMS",
+      Voltage: "230 V AC, 50–60 Hz",
+      "Max Current": "10 A",
+      "Max Working Pressure": "10.2 kg/cm² (≈10 bar / 145 psi)",
+      "Protection Rating": "IP55",
+      Connections: "1\" threaded ports",
+      "Max Water Temperature": "60°C",
+      Brand: "ESPA (Imported)",
+      Origin: "Spain",
+    },
+    imageSeed: "espa-ams-15",
+    images: pm("espa-ams-15-dz-kit", "cover.jpg", "gallery-01.jpg"),
   }),
 
   // --- Bearing Pumps ---
