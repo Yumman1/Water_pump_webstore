@@ -540,7 +540,7 @@ export const products: SeedProduct[] = [
       Origin: "China",
     },
     imageSeed: "mhf-5am",
-    images: pm("mhf-5am-2x2-monoblock-pressure-pump", "cover.jpg"),
+    images: pm("mhf-5am-2x2-monoblock-pressure-pump", "cover-v2.jpg"),
   }),
   product({
     name: "Cpm158 1hp monoblock pressure pump pedrollo Italy imported",

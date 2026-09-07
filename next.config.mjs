@@ -28,6 +28,10 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: "/products/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=3600, must-revalidate" }],
+      },
+      {
         source: "/:path*\\.(mp4|webm|jpg|jpeg|png|webp|avif|ico|svg|woff2)",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
@@ -36,7 +40,7 @@ const nextConfig = {
   async redirects() {
     return [
       { source: "/categories/:slug", destination: "/category/:slug", permanent: true },
-      { source: "/products/:slug", destination: "/product/:slug", permanent: true },
+      { source: "/products/:slug((?!.*\\.).*)", destination: "/product/:slug", permanent: true },
       {
         source: "/product/set-1hp-full-load-jawed-gd50000",
         destination: "/product/set-1hp-full-load-premium-gd50000",
