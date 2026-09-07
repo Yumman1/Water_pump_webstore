@@ -605,7 +605,7 @@ export const products: SeedProduct[] = [
       Origin: "China",
     },
     imageSeed: "cpm158-cn",
-    images: pm("cpm158-1hp-monoblock-pressure-pump-china", "cover.jpg", "gallery-01.jpg"),
+    images: pm("cpm158-1hp-monoblock-pressure-pump-china", "cover.jpg", "gallery-01.jpg", "gallery-02.jpg"),
   }),
   product({
     name: "V750DF Submersible Sewage Pump",
