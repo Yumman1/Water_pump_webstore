@@ -93,6 +93,10 @@ export default function BrandPage({
           <Link href="/category/bearing-pumps" className="font-medium text-brand-600 hover:text-brand-700">
             bearing pumps
           </Link>
+          ,{" "}
+          <Link href="/category/submersible-pumps" className="font-medium text-brand-600 hover:text-brand-700">
+            submersible pumps
+          </Link>
           .
         </p>
       </section>

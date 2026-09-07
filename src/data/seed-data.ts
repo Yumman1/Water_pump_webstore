@@ -74,6 +74,7 @@ const PRODUCT_PRICES: Record<string, number> = {
   "set-1hp-full-load-jawed-gd50000": 44000,
   "set-1hp-full-load-premium-gd50000": 44500,
   "espa-ams-15-dz-kit": 5500,
+  "v750df-submersible-pump": 5500,
 };
 
 export const categories: SeedCategory[] = [
@@ -99,11 +100,18 @@ export const categories: SeedCategory[] = [
     sortOrder: 3,
   },
   {
+    name: "Submersible Pumps",
+    slug: "submersible-pumps",
+    description: "Imported submersible sewage and drainage pumps for dirty water, wastewater and dewatering.",
+    image: "/products/v750df-submersible-pump/cover.jpg",
+    sortOrder: 4,
+  },
+  {
     name: "Complete Sets",
     slug: "complete-sets",
     description: "Matched motor and pump sets ready for installation, with more combinations coming.",
     image: "/products/set-1hp-j-gd22000/cover.jpg",
-    sortOrder: 4,
+    sortOrder: 5,
   },
 ];
 
@@ -454,6 +462,38 @@ export const products: SeedProduct[] = [
     },
     imageSeed: "espa-ams-15",
     images: pm("espa-ams-15-dz-kit", "cover.jpg", "gallery-01.jpg"),
+  }),
+  product({
+    name: "V750DF Submersible Sewage Pump",
+    slug: "v750df-submersible-pump",
+    sku: "IMP-V750DF",
+    brand: "Imported",
+    categorySlug: "submersible-pumps",
+    shortDescription: "Imported V750DF 1HP submersible cutter pump for dirty water and sewage.",
+    description:
+      "The V750DF is a single-phase submersible centrifugal sewage/drainage pump designed for handling dirty water, including wastewater with solids. It’s a cutter/impeller model (DF = with cutting blades), so it’s more effective at passing fibrous and larger particles than basic submersible pumps, making it suitable for drainage, wastewater removal, and general sewage applications.\n\nApplications:\n• Dewatering/sump drainage: Suitable for basements, construction sites, and factories.\n• Sewage and wastewater discharge: Suitable for residential, commercial, and municipal systems.\n• Irrigation and agricultural drainage: Recommended for fields, ponds, and furrows.\n• General wastewater removal: For use where water contains solids, debris, or small solids.",
+    tags: ["imported", "submersible", "sewage", "drainage", "v750df", "cutter", "1hp"],
+    specs: {
+      Model: "V750DF",
+      Type: "Submersible centrifugal sewage/drainage pump",
+      Power: "1.0 HP (~750 W)",
+      Voltage: "220 V, 50 Hz (single-phase)",
+      Speed: "2850 r/min",
+      Current: "5.2 A",
+      "Insulation Class": "B",
+      "Protection Rating": "IP68",
+      "Flow Rate (Q)": "15–180 L/min",
+      "Max Head": "12 m",
+      "Outlet Size": "2\" (50 mm)",
+      "Max Particle Size": "Up to ~30 mm (cutter impeller)",
+      "Pump Body": "Cast iron",
+      Impeller: "Cutter type",
+      Dimensions: "Approx. 25.5 × 25.5 × 51 cm",
+      Weight: "Approx. 20 kg",
+      Brand: "Imported",
+    },
+    imageSeed: "v750df",
+    images: pm("v750df-submersible-pump", "cover.jpg"),
   }),
 
   // --- Bearing Pumps ---

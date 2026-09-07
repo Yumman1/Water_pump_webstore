@@ -40,6 +40,7 @@ export const categoryGroups: MenuGroup[] = [
       cat("Copper Motors", "copper-motors"),
       cat("Monoblock Pressure Pumps", "monoblock-pressure-pumps"),
       cat("Bearing Pumps", "bearing-pumps"),
+      cat("Submersible Pumps", "submersible-pumps"),
       cat("Complete Sets", "complete-sets"),
     ],
   },
