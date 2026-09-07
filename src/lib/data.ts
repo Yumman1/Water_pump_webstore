@@ -15,7 +15,7 @@ import { cleanCopy, cleanSpecs, realImages } from "@/lib/utils";
 
 const CACHE_REVALIDATE = 60;
 /** Bump when product media/catalog changes outside admin (e.g. direct DB edits). */
-const PRODUCTS_CACHE_VERSION = "14";
+const PRODUCTS_CACHE_VERSION = "15";
 
 // ---------------------------------------------------------------------------
 // Fallback: normalize the bundled seed data into UI shapes.
