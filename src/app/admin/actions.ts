@@ -230,9 +230,23 @@ export async function dispatchOrder(id: string) {
       customerPhone: order.customerPhone,
       address: order.address,
       city: order.city,
+      subtotal: order.subtotal,
+      shipping: order.shipping,
+      discount: order.discount,
+      couponCode: order.couponCode,
+      tax: order.tax,
       total: order.total,
       paymentMethod: order.paymentMethod,
-      items: order.items.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+      installationType: order.installationType,
+      installationFee: order.installationFee,
+      replacementSerial: order.replacementSerial,
+      items: order.items.map((i) => ({
+        name: i.name,
+        quantity: i.quantity,
+        price: i.price,
+        listPrice: i.listPrice,
+        underWarranty: i.underWarranty,
+      })),
     });
   } catch (e) {
     console.warn("[dispatch] notification failed:", (e as Error).message);
@@ -248,6 +262,11 @@ function orderNotifyPayload(order: {
   customerPhone: string;
   address: string;
   city: string;
+  subtotal?: number;
+  shipping?: number;
+  discount?: number;
+  couponCode?: string | null;
+  tax?: number;
   total: number;
   paymentMethod: string;
   installationType?: string | null;
@@ -268,6 +287,11 @@ function orderNotifyPayload(order: {
     customerPhone: order.customerPhone,
     address: order.address,
     city: order.city,
+    subtotal: order.subtotal,
+    shipping: order.shipping,
+    discount: order.discount,
+    couponCode: order.couponCode,
+    tax: order.tax,
     total: order.total,
     paymentMethod: order.paymentMethod,
     installationType: order.installationType,

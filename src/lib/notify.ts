@@ -162,6 +162,11 @@ type OrderLike = {
   city: string;
   total: number;
   paymentMethod: string;
+  subtotal?: number;
+  shipping?: number;
+  discount?: number;
+  couponCode?: string | null;
+  tax?: number;
   installationType?: "NONE" | "WARRANTY" | "PAID" | string | null;
   installationFee?: number | null;
   replacementSerial?: string | null;
@@ -174,10 +179,25 @@ type OrderLike = {
   }[];
 };
 
-function installLabel(type?: string | null): string {
-  if (type === "WARRANTY") return "Warranty claim";
-  if (type === "PAID") return "Installation & Removal";
-  if (type === "NONE") return "No Installation & Removal";
+function paymentLabel(method: string): string {
+  if (method === "COD") return "Cash on Delivery (COD)";
+  if (method === "BANK_TRANSFER") return "Bank Transfer";
+  return method;
+}
+
+function deliveryAddress(order: OrderLike): string {
+  return [order.address, order.city].filter(Boolean).join(", ");
+}
+
+function orderSubtotal(order: OrderLike): number {
+  if (typeof order.subtotal === "number") return order.subtotal;
+  return order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+
+function installNote(type?: string | null): string {
+  if (type === "WARRANTY") return "Under warranty";
+  if (type === "PAID") return "Without warranty";
+  if (type === "NONE") return "No installation";
   return "";
 }
 
@@ -185,36 +205,142 @@ function itemsTextLines(order: OrderLike): string {
   return order.items
     .map((i) => {
       const tag = i.underWarranty ? " [warranty]" : "";
-      return `• ${i.name} × ${i.quantity}${tag}, ${formatCurrency(i.price * i.quantity)}`;
+      return `• ${i.name} × ${i.quantity}${tag} — ${formatCurrency(i.price * i.quantity)}`;
     })
     .join("\n");
 }
+
 function itemsHtmlRows(order: OrderLike): string {
   return order.items
     .map((i) => {
-      const tag = i.underWarranty ? ' <span style="color:#15803d;font-size:12px">(warranty)</span>' : "";
-      return `<tr><td style="padding:6px 0;color:#374151">${i.name} × ${i.quantity}${tag}</td><td style="padding:6px 0;text-align:right;color:#111827">${formatCurrency(i.price * i.quantity)}</td></tr>`;
+      const tag = i.underWarranty
+        ? ' <span style="color:#15803d;font-size:12px">(warranty)</span>'
+        : "";
+      return `<tr>
+        <td style="padding:8px 0;color:#374151;font-size:14px">${i.name} × ${i.quantity}${tag}</td>
+        <td style="padding:8px 0;text-align:right;color:#111827;font-size:14px;white-space:nowrap">${formatCurrency(i.price * i.quantity)}</td>
+      </tr>`;
     })
     .join("");
 }
 
-function installTextBlock(order: OrderLike): string {
-  const label = installLabel(order.installationType);
-  if (!label) return "";
-  const fee = formatCurrency(order.installationFee ?? 0);
-  const serial = order.replacementSerial ? `\nReplacement serial: ${order.replacementSerial}` : "";
-  return `\nInstallation: ${label} (${fee})${serial}`;
+function htmlMoneyRow(opts: {
+  label: string;
+  amount: string;
+  color?: string;
+  note?: string;
+  bold?: boolean;
+  total?: boolean;
+}): string {
+  const color = opts.color ?? (opts.bold || opts.total ? "#111827" : "#6b7280");
+  const amountColor = opts.color ?? "#111827";
+  const weight = opts.bold || opts.total ? "700" : "400";
+  const border = opts.total ? "border-top:2px solid #e5e7eb;" : "";
+  const padTop = opts.total ? "12px" : "6px";
+  const note = opts.note
+    ? `<br/><span style="font-size:12px;font-weight:400;color:#6b7280">${opts.note}</span>`
+    : "";
+  return `<tr>
+    <td style="padding:${padTop} 0 6px;color:${color};font-size:${opts.total ? "16px" : "14px"};font-weight:${weight};${border}">${opts.label}${note}</td>
+    <td style="padding:${padTop} 0 6px;text-align:right;color:${amountColor};font-size:${opts.total ? "16px" : "14px"};font-weight:${weight};white-space:nowrap;${border}">${opts.amount}</td>
+  </tr>`;
 }
 
-function installHtmlBlock(order: OrderLike): string {
-  const label = installLabel(order.installationType);
-  if (!label) return "";
-  const fee = formatCurrency(order.installationFee ?? 0);
-  const serial = order.replacementSerial
-    ? `<br/>Replacement serial: <b>${order.replacementSerial}</b>`
-    : "";
-  return `<p style="color:#374151;margin-top:8px">Installation: <b>${label}</b>, ${fee}${serial}</p>`;
+function totalsHtmlTable(order: OrderLike): string {
+  const note = installNote(order.installationType);
+  const serial = order.replacementSerial ? `Serial: ${order.replacementSerial}` : "";
+  const installDetail = [note, serial].filter(Boolean).join(" · ");
+  const discount = order.discount ?? 0;
+  const tax = order.tax ?? 0;
+  const coupon = order.couponCode?.trim();
+
+  let summary = htmlMoneyRow({
+    label: "Subtotal",
+    amount: formatCurrency(orderSubtotal(order)),
+  });
+  summary += htmlMoneyRow({
+    label: "Installation &amp; removal",
+    amount: formatCurrency(order.installationFee ?? 0),
+    note: installDetail || undefined,
+  });
+  if (typeof order.shipping === "number") {
+    summary += htmlMoneyRow({
+      label: "Delivery",
+      amount: order.shipping === 0 ? "Free" : formatCurrency(order.shipping),
+    });
+  }
+  if (discount > 0) {
+    summary += htmlMoneyRow({
+      label: coupon ? `Discount (${coupon})` : "Discount",
+      amount: `-${formatCurrency(discount)}`,
+      color: "#15803d",
+    });
+  }
+  if (tax > 0) {
+    summary += htmlMoneyRow({ label: "Tax", amount: formatCurrency(tax) });
+  }
+  summary += htmlMoneyRow({
+    label: "Total",
+    amount: formatCurrency(order.total),
+    total: true,
+  });
+
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:8px">
+    ${itemsHtmlRows(order)}
+    <tr><td colspan="2" style="padding:8px 0 0;border-top:1px solid #e5e7eb;font-size:0;line-height:0">&nbsp;</td></tr>
+    ${summary}
+  </table>`;
 }
+
+function totalsTextBlock(order: OrderLike): string {
+  const note = installNote(order.installationType);
+  const lines = [
+    itemsTextLines(order),
+    "",
+    `Subtotal: ${formatCurrency(orderSubtotal(order))}`,
+    `Installation & removal: ${formatCurrency(order.installationFee ?? 0)}${note ? ` (${note})` : ""}`,
+  ];
+  if (order.replacementSerial) {
+    lines.push(`Replacement serial: ${order.replacementSerial}`);
+  }
+  if (typeof order.shipping === "number") {
+    lines.push(`Delivery: ${order.shipping === 0 ? "Free" : formatCurrency(order.shipping)}`);
+  }
+  const discount = order.discount ?? 0;
+  if (discount > 0) {
+    const coupon = order.couponCode?.trim();
+    lines.push(`Discount${coupon ? ` (${coupon})` : ""}: -${formatCurrency(discount)}`);
+  }
+  if ((order.tax ?? 0) > 0) {
+    lines.push(`Tax: ${formatCurrency(order.tax ?? 0)}`);
+  }
+  lines.push(`*Total: ${formatCurrency(order.total)}*`);
+  return lines.join("\n");
+}
+
+function sectionHtml(title: string, body?: string): string {
+  const heading = `<p style="margin:16px 0 0;color:#6b7280;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">${title}</p>`;
+  if (!body) return heading;
+  return `${heading}
+    <p style="margin:4px 0 0;color:#111827;font-size:14px;line-height:1.6">${body}</p>`;
+}
+
+function customerHtmlBlock(order: OrderLike): string {
+  const email = order.customerEmail?.trim() || "No email provided";
+  return sectionHtml(
+    "Customer",
+    `<b>${order.customerName}</b><br/>${order.customerPhone}<br/>${email}`
+  );
+}
+
+function deliveryHtmlBlock(order: OrderLike): string {
+  return sectionHtml("Delivery address", deliveryAddress(order));
+}
+
+function paymentHtmlBlock(order: OrderLike): string {
+  return sectionHtml("Payment", paymentLabel(order.paymentMethod));
+}
+
 export function emailShell(title: string, body: string): string {
   const shopUrl = absoluteUrl("/");
   return `<!DOCTYPE html>
@@ -267,7 +393,6 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
 
   // → Owner alert (always — checkout email is optional for the customer)
   const ownerEmail = settings.ownerNotifyEmail?.trim() || siteConfig.contact.email;
-  const customerEmailLabel = order.customerEmail?.trim() || "no email provided";
   if (ownerEmail) {
     tasks.push(
       sendEmail({
@@ -275,17 +400,17 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
         subject: `🛒 New order ${order.orderNumber} (${formatCurrency(order.total)})`,
         html: emailShell(
           `New order received: ${order.orderNumber}`,
-          `<p style="color:#374151">Customer: <b>${order.customerName}</b> (${order.customerPhone}, ${customerEmailLabel})<br/>
-           Deliver to: ${order.address}, ${order.city}<br/>Payment: ${order.paymentMethod}</p>
-           ${installHtmlBlock(order)}
-           <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
-           <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>`
+          `${customerHtmlBlock(order)}
+           ${deliveryHtmlBlock(order)}
+           ${paymentHtmlBlock(order)}
+           ${sectionHtml("Items")}
+           ${totalsHtmlTable(order)}`
         ),
       })
     );
   }
   if (settings.ownerNotifyWhatsapp) {
-    const ownerText = `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDeliver to: ${order.address}, ${order.city}\nPayment: ${order.paymentMethod}${installTextBlock(order)}\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*`;
+    const ownerText = `🛒 *New order ${order.orderNumber}*\nCustomer: ${order.customerName} (${order.customerPhone})\nDelivery: ${deliveryAddress(order)}\nPayment: ${paymentLabel(order.paymentMethod)}\n\n${totalsTextBlock(order)}`;
     tasks.push(
       sendWhatsAppSmart({
         to: settings.ownerNotifyWhatsapp,
@@ -310,17 +435,17 @@ export async function notifyNewOrder(order: OrderLike): Promise<void> {
         subject: `Order confirmed: ${order.orderNumber}`,
         html: emailShell(
           `Thank you for your order, ${order.customerName}!`,
-          `<p style="color:#374151">We've received your order <b>${order.orderNumber}</b> and will contact you shortly to confirm delivery.</p>
-           ${installHtmlBlock(order)}
-           <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
-           <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>
-           <p style="color:#374151;margin-top:12px">Payment method: ${order.paymentMethod}</p>`
+          `<p style="margin:0;color:#374151;font-size:14px;line-height:1.6">We've received your order <b>${order.orderNumber}</b> and will contact you shortly to confirm delivery.</p>
+           ${deliveryHtmlBlock(order)}
+           ${paymentHtmlBlock(order)}
+           ${sectionHtml("Items")}
+           ${totalsHtmlTable(order)}`
         ),
       })
     );
   }
   if (settings.notifyCustomerWhatsapp && order.customerPhone) {
-    const customerText = `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*${installTextBlock(order)}\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\nPayment: ${order.paymentMethod}\n\nWe'll contact you shortly to confirm delivery.`;
+    const customerText = `Hi ${order.customerName}, thank you for your order at ${siteConfig.name}! 🙏\n\n*Order ${order.orderNumber}*\nDelivery: ${deliveryAddress(order)}\nPayment: ${paymentLabel(order.paymentMethod)}\n\n${totalsTextBlock(order)}\n\nWe'll contact you shortly to confirm delivery.`;
     tasks.push(
       sendWhatsAppSmart({
         to: order.customerPhone,
@@ -351,15 +476,17 @@ export async function notifyDispatch(order: OrderLike): Promise<void> {
         subject: `Your order ${order.orderNumber} has been dispatched 🚚`,
         html: emailShell(
           `Your order is on its way!`,
-          `<p style="color:#374151">Good news ${order.customerName}. Your order <b>${order.orderNumber}</b> has been dispatched and will reach you soon.</p>
-           <p style="color:#374151">Deliver to: ${order.address}, ${order.city}</p>
-           <p style="color:#374151">Total: <b>${formatCurrency(order.total)}</b> (${order.paymentMethod})</p>`
+          `<p style="margin:0;color:#374151;font-size:14px;line-height:1.6">Good news ${order.customerName}. Your order <b>${order.orderNumber}</b> has been dispatched and will reach you soon.</p>
+           ${deliveryHtmlBlock(order)}
+           ${paymentHtmlBlock(order)}
+           ${sectionHtml("Items")}
+           ${totalsHtmlTable(order)}`
         ),
       })
     );
   }
   if (settings.notifyCustomerWhatsapp && order.customerPhone) {
-    const dispatchText = `🚚 Hi ${order.customerName}, your order *${order.orderNumber}* from ${siteConfig.name} has been *dispatched* and is on its way!\n\nDeliver to: ${order.address}, ${order.city}\nTotal: ${formatCurrency(order.total)} (${order.paymentMethod})\n\nThank you for shopping with us!`;
+    const dispatchText = `🚚 Hi ${order.customerName}, your order *${order.orderNumber}* from ${siteConfig.name} has been *dispatched* and is on its way!\n\nDelivery: ${deliveryAddress(order)}\nPayment: ${paymentLabel(order.paymentMethod)}\n\n${totalsTextBlock(order)}\n\nThank you for shopping with us!`;
     tasks.push(
       sendWhatsAppSmart({
         to: order.customerPhone,
@@ -384,17 +511,17 @@ export async function notifyCancellation(order: OrderLike): Promise<void> {
         subject: `Order cancelled: ${order.orderNumber}`,
         html: emailShell(
           "Your order has been cancelled",
-          `<p style="color:#374151">Hi ${order.customerName}, your order <b>${order.orderNumber}</b> at ${siteConfig.name} has been <b>cancelled</b>.</p>
-           <table style="width:100%;border-collapse:collapse;margin-top:8px">${itemsHtmlRows(order)}
-           <tr><td style="padding-top:10px;font-weight:700">Total</td><td style="padding-top:10px;text-align:right;font-weight:700">${formatCurrency(order.total)}</td></tr></table>
-           <p style="color:#374151;margin-top:12px">If you have any questions or did not request this cancellation, please contact us at ${siteConfig.contact.phone} or ${siteConfig.contact.email}.</p>`
+          `<p style="margin:0;color:#374151;font-size:14px;line-height:1.6">Hi ${order.customerName}, your order <b>${order.orderNumber}</b> at ${siteConfig.name} has been <b>cancelled</b>.</p>
+           ${deliveryHtmlBlock(order)}
+           ${totalsHtmlTable(order)}
+           <p style="color:#374151;margin-top:16px;font-size:14px;line-height:1.6">If you have any questions or did not request this cancellation, please contact us at ${siteConfig.contact.phone} or ${siteConfig.contact.email}.</p>`
         ),
       })
     );
   }
 
   if (order.customerPhone) {
-    const cancelText = `Hi ${order.customerName}, your order *${order.orderNumber}* at ${siteConfig.name} has been *cancelled*.\n\n${itemsTextLines(order)}\n\n*Total: ${formatCurrency(order.total)}*\n\nIf you have questions, call ${siteConfig.contact.phone} or email ${siteConfig.contact.email}.`;
+    const cancelText = `Hi ${order.customerName}, your order *${order.orderNumber}* at ${siteConfig.name} has been *cancelled*.\n\n${totalsTextBlock(order)}\n\nIf you have questions, call ${siteConfig.contact.phone} or email ${siteConfig.contact.email}.`;
     tasks.push(
       sendWhatsAppSmart({
         to: order.customerPhone,
