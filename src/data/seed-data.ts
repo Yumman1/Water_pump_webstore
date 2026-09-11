@@ -75,11 +75,11 @@ const PRODUCT_PRICES: Record<string, number> = {
   "set-1hp-full-load-jawed-gd50000": 44000,
   "set-1hp-full-load-premium-gd50000": 44500,
   "espa-ams-15-dz-kit": 5500,
-  "espa-m4-multistage": 5500,
-  "mhf-5am-2x2-monoblock-pressure-pump": 5500,
-  "cpm158-1hp-monoblock-pressure-pump": 5500,
-  "cpm158-1hp-monoblock-pressure-pump-china": 5500,
-  "v750df-submersible-pump": 5500,
+  "espa-m4-multistage": 55000,
+  "mhf-5am-2x2-monoblock-pressure-pump": 39500,
+  "cpm158-1hp-monoblock-pressure-pump": 35000,
+  "cpm158-1hp-monoblock-pressure-pump-china": 26000,
+  "v750df-submersible-pump": 36000,
 };
 
 export const categories: SeedCategory[] = [
@@ -544,7 +544,7 @@ export const products: SeedProduct[] = [
     images: pm("mhf-5am-2x2-monoblock-pressure-pump", "cover-v2.jpg"),
   }),
   product({
-    name: "Cpm158 1hp monoblock pressure pump pedrollo Italy imported",
+    name: "Pedrollo 1hp monoblock pressure pump Italy imported",
     slug: "cpm158-1hp-monoblock-pressure-pump",
     sku: "IMP-CPM158",
     brand: "Imported",
